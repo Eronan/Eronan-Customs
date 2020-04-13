@@ -4,7 +4,7 @@ local s,id=GetID()
 function s.initial_effect(c)
 	--synchro summon
 	c:EnableReviveLimit()
-	Synchro.AddProcedure(c,nil,1,1,aux.NonTuner(nil),1,99)
+	Synchro.AddProcedure(c,nil,1,1,Synchro.NonTuner(nil),1,99)
 	--cannottrigger
 	local e1=Effect.CreateEffect(c)
 	e1:SetDescription(aux.Stringid(95905259,0))
