@@ -1,4 +1,5 @@
 --Perfectly Apex Great Moth
+Duel.LoadScript("proc_rune.lua")
 local s,id=GetId()
 function s.initial_effect(c)
 	--Rune Summon

@@ -1,4 +1,5 @@
 --Raviel Lord of Vengeful Spirits
+Duel.LoadScript("proc_rune.lua")
 local s,id=GetID()
 function s.initial_effect(c)
 	--rune procedure

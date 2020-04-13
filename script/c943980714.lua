@@ -1,4 +1,5 @@
 --Runic Instantation
+Duel.LoadScript("proc_rune.lua")
 local s,id=GetID()
 function s.initial_effect(c)
 	--activate
@@ -21,6 +22,6 @@ function s.runop(e,tp,eg,ep,ev,re,r,rp)
 	if g:GetCount()>0 then
 		Duel.Hint(HINT_SELECTMSG,tp,aux.Stringid(id,1))
 		local sc=g:Select(tp,1,1,nil):GetFirst()
-		Duel.ProcedureSummon(0,sc,SUMMON_TYPE_RUNE)
+		Duel.RuneSummon(tp,sc)
 	end
 end

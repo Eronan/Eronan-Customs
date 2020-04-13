@@ -1,4 +1,5 @@
 --Uria Lord of Vengeful Hellfire
+Duel.LoadScript("proc_rune.lua")
 local s,id=GetID()
 function s.initial_effect(c)
 	--rune procedure

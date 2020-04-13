@@ -1,1 +1,0 @@
-Duel.LoadScript("proc_rune.lua")

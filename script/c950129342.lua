@@ -1,4 +1,5 @@
 --Brotherhood of the Fire Fist - Ox
+Duel.LoadScript("proc_rune.lua")
 local s,id=GetID()
 function s.initial_effect(c)
 	--Rune Summon
