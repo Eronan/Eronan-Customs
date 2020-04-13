@@ -41,6 +41,7 @@ function s.initial_effect(c)
 	e5:SetOperation(s.thop)
 	c:RegisterEffect(e5)
 end
+s.listed_series={0xff1}
 function s.atktg(e,c)
 	return c:IsSetCard(0xff1) and (c:IsSummonType(SUMMON_TYPE_RUNE) or c:IsSummonType(SUMMON_TYPE_SYNCHRO))
 end

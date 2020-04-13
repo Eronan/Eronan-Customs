@@ -30,6 +30,7 @@ function s.initial_effect(c)
 	e4:SetCode(EFFECT_DISABLE)
 	c:RegisterEffect(e4)
 end
+s.listed_series={0xff1}
 function s.tgfilter(c,e,tp)
 	return c:IsFaceup() and c:IsRace(RACE_AQUA) and c:IsAttribute(ATTRIBUTE_WIND)
 end

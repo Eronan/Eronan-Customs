@@ -7,7 +7,7 @@ function s.initial_effect(c)
 	aux.AddRuneProcedure(c,nil,1,1,nil,1,1)
 	--level change
 	local e1=Effect.CreateEffect(c)
-	e1:SetDescription(aux.Stringid(84046493,0))
+	e1:SetDescription(aux.Stringid(id,0))
 	e1:SetCategory(CATEGORY_DICE)
 	e1:SetType(EFFECT_TYPE_IGNITION)
 	e1:SetRange(LOCATION_MZONE)
@@ -40,7 +40,7 @@ function s.lvop(e,tp,eg,ep,ev,re,r,rp)
 		e1:SetCode(EFFECT_CHANGE_LEVEL)
 		e1:SetValue(e:GetLabel())
 		e1:SetRange(LOCATION_MZONE)
-		e1:SetReset(RESET_EVENT+0x1ff0000+RESET_PHASE+PHASE_END)
+		e1:SetReset(RESET_EVENT+RESETS_STANDARD+RESET_PHASE+PHASE_END)
 		c:RegisterEffect(e1)
 	end
 end
