@@ -47,7 +47,7 @@ function s.runcon(e,tp,eg,ep,ev,re,r,rp)
 	
 	local mg=Rune.DefaultGroup(c,tp)
 	mg:AddCard(tc)
-	return tc:IsFaceup() and tc:IsType(TYPE_SPELL+TYPE_TRAP) and c:IsRuneSummonable(tc,mg)
+	return tc:IsFaceup() and tc:IsLocation(LOCATION_ONFIELD) and tc:IsType(TYPE_SPELL+TYPE_TRAP) and c:IsRuneSummonable(tc,mg)
 end
 function s.runop(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
