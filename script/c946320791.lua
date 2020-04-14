@@ -28,7 +28,7 @@ function s.initial_effect(c)
 	e2:SetOperation(s.setop2)
 	c:RegisterEffect(e2)
 end
-function s.STMatFilter(c)
+function s.STMatFilter(c,rc,sumtyp,tp)
 	return (c:GetOriginalType()==TYPE_SPELL or c:GetOriginalType()==TYPE_TRAP)
 end
 function s.setcon1(e,tp,eg,ep,ev,re,r,rp)

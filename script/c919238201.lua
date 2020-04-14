@@ -49,8 +49,8 @@ function s.initial_effect(c)
 	c:RegisterEffect(e4)
 end
 s.listed_names={946320791}
-function s.STRunFilter(c)
-	local typ=c:GetOriginalType()
+function s.STRunFilter(c,rc,sumtyp,tp)
+	local typ=c:GetOriginalType(rc,sumtyp,tp)
 	return typ==TYPE_SPELL or typ==TYPE_TRAP
 end
 function s.negcon(e,tp,eg,ep,ev,re,r,rp)

@@ -27,7 +27,7 @@ function s.initial_effect(c)
 	c:RegisterEffect(e2)
 end
 function s.STMatFilter(c,rc,sumtyp,tp)
-	return bit.band(c:GetType(),0x20004)==0x20004
+	return (c:GetType(rc,sumtyp,tp)&TYPE_CONTINUOUS+TYPE_TRAP)==TYPE_CONTINUOUS+TYPE_TRAP
 end
 function s.descon(e,tp,eg,ep,ev,re,r,rp)
 	return e:GetHandler():GetSummonType()==SUMMON_TYPE_RUNE

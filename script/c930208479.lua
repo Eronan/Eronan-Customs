@@ -32,7 +32,7 @@ function s.initial_effect(c)
 	c:RegisterEffect(e4)
 end
 s.listed_names={46986414,38033121}
-function s.STFilter(c)
+function s.STFilter(c,rc,sumtyp,tp)
     return aux.IsCodeListed(c,46986414) or aux.IsCodeListed(c,38033121)
 end
 function s.thfilter(c)

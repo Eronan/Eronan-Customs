@@ -25,8 +25,8 @@ function s.initial_effect(c)
 	e2:SetValue(s.aclimit)
 	c:RegisterEffect(e2)
 end
-function s.STMatFilter(c)
-	return (c:GetType()&TYPE_SPELL+TYPE_CONTINUOUS)==TYPE_SPELL+TYPE_CONTINUOUS
+function s.STMatFilter(c,rc,sumtyp,tp)
+	return (c:GetType(rc,sumtyp,tp)&TYPE_SPELL+TYPE_CONTINUOUS)==TYPE_SPELL+TYPE_CONTINUOUS
 end
 function s.setcon(e,tp,eg,ep,ev,re,r,rp)
 	return e:GetHandler():IsSummonType(SUMMON_TYPE_RUNE)

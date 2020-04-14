@@ -4,7 +4,7 @@ local s,id=GetID()
 function s.initial_effect(c)
 	--Rune Summon
 	c:EnableReviveLimit()
-	Rune.AddProcedure(c,aux.FilterBoolFunction(Card.IsAttribute,ATTRIBUTE_EARTH),2,2,s.STMatFilter,1,1)
+	Rune.AddProcedure(c,aux.FilterBoolFunctionEx(Card.IsAttribute,ATTRIBUTE_EARTH),2,2,s.STMatFilter,1,1)
 	--cannot special summon
 	local e1=Effect.CreateEffect(c)
 	e1:SetProperty(EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_UNCOPYABLE)
@@ -39,8 +39,8 @@ function s.initial_effect(c)
 	c:RegisterEffect(e4)
 end
 s.listed_names={962438790}
-function s.STMatFilter(c)
-	return (c:GetType()&TYPE_TRAP+TYPE_CONTINUOUS)==TYPE_TRAP+TYPE_CONTINUOUS
+function s.STMatFilter(c,rc,sumtyp,tp)
+	return (c:GetType(rc,sumtyp,tp)&TYPE_TRAP+TYPE_CONTINUOUS)==TYPE_TRAP+TYPE_CONTINUOUS
 end
 function s.tglimit(e,c)
 	return c==e:GetHandler() or c:IsType(TYPE_TRAP)

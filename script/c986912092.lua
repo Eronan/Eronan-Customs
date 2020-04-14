@@ -33,7 +33,7 @@ function s.initial_effect(c)
 end
 s.listed_series={0xfef}
 function s.STMatFilter(c,rc,sumtyp,tp)
-	return c:IsType(TYPE_TRAP) and c:IsSetCard(0xfef)
+	return c:IsType(TYPE_TRAP,rc,sumtyp,tp) and c:IsSetCard(0xfef,rc,sumtyp,tp)
 end
 function s.thfilter(c)
 	return c:IsSetCard(0xfef) and c:IsAbleToHand()

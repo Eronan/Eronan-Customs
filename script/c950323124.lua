@@ -23,8 +23,8 @@ function s.initial_effect(c)
 	c:RegisterEffect(e2)
 end
 s.listed_names={86889202}
-function s.STMatFilter(c)
-	return bit.band(c:GetType(),0x20002)==0x20002
+function s.STMatFilter(c,rc,sumtyp,tp)
+	return bit.band(c:GetType(rc,sumtyp,tp),TYPE_SPELL+TYPE_CONTINUOUS)==TYPE_SPELL+TYPE_CONTINUOUS
 end
 function s.atkfilter(c)
 	return c:IsFaceup() and c:IsType(TYPE_SPELL+TYPE_TRAP)

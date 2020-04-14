@@ -24,7 +24,7 @@ function s.initial_effect(c)
 	c:RegisterEffect(e1)
 end
 function s.MonMatFilter(c)
-	return c:GetLevel()==7 and c:IsRace(RACE_DRAGON)
+	return c:GetLevel()==7 and c:IsRace(RACE_DRAGON,rc,sumtyp,tp)
 end
 function s.filter(c)
 	return c:IsType(TYPE_PENDULUM) and c:IsType(TYPE_MONSTER) and c:IsAbleToHand()

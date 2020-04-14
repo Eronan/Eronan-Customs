@@ -38,7 +38,7 @@ function s.initial_effect(c)
 end
 s.listed_series={0xfef}
 function s.MonMatFilter(c,rc,sumtyp,tp)
-	return c:IsLevel(5) and c:IsType(TYPE_NORMAL)
+	return c:IsLevel(5) and c:IsType(TYPE_NORMAL,rc,sumtyp,tp)
 end
 function s.STMatFilter(c,rc,sumtyp,tp)
 	return c:IsType(TYPE_TRAP) and c:IsSetCard(0xfef)

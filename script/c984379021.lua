@@ -42,8 +42,8 @@ function s.initial_effect(c)
 	c:RegisterEffect(e4)
 end
 s.listed_names={962438790}
-function s.STMatFilter(c)
-	return (c:GetType()&TYPE_TRAP+TYPE_CONTINUOUS)==TYPE_TRAP+TYPE_CONTINUOUS
+function s.STMatFilter(c,rc,sumtyp,tp)
+	return (c:GetType(rc,sumtyp,tp)&TYPE_TRAP+TYPE_CONTINUOUS)==TYPE_TRAP+TYPE_CONTINUOUS
 end
 function s.effectfilter(e,ct)
 	local p=e:GetHandler():GetControler()

@@ -31,7 +31,7 @@ function s.initial_effect(c)
 	c:RegisterEffect(e2)
 end
 s.listed_names={946320791}
-function s.STMatFilter(c)
+function s.STMatFilter(c,rc,sumtyp,tp)
 	return c:GetOriginalType()==TYPE_SPELL or c:GetOriginalType()==TYPE_TRAP
 end
 function s.setfilter(c)

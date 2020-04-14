@@ -31,7 +31,7 @@ function s.initial_effect(c)
 	c:RegisterEffect(e3)
 end
 function s.monfilter(c)
-	return c:IsType(TYPE_EFFECT) and c:IsLevelBelow(4)
+	return c:IsType(TYPE_EFFECT,rc,sumtyp,tp) and c:IsLevelBelow(4)
 end
 function s.slevel(e,c)
 	local lv=e:GetHandler():GetLevel()
