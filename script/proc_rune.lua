@@ -24,8 +24,8 @@ function Rune.AddProcedure(c,monf,mmin,mmax,stf,smin,smax,loc,group,condition)
 	--smin, smax are the minimums and maximums for the Spell/Trap cards
 	--loc adds an additional location
 	--group changes the 
-	if not max1 then max1=min1 end
-	if not max2 then max2=min2 end
+	if not mmax then mmax=mmin end
+	if not smax then smax=smax end
 	if not loc then loc=0 end
 	if c.rune_parameters==nil then
 		local mt=c:GetMetatable()
