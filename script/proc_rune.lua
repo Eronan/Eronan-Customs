@@ -25,7 +25,7 @@ function Rune.AddProcedure(c,monf,mmin,mmax,stf,smin,smax,loc,group,condition)
 	--loc adds an additional location
 	--group changes the 
 	if not mmax then mmax=mmin end
-	if not smax then smax=smax end
+	if not smax then smax=smin end
 	if not loc then loc=0 end
 	if c.rune_parameters==nil then
 		local mt=c:GetMetatable()
