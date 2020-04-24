@@ -25,11 +25,11 @@ end
 s.listed_series={0x1fe7}
 s.listed_names={912389041}
 function s.drtg(e,tp,eg,ep,ev,re,r,rp,chk)
-	local count=e:GetHandler():GetColumnGroup():FilterCount(Card.IsSetCard,nil,0x1fe7)+1
-	if chk==0 then return count>0 and Duel.IsPlayerCanDraw(tp,count) end
+	local count=e:GetHandler():GetColumnGroup():FilterCount(Card.IsSetCard,nil,0x1fe7)
+	if chk==0 then return count>=0 and Duel.IsPlayerCanDraw(tp,count+1) end
 	Duel.SetTargetPlayer(tp)
-	Duel.SetTargetParam(count)
-	Duel.SetOperationInfo(0,CATEGORY_DRAW,nil,0,tp,count)
+	Duel.SetTargetParam(count+1)
+	Duel.SetOperationInfo(0,CATEGORY_DRAW,nil,0,tp,count+1)
 end
 function s.drop(e,tp,eg,ep,ev,re,r,rp)
 	local p,d=Duel.GetChainInfo(0,CHAININFO_TARGET_PLAYER,CHAININFO_TARGET_PARAM)
