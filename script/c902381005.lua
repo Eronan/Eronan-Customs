@@ -1,5 +1,5 @@
 --Shimzu Night
-Duel.LoadScript("proc_rune.lua")
+if not Rune then Duel.LoadScript("proc_rune.lua") end
 local s,id=GetID()
 function s.initial_effect(c)
 	--Activate
@@ -24,7 +24,7 @@ function s.initial_effect(c)
 	e3:SetProperty(EFFECT_FLAG_CARD_TARGET)
 	e3:SetRange(LOCATION_GRAVE)
 	e3:SetCode(EVENT_SPSUMMON_SUCCESS)
-	e3:SetCountLimit(1,id+EFFECT_COUNT_CODE_OATH)
+	e3:SetCountLimit(1,id,EFFECT_COUNT_CODE_OATH)
 	e3:SetCondition(s.spcon)
 	e3:SetCost(s.spcost)
 	e3:SetTarget(s.sptg)

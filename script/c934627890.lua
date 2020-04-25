@@ -1,5 +1,5 @@
 --Perfectly Apex Great Moth
-Duel.LoadScript("proc_rune.lua")
+if not Rune then Duel.LoadScript("proc_rune.lua") end
 local s,id=GetId()
 function s.initial_effect(c)
 	--Rune Summon

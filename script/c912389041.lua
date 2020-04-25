@@ -1,4 +1,5 @@
 --Contaminetwork
+if not Rune then Duel.LoadScript("proc_rune.lua") end
 local s,id=GetID()
 function s.initial_effect(c)
 	--Activate
@@ -28,8 +29,8 @@ function s.initial_effect(c)
 	e4:SetCategory(CATEGORY_TOHAND+CATEGORY_SEARCH)
 	e4:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_TRIGGER_F)
 	e4:SetCode(EVENT_TO_GRAVE)
-	e4:SetRange(LOCATION_SZONE)
-	e4:SetCountLimit(1,id+EFFECT_COUNT_CODE_OATH)
+	e4:SetRange(LOCATION_FZONE)
+	e4:SetCountLimit(1,id,EFFECT_COUNT_CODE_OATH)
 	e4:SetCondition(s.ctcon)
 	e4:SetTarget(s.cttg)
 	e4:SetOperation(s.ctop)
@@ -43,8 +44,8 @@ function s.efilter(e,re)
 	return re:GetOwnerPlayer()~=e:GetHandlerPlayer()
 end
 function s.ctcfilter(c,tp)
-	return c:IsPreviousSetCard(0x1fe7) and c:IsPreviousLocation(LOCATION_ONFIELD)
-		and c:IsReason(0x100000000) and c:GetReasonCard():IsSetCard(0x1fe7)
+	return (c:GetPreviousTypeOnField()&TYPE_MONSTER)==TYPE_MONSTER and c:IsPreviousLocation(LOCATION_ONFIELD)
+		and c:IsReason(REASON_RUNE) and c:GetReasonCard():IsSetCard(0x1fe7)
 end
 function s.ctcon(e,tp,eg,ep,ev,re,r,rp)
 	return eg:IsExists(s.ctcfilter,1,nil,tp)

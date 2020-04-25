@@ -1,5 +1,5 @@
 --Runic Instantation
-Duel.LoadScript("proc_rune.lua")
+if not Rune then Duel.LoadScript("proc_rune.lua") end
 local s,id=GetID()
 function s.initial_effect(c)
 	--activate
@@ -14,7 +14,9 @@ function s.initial_effect(c)
 	c:RegisterEffect(e1)
 end
 function s.runtg(e,tp,eg,ep,ev,re,r,rp,chk)
-	if chk==0 then return Duel.IsExistingMatchingCard(Card.IsRuneSummonable,tp,0x3ff~LOCATION_MZONE,0,1,nil) end
+	local mg=Rune.DefaultGroup(c,tp)
+	mg:AddCard(tc)
+	if chk==0 then return Duel.IsExistingMatchingCard(Card.IsRuneSummonable,tp,0x3ff~LOCATION_MZONE,0,1,nil,mg) end
 	Duel.SetOperationInfo(0,CATEGORY_SPECIAL_SUMMON,nil,1,tp,0x3ff~LOCATION_MZONE)
 end
 function s.runop(e,tp,eg,ep,ev,re,r,rp)

@@ -1,5 +1,5 @@
 --Ocean of the Shimzu
-Duel.LoadScript("proc_rune.lua")
+if not Rune then Duel.LoadScript("proc_rune.lua") end
 local s,id=GetID()
 function s.initial_effect(c)
 	--Activate
@@ -33,7 +33,7 @@ function s.initial_effect(c)
 	e5:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_TRIGGER_O)
 	e5:SetProperty(EFFECT_FLAG_CARD_TARGET)
 	e5:SetRange(LOCATION_GRAVE)
-	e5:SetCountLimit(1,id+EFFECT_COUNT_CODE_OATH)
+	e5:SetCountLimit(1,id,EFFECT_COUNT_CODE_OATH)
 	e5:SetCode(EVENT_SPSUMMON_SUCCESS)
 	e5:SetCondition(s.thcon)
 	e5:SetCost(s.thcost)

@@ -1,5 +1,5 @@
 --Abyss Actor - Splendid Heroine
-Duel.LoadScript("proc_rune.lua")
+if not Rune then Duel.LoadScript("proc_rune.lua") end
 function s.initial_effect(c)
 	--Rune Summon
 	c:EnableReviveLimit()
