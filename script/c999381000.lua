@@ -34,17 +34,10 @@ function s.tg(e,tp,eg,ep,ev,re,r,rp,chk)
 	Duel.SetOperationInfo(0,CATEGORY_TOHAND,nil,1,tp,LOCATION_DECK)
 end
 function s.op(e,tp,eg,ep,ev,re,r,rp)
-	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_CONFIRM)
-	local g=Duel.SelectMatchingCard(tp,s.rvfilter,tp,LOCATION_HAND,0,1,1,nil)
-	Duel.ConfirmCards(1-tp,g)
-	Duel.ShuffleHand(tp)
-	local mc=g:GetFirst()
-	if mc then
-		Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_ATOHAND)
-		local g=Duel.SelectMatchingCard(tp,s.thfilter,tp,LOCATION_DECK,0,1,1,nil,mc)
-		if g:GetCount()>0 then
-			Duel.SendtoHand(g,nil,REASON_EFFECT)
-			Duel.ConfirmCards(1-tp,g)
-		end
+	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_ATOHAND)
+	local g=Duel.SelectMatchingCard(tp,s.thfilter,tp,LOCATION_DECK,0,1,1,nil,mc)
+	if g:GetCount()>0 then
+		Duel.SendtoHand(g,nil,REASON_EFFECT)
+		Duel.ConfirmCards(1-tp,g)
 	end
 end
