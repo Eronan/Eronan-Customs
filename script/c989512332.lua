@@ -4,7 +4,7 @@ local s,id=GetID()
 function s.initial_effect(c)
 	--Rune Summon
 	c:EnableReviveLimit()
-	aux.AddRuneProcedure(c,s.MonMatFilter,1,1,aux.FilterBoolFunctionEx(Card.IsType,TYPE_PENDULUM),1,1)
+	Rune.AddProcedure(c,s.MonMatFilter,1,1,aux.FilterBoolFunctionEx(Card.IsType,TYPE_PENDULUM),1,1)
 	--search
 	local e2=Effect.CreateEffect(c)
 	e2:SetDescription(aux.Stringid(id,1))
