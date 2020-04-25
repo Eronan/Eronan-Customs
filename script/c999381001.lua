@@ -15,10 +15,10 @@ function s.initial_effect(c)
 	c:RegisterEffect(e2)
 end
 function s.rvfilter(c)
-	return c:IsType(TYPE_RUNE) and Duel.IsExistingMatchingCard(s.tffilter,tp,LOCATION_DECK,0,1,nil,c)
+	return c:IsType(TYPE_RUNE)
 end
 function s.tffilter(c,rc)
-	return (c:GetType()&TYPE_CONTINUOUS+TYPE_TRAP)==TYPE_CONTINUOUS+TYPE_TRAP and not c:IsForbidden() and c:IsUsableMaterial(rc)
+	return (c:GetType()&TYPE_CONTINUOUS+TYPE_TRAP)==TYPE_CONTINUOUS+TYPE_TRAP and not c:IsForbidden()
 end
 function s.tftg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.GetLocationCount(tp,LOCATION_SZONE)>0

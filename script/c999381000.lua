@@ -16,10 +16,10 @@ function s.initial_effect(c)
 	c:RegisterEffect(e2)
 end
 function s.rvfilter(c)
-	return c:IsType(TYPE_SPELL+TYPE_TRAP) and Duel.IsExistingMatchingCard(s.thfilter,tp,LOCATION_DECK,0,1,nil,c)
+	return c:IsType(TYPE_SPELL+TYPE_TRAP)
 end
 function s.thfilter(c,mc)
-	return c:IsType(TYPE_RUNE) and c:IsAbleToHand() and mc:IsUsableMaterial(c)
+	return c:IsType(TYPE_RUNE) and c:IsAbleToHand()
 end
 function s.tg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.IsExistingMatchingCard(s.rvfilter,tp,LOCATION_HAND,0,1,nil) end
