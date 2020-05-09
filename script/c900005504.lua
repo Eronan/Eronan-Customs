@@ -48,7 +48,8 @@ function s.sptg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	Duel.SetOperationInfo(0,CATEGORY_SPECIAL_SUMMON,g,1,0,0)
 end
 function s.spop(e,tp,eg,ep,ev,re,r,rp)
-	local tc = Duel.GetFirstTarget()
+	local tc=Duel.GetFirstTarget()
+	local c=e:GetHandler()
 	local zone=e:GetHandler():GetLinkedZone(tp)&0x1f
 	if tc and tc:IsRelateToEffect(e) and zone~=0 and Duel.SpecialSummonStep(tc,0,tp,tp,false,false,POS_FACEUP,zone) then
 		local e1=Effect.CreateEffect(c)
