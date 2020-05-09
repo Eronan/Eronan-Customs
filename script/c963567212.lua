@@ -17,7 +17,8 @@ function s.initial_effect(c)
 	c:RegisterEffect(e1)
 end
 function s.STMatFilter(c,rc,sumtyp,tp)
-	return (c:GetType(rc,sumtyp,tp)&TYPE_PENDULUM+TYPE_SPELL)==TYPE_SPELL+TYPE_PENDULUM
+	return c:IsOriginalType(TYPE_PENDULUM) and c:IsType(TYPE_SPELL)
+	--return (c:GetType(rc,sumtyp,tp)&TYPE_PENDULUM+TYPE_SPELL)==TYPE_SPELL+TYPE_PENDULUM
 end
 function s.pcon(e,tp,eg,ep,ev,re,r,rp)
 	return e:GetHandler():IsSummonType(SUMMON_TYPE_RUNE)

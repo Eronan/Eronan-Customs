@@ -282,7 +282,7 @@ function Rune.CheckGoal(mnct,stct,bothct,mmin,smin,tmin,tmax)
 		and stct+bothct>=smin
 		and mnct+stct+bothct<=tmax
 end
-function Rune.DefaultGroup(rc,tp,exclude)
+function Rune.DefaultGroup(rc,tp)
 	if not rc:IsType(TYPE_RUNE) then return false end
 	local mt=rc:GetMetatable()
 	if not mt.rune_parameters then return false end
@@ -293,7 +293,7 @@ function Rune.DefaultGroup(rc,tp,exclude)
 		group=group or (rc:IsLocation(loc) and group(tp,nil,rc))
 	end
 	if group then return group end
-	return Duel.GetMatchingGroup(Card.IsFaceup,tp,LOCATION_ONFIELD,0,exclude)
+	return Duel.GetMatchingGroup(Card.IsFaceup,tp,LOCATION_ONFIELD,0,nil)
 end
 function Rune.Condition(monf,mmin,mmax,stf,smin,smax,group,condition)
 	return	function(e,c,must,g,min,max)
