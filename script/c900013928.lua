@@ -7,17 +7,17 @@ function s.initial_effect(c)
 	e1:SetCategory(CATEGORY_SPECIAL_SUMMON)
 	e1:SetType(EFFECT_TYPE_ACTIVATE)
 	e1:SetCode(EVENT_FREE_CHAIN)
-	e1:SetCountLimit(1,id+EFFECT_COUNT_CODE_OATH)
+	e1:SetCountLimit(1,id,EFFECT_COUNT_CODE_OATH)
 	e1:SetTarget(s.target)
 	c:RegisterEffect(e1)
 end
 s.listed_series={0xfe8}
-function s.plyrfilter(c,e)
+function s.runfilter(c,e)
 	return c:IsSetCard(0xfe8) and c:IsRuneSummonable(e:GetHandler())
 end
 function s.target(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return true end
-	local b1=Duel.IsExistingMatchingCard(s.plyrfilter,tp,LOCATION_HAND,0,1,nil,e)
+	local b1=Duel.IsExistingMatchingCard(s.runfilter,tp,LOCATION_HAND,0,1,nil,e)
 	local b2=true
 	local op=0
 	if b1 and b2 then
@@ -35,13 +35,17 @@ function s.target(e,tp,eg,ep,ev,re,r,rp,chk)
 	end
 end
 function s.plyroperation(e,tp,eg,ep,ev,re,r,rp)
-	if not Duel.IsExistingMatchingCard(s.plyrfilter,tp,LOCATION_HAND,0,1,nil,e) then return end
+	if not Duel.IsExistingMatchingCard(s.runfilter,tp,LOCATION_HAND,0,1,nil,e) then return end
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_SPSUMMON)
-	local g=Duel.SelectMatchingCard(tp,s.plyrfilter,tp,LOCATION_HAND,0,1,1,nil,e)
+	local g=Duel.SelectMatchingCard(tp,s.runfilter,tp,LOCATION_HAND,0,1,1,nil,e)
 	if g:GetCount()>0 then
 		local sc=g:GetFirst()
 		Duel.RuneSummon(tp,sc,e:GetHandler())
 	end
+end
+function s.oppfilter(c,e,tp,exg)
+	local runeGroup=Rune.DefaultGroup(c,tp)
+	return c:IsRuneSummonable(e:GetHandler(),runeGroup+exg)
 end
 function s.exfilter(c)
 	return c:IsType(TYPE_SPELL+TYPE_TRAP) and c:IsFaceup()
@@ -49,29 +53,15 @@ end
 function s.oppoperation(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
 	local exg=Duel.GetMatchingGroup(s.exfilter,tp,LOCATION_ONFIELD,0,nil)
-	exg:KeepAlive()
-	--Extra Material
-	local e1=Effect.CreateEffect(c)
-	e1:SetType(EFFECT_TYPE_FIELD)
-	e1:SetRange(LOCATION_MZONE)
-	e1:SetCode(EFFECT_EXTRA_MATERIAL)
-	e1:SetProperty(EFFECT_FLAG_PLAYER_TARGET)
-	e1:SetTargetRange(0,1)
-	e1:SetLabelObject(exg)
-	e1:SetValue(s.RuneExtra)
-	Duel.RegisterEffect(e1,tp)
-	if Duel.IsExistingMatchingCard(Card.IsRuneSummonable,tp,0,0x3ff~LOCATION_MZONE,1,nil,e:GetHandler())
+	if Duel.IsExistingMatchingCard(s.oppfilter,tp,0,0x3ff~LOCATION_MZONE,1,nil,e,tp,exg)
 			and Duel.SelectYesNo(1-tp,aux.Stringid(30241314,0)) then
 		--Summon
 		Duel.Hint(HINT_SELECTMSG,1-tp,HINTMSG_SPSUMMON)
-		local g=Duel.SelectMatchingCard(1-tp,Card.IsRuneSummonable,tp,0,0x3ff~LOCATION_MZONE,1,1,nil,e:GetHandler())
+		local g=Duel.SelectMatchingCard(1-tp,s.oppfilter,tp,0,0x3ff~LOCATION_MZONE,1,1,nil,e,tp,exg)
 		if g:GetCount()>0 then
 			local sc=g:GetFirst()
-			Duel.RuneSummon(1-tp,sc,e:GetHandler())
+			Duel.RuneSummon(1-tp,sc,e:GetHandler(),Rune.DefaultGroup(sc,tp)+exg)
 		end
-		--Reset
-		e1:Reset()
-		exg:DeleteGroup()
 	else
 		--Send to the Grave
 		Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_TOGRAVE)
@@ -79,9 +69,6 @@ function s.oppoperation(e,tp,eg,ep,ev,re,r,rp)
 		if tc then
 			Duel.SendtoGrave(tc,REASON_EFFECT)
 		end
-		--Reset
-		e1:Reset()
-		exg:DeleteGroup()
 	end
 end
 function s.RuneExtra(chk,summon_type,e,...)
