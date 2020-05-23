@@ -29,7 +29,7 @@ function s.initial_effect(c)
 	--
 	local e3=Effect.CreateEffect(c)
 	e3:SetDescription(aux.Stringid(id,1))
-	e3:SetCategory(CATEGORY_NEGATE+CATEGORY_DESTROY)
+	e3:SetCategory(CATEGORY_DISABLE+CATEGORY_DESTROY)
 	e3:SetType(EFFECT_TYPE_QUICK_O)
 	e3:SetRange(LOCATION_MZONE)
 	e3:SetProperty(EFFECT_FLAG_DAMAGE_STEP+EFFECT_FLAG_DAMAGE_CAL)
