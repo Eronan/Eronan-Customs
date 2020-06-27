@@ -285,14 +285,15 @@ end
 function Rune.DefaultGroup(rc,tp)
 	if not rc:IsType(TYPE_RUNE) then return false end
 	local mt=rc:GetMetatable()
-	if not mt.rune_parameters then return false end
-	local group=nil
-	for _,rune_table in ipairs(mt.rune_parameters) do
-		local loc=rune_table[7]
-		local group=rune_table[8]
-		group=group or (rc:IsLocation(loc) and group(tp,nil,rc))
+	if mt.rune_parameters then
+		local group=nil
+		for _,rune_table in ipairs(mt.rune_parameters) do
+			local loc=rune_table[7]
+			local group=rune_table[8]
+			group=group or (rc:IsLocation(loc) and group(tp,nil,rc))
+		end
+		if group then return group end
 	end
-	if group then return group end
 	return Duel.GetMatchingGroup(Card.IsFaceup,tp,LOCATION_ONFIELD,0,nil)
 end
 function Rune.Condition(monf,mmin,mmax,stf,smin,smax,group,condition)
@@ -409,7 +410,7 @@ function Rune.Operation(monf,mmin,mmax,stf,smin,smax,group)
 					end
 				end
 				c:SetMaterial(g)
-				Duel.SendtoGrave(g,REASON_MATERIAL+REASON_LINK)
+				Duel.SendtoGrave(g,REASON_MATERIAL+REASON_RUNE)
 				g:DeleteGroup()
 				aux.DeleteExtraMaterialGroups(emt)
 			end
@@ -426,9 +427,10 @@ function Card.IsCanBeRuneMaterial(c,runc,tp)
 	end
 	
 	--Cannot be Material
+	
 	effs={c:GetCardEffect(EFFECT_CANNOT_BE_MATERIAL)}
 	for _,te in ipairs(effs) do
-		if type(te:GetValue())=='function' and te:GetValue()(te,runc,2) or te:GetValue() then return false end
+		if type(te:GetValue())=='function' and te:GetValue()(te,runc,SUMMON_TYPE_RUNE,tp) or te:GetValue() then return false end
 	end
 	
 	--Debug.Message("MFunc: "..tostring(monf)..", rc: "..tostring(rc)..", tp: "..tostring(tp)..", Card: "..tostring(c))
