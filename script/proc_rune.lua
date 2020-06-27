@@ -417,7 +417,7 @@ end
 --Extension Functions
 function Card.IsCanBeRuneMaterial(c,runc,tp)
 	--Non-Rune Monsters
-	if not runc:IsType(TYPE_MONSTER) or c:IsStatus(STATUS_FORBIDDEN) then return false end
+	if runc and not runc:IsType(TYPE_MONSTER) or c:IsStatus(STATUS_FORBIDDEN) then return false end
 	
 	--Search Effects
 	local effs={c:GetCardEffect(EFFECT_CANNOT_BE_RUNE_MATERIAL)}
