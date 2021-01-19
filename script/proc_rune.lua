@@ -6,7 +6,7 @@ Strings
 TYPE_RUNE			= 0x80000000
 MATERIAL_RUNE		= 0x20<<32
 REASON_RUNE			= 0x80000000
-SUMMON_TYPE_RUNE	= 0x42000000
+SUMMON_TYPE_RUNE	= 0x42000001
 EFFECT_RUNE_MAT_RESTRICTION		=73941492+TYPE_RUNE
 EFFECT_CANNOT_BE_RUNE_MATERIAL	=500
 
@@ -174,6 +174,13 @@ function Rune.CheckRecursive(c,mg,sg,mct,sct,bct,monf,mmin,mmax,stf,smin,smax,tm
 		res=Rune.CheckGoal(mct,sct+1,bct,mmin,smin,tmin,tmax) or
 			mg:IsExists(Rune.CheckRecursive,1,sg,mg,sg,mct,sct+1,bct,monf,mmin,mmax,stf,smin,smax,tmin,tmax,rc,tp,og,emt,filt)
 	end
+	
+	if rc:IsLocation(LOCATION_EXTRA) then
+		res=res and Duel.GetLocationCountFromEx(tp,tp,sg,rc)>0
+	else
+		res = res and Duel.GetMZoneCount(tp,sg,tp)>0
+	end
+	
 	--Reset all Values (Groups, Filters, etc)
 	sg:RemoveCard(c)
 	mg:Merge(rg)
