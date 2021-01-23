@@ -1,7 +1,7 @@
 --Mereas Binate Dorsal
 local s,id=GetID()
 if not Rune then Duel.LoadScript("proc_rune.lua") end
-function c955000000.initial_effect(c)
+function s.initial_effect(c)
 	--pendulum summon
 	Pendulum.AddProcedure(c)
 	--Gemini

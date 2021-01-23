@@ -44,7 +44,7 @@ function s.eqop(e,tp,eg,ep,ev,re,r,rp)
 		if c:IsFaceup() and c:IsRelateToEffect(e) then
 			if not Duel.Equip(tp,tc,c,false) then return end
 			--Add Equip limit
-			tc:RegisterFlagEffect(918923012,RESET_EVENT+0x1fe0000,0,0)
+			tc:RegisterFlagEffect(id,RESET_EVENT+0x1fe0000,0,0)
 			e:SetLabelObject(tc)
 			--eqlimit
 			local e1=Effect.CreateEffect(c)

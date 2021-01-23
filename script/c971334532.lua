@@ -32,6 +32,7 @@ function s.initial_effect(c)
 	e5:SetOperation(s.disop)
 	c:RegisterEffect(e5)
 end
+s.listed_names={918906423}
 s.listed_series={0xff0}
 function s.cfilter(c)
 	return c:IsFaceup() and c:IsSetCard(0xff0) and c:IsType(TYPE_SPELL+TYPE_TRAP)

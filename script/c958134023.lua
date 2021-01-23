@@ -30,6 +30,7 @@ function s.initial_effect(c)
 	e5:SetOperation(s.disop)
 	c:RegisterEffect(e5)
 end
+s.listed_names={915234232}
 function s.filter(c,tp)
 	return c:IsType(TYPE_RUNE) and c:GetSummonPlayer()==tp and c:IsFaceup()
 end

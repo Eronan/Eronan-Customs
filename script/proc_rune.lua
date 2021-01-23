@@ -9,6 +9,7 @@ REASON_RUNE			= 0x80000000
 SUMMON_TYPE_RUNE	= 0x42000001
 EFFECT_RUNE_MAT_RESTRICTION		=73941492+TYPE_RUNE
 EFFECT_CANNOT_BE_RUNE_MATERIAL	=500
+EFFECT_RUNE_SUBSTITUTE	= 900001030
 
 if not aux.RuneProcedure then
 	aux.RuneProcedure = {}
@@ -130,7 +131,7 @@ function Rune.CheckRecursive(c,mg,sg,mct,sct,bct,monf,mmin,mmax,stf,smin,smax,tm
 	if #rmg>0 then
 		local tc=rmg:GetFirst()
 		while tc do
-			local eff={tc:GetCardEffect(EFFECT_XYZ_MAT_RESTRICTION)}
+			local eff={tc:GetCardEffect(EFFECT_RUNE_MAT_RESTRICTION)}
 			for i,f in ipairs(eff) do
 				if Auxiliary.HarmonizingMagFilter(c,f,f:GetValue()) then
 					mg:Merge(rg)
@@ -220,7 +221,7 @@ function Rune.CheckRecursive2(c,mg,sg,csg,mct,sct,bct,monf,mmin,mmax,stf,smin,sm
 	if #rmg>0 then
 		local tc=rmg:GetFirst()
 		while tc do
-			local eff={tc:GetCardEffect(EFFECT_XYZ_MAT_RESTRICTION)}
+			local eff={tc:GetCardEffect(EFFECT_RUNE_MAT_RESTRICTION)}
 			for i,f in ipairs(eff) do
 				if Auxiliary.HarmonizingMagFilter(c,f,f:GetValue()) then
 					mg:Merge(rg)
@@ -472,4 +473,12 @@ function Card.IsUsableMaterial(c,rc)
 		end
 	end
 	return usable
+end
+function Card.IsRuneCode(c,code)
+	if c:IsCode(code) then return true end
+	local effs = c:GetCardEffect(EFFECT_RUNE_SUBSTITUTE)
+	for _,te in ipairs(eff) do
+		local tcon=te:GetCondition()
+		if not tcon or (type(tcon)=='function' and tcon(te)) then return true end
+	end
 end

@@ -52,7 +52,7 @@ function s.atlimit(e,c)
 	return c:GetSequence()<5
 end
 function s.sccon(e,tp,eg,ep,ev,re,r,rp)
-	return Duel.GetTurnPlayer()~=tp and e:GetHandler():GetFlagEffect(905831981)==0
+	return Duel.GetTurnPlayer()~=tp and e:GetHandler():GetFlagEffect(id)==0
 end
 function s.scfilter(c)
 	return c:IsSetCard(0xffb) and c:IsSynchroSummonable(nil)
@@ -62,18 +62,18 @@ function s.sctg1(e,tp,eg,ep,ev,re,r,rp,chk)
 	if s.sccon(e,tp,eg,ep,ev,re,r,rp)
 		and Duel.IsExistingMatchingCard(s.scfilter,tp,LOCATION_EXTRA,0,1,nil)
 		and Duel.SelectYesNo(tp,94) then
-		e:GetHandler():RegisterFlagEffect(905831981,RESET_EVENT+0x1fe0000+RESET_PHASE+PHASE_END,0,1)
+		e:GetHandler():RegisterFlagEffect(id,RESET_EVENT+0x1fe0000+RESET_PHASE+PHASE_END,0,1)
 		e:GetHandler():RegisterFlagEffect(0,RESET_CHAIN,EFFECT_FLAG_CLIENT_HINT,1,0,65)
 		Duel.SetOperationInfo(0,CATEGORY_SPECIAL_SUMMON,nil,1,tp,LOCATION_EXTRA)
 	end
 end
 function s.sctg2(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.IsExistingMatchingCard(s.scfilter,tp,LOCATION_EXTRA,0,1,nil) end
-	e:GetHandler():RegisterFlagEffect(905831981,RESET_EVENT+0x1fe0000+RESET_PHASE+PHASE_END,0,1)
+	e:GetHandler():RegisterFlagEffect(id,RESET_EVENT+0x1fe0000+RESET_PHASE+PHASE_END,0,1)
 	Duel.SetOperationInfo(0,CATEGORY_SPECIAL_SUMMON,nil,1,tp,LOCATION_EXTRA)
 end
 function s.scop(e,tp,eg,ep,ev,re,r,rp)
-	if e:GetHandler():GetFlagEffect(905831981)==0 or not e:GetHandler():IsRelateToEffect(e) then return end
+	if e:GetHandler():GetFlagEffect(id)==0 or not e:GetHandler():IsRelateToEffect(e) then return end
 	local g=Duel.GetMatchingGroup(s.scfilter,tp,LOCATION_EXTRA,0,nil)
 	if g:GetCount()>0 then
 		Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_SPSUMMON)

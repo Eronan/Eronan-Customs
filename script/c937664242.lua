@@ -30,6 +30,7 @@ function s.initial_effect(c)
 	c:RegisterEffect(e5)
 	
 end
+s.listed_names={918906232}
 s.listed_series={0xff0}
 function s.filter(c)
 	return c:IsType(TYPE_RUNE) and c:IsAbleToHand() and c:IsRace(RACE_SPELLCASTER)

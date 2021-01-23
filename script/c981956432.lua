@@ -35,6 +35,7 @@ function s.initial_effect(c)
 	e5:SetOperation(s.thop)
 	c:RegisterEffect(e5)
 end
+s.listed_names={957801023}
 s.listed_series={0xff0}
 function s.eqlimit(e,c)
 	return c:IsType(TYPE_RUNE)
