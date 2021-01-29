@@ -4,7 +4,7 @@ local s,id=GetID()
 function s.initial_effect(c)
 	--Rune Summon
 	c:EnableReviveLimit()
-	Rune.AddProcedure(c,aux.FilterBoolFunctionEx(Card.IsCode,86889202),1,1,s.STMatFilter,1,1)
+	Rune.AddProcedure(c,aux.FilterBoolFunctionEx(Card.IsRuneCode,86889202),1,1,s.STMatFilter,1,1)
 	--multi attack
 	local e1=Effect.CreateEffect(c)
 	e1:SetType(EFFECT_TYPE_SINGLE)

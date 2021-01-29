@@ -5,7 +5,7 @@ function s.initial_effect(c)
 	--Rune Summon
 	c:EnableReviveLimit()
 	Rune.AddProcedure(c,nil,2,2,s.STMatFilter,2,2)
-	Rune.AddSecondProcedure(c,aux.FilterBoolFunctionEx(Card.IsCode,946320791),1,1,s.STMatFilter,2,2,LOCATION_DECK)
+	Rune.AddSecondProcedure(c,aux.FilterBoolFunctionEx(Card.IsRuneCode,946320791),1,1,s.STMatFilter,2,2,LOCATION_DECK)
 	--set
 	local e1=Effect.CreateEffect(c)
 	e1:SetDescription(aux.Stringid(id,0))
