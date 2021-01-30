@@ -421,7 +421,7 @@ function Rune.Operation(monf,mmin,mmax,stf,smin,smax,group)
 				local gycards=g:Filter(Card.IsLocation,nil,LOCATION_GRAVE)
 				if gycards:GetCount()>0 then
 					g:Sub(gycards)
-					Duel.Remove(gycards,REASON_MATERIAL+REASON_RUNE)
+					Duel.Remove(gycards,POS_FACEUP,REASON_MATERIAL+REASON_RUNE)
 				end
 				Duel.SendtoGrave(g,REASON_MATERIAL+REASON_RUNE)
 				g:DeleteGroup()
