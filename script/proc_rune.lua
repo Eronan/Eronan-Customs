@@ -482,7 +482,7 @@ end
 function Card.IsRuneCode(c,code,sc,sumtype,playerid)
 	if c:IsCode(code) then return true end
 	local effs = c:GetCardEffect(EFFECT_RUNE_SUBSTITUTE)
-	for _,te in ipairs(eff) do
+	for _,te in ipairs(effs) do
 		local tcon=te:GetCondition()
 		if not tcon or (type(tcon)=='function' and tcon(te)) then return true end
 	end
