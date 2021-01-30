@@ -9,7 +9,7 @@ REASON_RUNE			= 0x80000000
 SUMMON_TYPE_RUNE	= 0x42000001
 EFFECT_RUNE_MAT_RESTRICTION		=73941492+TYPE_RUNE
 EFFECT_CANNOT_BE_RUNE_MATERIAL	=500
-EFFECT_RUNE_SUBSTITUTE	= 900001030
+EFFECT_RUNE_SUBSTITUTE	= 900001031
 
 if not aux.RuneProcedure then
 	aux.RuneProcedure = {}
@@ -440,14 +440,11 @@ function Card.IsCanBeRuneMaterial(c,runc,tp)
 	end
 	
 	--Cannot be Material
-	
 	effs={c:GetCardEffect(EFFECT_CANNOT_BE_MATERIAL)}
 	for _,te in ipairs(effs) do
 		if type(te:GetValue())=='function' and te:GetValue()(te,runc,SUMMON_TYPE_RUNE,tp) or te:GetValue() then return false end
 	end
-	
-	--Debug.Message("MFunc: "..tostring(monf)..", rc: "..tostring(rc)..", tp: "..tostring(tp)..", Card: "..tostring(c))
-	
+
 	return true
 end
 --sp_summon condition for link monster
@@ -479,11 +476,12 @@ function Card.IsUsableMaterial(c,rc)
 	end
 	return usable
 end
-function Card.IsRuneCode(c,code,sc,sumtype,playerid)
+function Card.IsRuneCode(c,code,rc,sumtype,tp)
 	if c:IsCode(code) then return true end
-	local effs = c:GetCardEffect(EFFECT_RUNE_SUBSTITUTE)
+	local effs = {c:GetCardEffect(EFFECT_RUNE_SUBSTITUTE)}
 	for _,te in ipairs(effs) do
-		local tcon=te:GetCondition()
-		if not tcon or (type(tcon)=='function' and tcon(te)) then return true end
+		local tcon=te:GetOperation()
+		if not tcon or tcon(te,rc,sumtype,tp) then return true end
 	end
+	return false
 end

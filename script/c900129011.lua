@@ -43,10 +43,10 @@ function s.runcon(e,tp,eg,ep,ev,re,r,rp)
 	return Duel.IsMainPhase()
 end
 function s.runfilter(c,must,tp)
-	if not c:IsType(TYPE_RUNE) then return false end
+	if not c:IsType(TYPE_RUNE) or not c:IsAttribute(ATTRIBUTE_WIND) then return false end
 	local mg=Rune.DefaultGroup(c,tp)
 	mg:Merge(must)
-	return c:IsAttribute(ATTRIBUTE_WIND) and c:IsRuneSummonable(must,mg)
+	return c:IsRuneSummonable(must,mg)
 end
 function s.mtfilter(tc,c,tp)
 	local must=Group.FromCards(c,tc)
