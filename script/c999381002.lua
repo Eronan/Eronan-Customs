@@ -45,6 +45,11 @@ function s.runop(e,tp,eg,ep,ev,re,r,rp)
 	if not c:IsRuneSummonable() then return false end
 	Duel.RuneSummon(tp,c)
 end
+function s.efilter(e,te)
+	if not te:IsHasProperty(EFFECT_FLAG_CARD_TARGET) then return true end
+	local g=Duel.GetChainInfo(0,CHAININFO_TARGET_CARDS)
+	return #g==0
+end
 function s.rmcon(e,tp,eg,ep,ev,re,r,rp)
 	return Duel.GetTurnPlayer()~=tp
 end
