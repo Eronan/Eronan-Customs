@@ -297,7 +297,7 @@ function Rune.DefaultGroup(rc,tp)
 		local group=nil
 		for _,rune_table in ipairs(mt.rune_parameters) do
 			local loc=rune_table[7]
-			local group=rune_table[8]
+			group=rune_table[8]
 			group=group or (rc:IsLocation(loc) and group(tp,nil,rc))
 		end
 		if group then return group end
