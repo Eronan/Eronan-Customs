@@ -479,7 +479,7 @@ function Card.IsUsableMaterial(c,rc)
 	end
 	return usable
 end
-function Card.IsRuneCode(c,code)
+function Card.IsRuneCode(c,code,sc,sumtype,playerid)
 	if c:IsCode(code) then return true end
 	local effs = c:GetCardEffect(EFFECT_RUNE_SUBSTITUTE)
 	for _,te in ipairs(eff) do
