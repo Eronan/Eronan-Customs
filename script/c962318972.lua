@@ -22,6 +22,7 @@ function s.initial_effect(c)
 	e3:SetCode(EFFECT_INDESTRUCTABLE_COUNT)
 	e3:SetCountLimit(s.desval)
 	e3:SetValue(s.valcon)
+	e3:SetLabel(0)
 	c:RegisterEffect(e3)
 	--
 	local e4=Effect.CreateEffect(c)
