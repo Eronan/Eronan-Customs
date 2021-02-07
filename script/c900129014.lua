@@ -28,8 +28,7 @@ function s.runfilter(c,mg,tp)
 	return c:IsAttribute(ATTRIBUTE_WIND) and c:IsRuneSummonable(nil,mg,2,2)
 end
 function s.mtfilter(tc,c,tp)
-	local mg=Group.FromCards(c,tc)
-	return tc:IsFaceup() and tc:IsCanBeRuneMaterial() and Duel.IsExistingMatchingCard(s.runfilter,tp,LOCATION_HAND,0,1,nil,mg,tp)
+	return tc:IsFaceup() and tc:IsCanBeRuneMaterial() and Duel.IsExistingMatchingCard(s.runfilter,tp,LOCATION_HAND,0,1,nil,Group.FromCards(c,tc),tp)
 end
 function s.runtg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	if chkc then return chkc:IsLocation(LOCATION_ONFIELD) and chkc:IsControler(1-tp) and s.mtfilter(chkc,e:GetHandler(),tp) end

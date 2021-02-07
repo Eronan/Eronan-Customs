@@ -28,6 +28,7 @@ function s.target(e,tp,eg,ep,ev,re,r,rp,chk)
 end
 function s.runfilter(c,tc,tp)
 	if not c:IsType(TYPE_RUNE) then return false end
+	Debug.Message(tp)
 	local mg=Rune.DefaultGroup(c,tp)
 	mg:AddCard(tc)
 	return c:IsSetCard(0xfda) and c:IsRuneSummonable(tc,mg)
