@@ -26,11 +26,11 @@ function s.target(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return true end
 	Duel.SetOperationInfo(0,CATEGORY_DISABLE,eg,1,0,0)
 end
-function s.runfilter(c,must,tp)
+function s.runfilter(c,tc,tp)
 	if not c:IsType(TYPE_RUNE) then return false end
 	local mg=Rune.DefaultGroup(c,tp)
-	mg:AddCard(must)
-	return c:IsSetCard(0xfda) and c:IsRuneSummonable(must,mg)
+	mg:AddCard(tc)
+	return c:IsSetCard(0xfda) and c:IsRuneSummonable(tc,mg)
 end
 function s.operation(e,tp,eg,ep,ev,re,r,rp)
 	local tc=re:GetHandler()
@@ -38,7 +38,7 @@ function s.operation(e,tp,eg,ep,ev,re,r,rp)
 	if not Duel.NegateEffect(ev) then return end
 	--Rune Summmon
 	Debug.Message(tc:IsCanBeRuneMaterial())
-	if tc:IsCanBeRuneMaterial() and tc:IsLocation(LOCATION_ONFIELD) and Duel.IsExistingMatchingCard(s.runfilter,tp,LOCATION_HAND,0,1,nil,tc)
+	if tc:IsCanBeRuneMaterial() and tc:IsLocation(LOCATION_ONFIELD) and Duel.IsExistingMatchingCard(s.runfilter,tp,LOCATION_HAND,0,1,nil,tc,tp)
 			and Duel.SelectYesNo(tp,aux.Stringid(id,1)) then
 		Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_SPSUMMON)
 		local g=Duel.SelectMatchingCard(tp,s.runfilter,tp,LOCATION_HAND,0,1,1,nil,tc,tp)
