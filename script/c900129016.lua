@@ -53,8 +53,8 @@ end
 function s.handcon(e)
     local res,teg,tep,tev,tre,tr,trp=Duel.CheckEvent(EVENT_CHAINING,true)
     if res then
-		local ex1,tg1,tc1=Duel.GetOperationInfo(ev,CATEGORY_DISABLE)
-		local ex2,tg2,tc2=Duel.GetOperationInfo(ev,CATEGORY_NEGATE)
+		local ex1,tg1,tc1=Duel.GetOperationInfo(tev,CATEGORY_DISABLE)
+		local ex2,tg2,tc2=Duel.GetOperationInfo(tev,CATEGORY_NEGATE)
         return (ex1 or ex2) and (tg1~=nil or tg2~=nil) and (tc1~=nil or tc2~=nil)
     end
 end
