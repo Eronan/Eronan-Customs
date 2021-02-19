@@ -333,6 +333,7 @@ function Rune.Condition(monf,mmin,mmax,stf,smin,smax,group,condition)
 						local sg=mustg
 						local mct=sg:FilterCount(aux.NOT(Card.IsType),nil,TYPE_SPELL+TYPE_TRAP)
 						local sct=sg:FilterCount(aux.NOT(Card.IsType),nil,TYPE_MONSTER)
+						if mct>mmax or sct>mmax then return false end
 						res=(mg+tg):IsExists(Rune.CheckRecursive,1,sg,mg+tg,sg,mct,sct,#sg-mct-sct,monf,mmin,mmax,stf,smin,smax,min,max,c,tp,mg,emt)
 					end
 				end
