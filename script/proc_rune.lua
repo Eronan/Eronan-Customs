@@ -306,7 +306,7 @@ function Rune.DefaultGroup(rc,tp)
 end
 function Rune.Condition(monf,mmin,mmax,stf,smin,smax,group,condition)
 	return	function(e,c,must,g,min,max)
-				if not c then c=e:GetHandler() end
+				if c==nil then return true end
 				if condition and not condition(e,c) then return false end
 				local tp=c:GetControler()
 				if not g then
