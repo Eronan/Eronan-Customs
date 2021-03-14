@@ -43,14 +43,13 @@ function s.eqtg1(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	local ft=0
 	if e:GetHandler():IsLocation(LOCATION_HAND) then ft=1 end
 	if chk==0 then return Duel.GetLocationCount(tp,LOCATION_SZONE)>ft
-		and Duel.IsExistingTarget(s.tcfilter,tp,LOCATION_MZONE,LOCATION_MZONE,1,nil,tp) end
+		and Duel.IsExistingTarget(s.tcfilter,tp,LOCATION_MZONE,0,1,nil,tp) end
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_FACEUP)
-	Duel.SelectTarget(tp,s.tcfilter,tp,LOCATION_MZONE,LOCATION_MZONE,1,1,nil,tp)
+	Duel.SelectTarget(tp,s.tcfilter,tp,LOCATION_MZONE,0,1,1,nil,tp)
 end
 function s.eqop1(e,tp,eg,ep,ev,re,r,rp)
-	if Duel.GetLocationCount(tp,LOCATION_SZONE)<=0 then return end
 	local tc=Duel.GetFirstTarget()
-	if tc:IsRelateToEffect(e) and tc:IsFaceup() and tc:IsControler(tp) then
+	if Duel.GetLocationCount(tp,LOCATION_SZONE) and tc:IsRelateToEffect(e) and tc:IsFaceup() then
 		Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_EQUIP)
 		local g=Duel.SelectMatchingCard(tp,s.eqfilter,tp,LOCATION_DECK,0,1,1,nil,tc,tp)
 		if g:GetCount()>0 then
