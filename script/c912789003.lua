@@ -67,7 +67,7 @@ function s.immtg(e,c)
 end
 function s.efilter(e,te)
 	--Is own effect or is not activated
-	if te:GetOwnerPlayer()==e:GetHandlerPlayer() or not re:IsActivated() then return false end
+	if te:GetOwnerPlayer()==e:GetHandlerPlayer() or not te:IsActivated() then return false end
 	--Doesn't target
 	if not te:IsHasProperty(EFFECT_FLAG_CARD_TARGET) then return true end
 	local g=Duel.GetChainInfo(0,CHAININFO_TARGET_CARDS)
