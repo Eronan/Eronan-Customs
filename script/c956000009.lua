@@ -55,7 +55,11 @@ function s.splimit(e,se,sp,st)
 	return (st&SUMMON_TYPE_FUSION)==SUMMON_TYPE_FUSION
 end
 function s.targetrange(tp)
-	return Duel.GetMatchingGroupCount(Card.IsFaceup,tp,LOCATION_MZONE,0,nil) > Duel.GetMatchingGroupCount(aux.TRUE,1-tp,LOCATION_MZONE,0,nil)
+	if Duel.GetMatchingGroupCount(Card.IsFaceup,tp,LOCATION_MZONE,0,nil) > Duel.GetMatchingGroupCount(aux.TRUE,1-tp,LOCATION_MZONE,0,nil) then
+		return LOCATION_MZONE
+	else
+		return 0
+	end
 end
 --[[
 function s.target(e,c)
