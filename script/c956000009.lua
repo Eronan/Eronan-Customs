@@ -10,8 +10,8 @@ function s.initial_effect(c)
     e1:SetType(EFFECT_TYPE_FIELD)
     e1:SetCode(EFFECT_SET_POSITION)
     e1:SetRange(LOCATION_PZONE)
-    e1:SetTarget(s.target)
-    e1:SetTargetRange(LOCATION_MZONE,LOCATION_MZONE)
+    e1:SetTarget(Card.IsCanChangePosition())
+    e1:SetTargetRange(s.targetrange(c:GetControler()),s.targetrange(1-c:GetControler()))
     e1:SetValue(POS_FACEDOWN_DEFENSE)
     c:RegisterEffect(e1)
 	--to hand
@@ -54,10 +54,15 @@ end
 function s.splimit(e,se,sp,st)
 	return (st&SUMMON_TYPE_FUSION)==SUMMON_TYPE_FUSION
 end
+function s.targetrange(tp)
+	return Duel.GetMatchingGroupCount(Card.IsFaceup,tp,LOCATION_MZONE,0,nil) > Duel.GetMatchingGroupCount(aux.TRUE,1-tp,LOCATION_MZONE,0,nil)
+end
+--[[
 function s.target(e,c)
 	local tp=c:GetControler()
     return Duel.GetMatchingGroupCount(Card.IsFaceup,tp,LOCATION_MZONE,0,nil) > Duel.GetMatchingGroupCount(aux.TRUE,1-tp,LOCATION_MZONE,0,nil)
 end
+--]]
 function s.descon(e,tp,eg,ep,ev,re,r,rp)
     local c=e:GetHandler()
     return (c:GetPreviousPosition()&POS_DEFENSE)~=0 and c:IsFaceup() and c:IsAttackPos()
