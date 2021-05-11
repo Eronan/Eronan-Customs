@@ -21,15 +21,14 @@ function s.initial_effect(c)
 	e2:SetTargetRange(0,LOCATION_MZONE)
 	e2:SetCondition(s.atkcon)
 	c:RegisterEffect(e2)
-	--be battle target
+	--only attack face down monsters
 	local e3=e2:Clone()
 	e3:SetCode(EFFECT_CANNOT_SELECT_BATTLE_TARGET)
 	e3:SetValue(s.atlimit)
 	c:RegisterEffect(e3)
-	--Cannot attack directly this turn
 	local e4=e2:Clone()
 	e4:SetCode(EFFECT_CANNOT_DIRECT_ATTACK)
-	ec:RegisterEffect(e4)
+	c:RegisterEffect(e4)
 	--Change Pos
 	local e5=Effect.CreateEffect(c)
 	e5:SetCategory(CATEGORY_POSITION)
