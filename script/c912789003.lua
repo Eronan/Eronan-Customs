@@ -17,7 +17,7 @@ function s.initial_effect(c)
 	e2:SetType(EFFECT_TYPE_FIELD)
 	e2:SetCode(EFFECT_IMMUNE_EFFECT)
 	e2:SetRange(LOCATION_MZONE)
-	e2:SetTargetRange(LOCATION_ONFIELD,0)
+	e2:SetTargetRange(LOCATION_MZONE,0)
 	e2:SetCondition(s.immcon)
 	e2:SetTarget(s.immtg)
 	e2:SetValue(s.efilter)
@@ -67,10 +67,12 @@ function s.immtg(e,c)
 end
 function s.efilter(e,te)
 	--Is own effect or is not activated
-	if te:GetOwnerPlayer()==e:GetHandlerPlayer() or not te:IsActivated() then return false end
+	Debug.Message(tostring(te:GetOwnerPlayer()==e:GetHandlerPlayer())..tostring(te:IsHasProperty(EFFECT_FLAG_CARD_TARGET)))
+	if te:GetOwnerPlayer()==e:GetHandlerPlayer() then return false end
 	--Doesn't target
 	if not te:IsHasProperty(EFFECT_FLAG_CARD_TARGET) then return true end
 	local g=Duel.GetChainInfo(0,CHAININFO_TARGET_CARDS)
+	Debug.Message(#g)
 	return #g==0
 end
 function s.setcfilter(c)
