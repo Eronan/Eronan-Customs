@@ -63,12 +63,10 @@ function s.immcon(e)
 end
 function s.efilter(e,te)
 	--Is own effect or is not activated
-	Debug.Message(tostring(te:GetOwnerPlayer()==e:GetHandlerPlayer())..tostring(te:IsHasProperty(EFFECT_FLAG_CARD_TARGET)))
 	if te:GetOwnerPlayer()==e:GetHandlerPlayer() then return false end
 	--Doesn't target
 	if not te:IsHasProperty(EFFECT_FLAG_CARD_TARGET) then return true end
 	local g=Duel.GetChainInfo(0,CHAININFO_TARGET_CARDS)
-	Debug.Message(#g)
 	return #g==0
 end
 function s.setcfilter(c)
