@@ -3,7 +3,6 @@ local s,id=GetID()
 function s.initial_effect(c)
 	--Activate
     local e1=Fusion.CreateSummonEff(c,nil,nil,s.fextra)
-    e1:SetCountLimit(1,id,EFFECT_COUNT_CODE_OATH)
 	e1:SetOperation(s.SummonEffOP(nil,nil,s.fextra))
     c:RegisterEffect(e1)
     if not AshBlossomTable then AshBlossomTable={} end
