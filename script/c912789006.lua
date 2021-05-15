@@ -23,12 +23,9 @@ function s.initial_effect(c)
 	c:RegisterEffect(e2)
 	--only attack face down monsters
 	local e3=e2:Clone()
-	e3:SetCode(EFFECT_CANNOT_SELECT_BATTLE_TARGET)
+	e3:SetCode(EFFECT_MUST_ATTACK_MONSTER)
 	e3:SetValue(s.atlimit)
 	c:RegisterEffect(e3)
-	local e4=e2:Clone()
-	e4:SetCode(EFFECT_CANNOT_DIRECT_ATTACK)
-	c:RegisterEffect(e4)
 	--Change Pos
 	local e5=Effect.CreateEffect(c)
 	e5:SetCategory(CATEGORY_POSITION)

@@ -19,7 +19,6 @@ function s.initial_effect(c)
 	e2:SetRange(LOCATION_MZONE)
 	e2:SetTargetRange(LOCATION_MZONE,0)
 	e2:SetCondition(s.immcon)
-	e2:SetTarget(s.immtg)
 	e2:SetValue(s.efilter)
 	c:RegisterEffect(e2)
 	--position
@@ -61,9 +60,6 @@ function s.spop(e,tp,eg,ep,ev,re,r,rp)
 end
 function s.immcon(e)
 	return Duel.IsExistingMatchingCard(Card.IsFacedown,e:GetHandlerPlayer(),LOCATION_MZONE,0,1,nil)
-end
-function s.immtg(e,c)
-	return c:IsSetCard(0xfec) or c:IsFacedown()
 end
 function s.efilter(e,te)
 	--Is own effect or is not activated

@@ -1,4 +1,4 @@
---Draining Parafalon Kamak
+--Man-Eater Parafalon Strix
 local s,id=GetID()
 function s.initial_effect(c)
 	--Ritual
@@ -9,17 +9,16 @@ function s.initial_effect(c)
 	e1:SetCategory(CATEGORY_TOHAND+CATEGORY_SEARCH)
 	e1:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_FLIP+EFFECT_TYPE_TRIGGER_O)
 	e1:SetProperty(EFFECT_FLAG_DELAY)
-	e1:SetTarget(s.destg)
-	e1:SetOperation(s.desop)
+	e1:SetTarget(s.thtg)
+	e1:SetOperation(s.thop)
 	c:RegisterEffect(e1)
-	--def
+	--indes
 	local e2=Effect.CreateEffect(c)
-	e2:SetType(EFFECT_TYPE_FIELD)
-	e2:SetRange(LOCATION_MZONE)
-	e2:SetTargetRange(LOCATION_MZONE,0)
-	e2:SetCode(EFFECT_UPDATE_DEFENSE)
-	e2:SetCondition(s.cond)
-	e2:SetValue(s.defval)
+	e2:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
+	e2:SetCode(EVENT_CHAINING)
+	e2:SetLocation(LOCATION_MZONE)
+	e2:SetCondition(s.actcon)
+	e2:SetOperation(s.actop)
 	c:RegisterEffect(e2)
 	--position
 	local e3=Effect.CreateEffect(c)
@@ -36,25 +35,33 @@ function s.initial_effect(c)
 	e3:SetOperation(s.setop)
 	c:RegisterEffect(e3)
 end
-function s.destg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
-	if chkc then return chkc:IsOnField() and chkc:IsControler(1-tp) end
-	if chk==0 then return Duel.IsExistingTarget(aux.TRUE,tp,0,LOCATION_ONFIELD,1,nil) end
-	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_DESTROY)
-	local g=Duel.SelectTarget(tp,aux.TRUE,tp,0,LOCATION_ONFIELD,2,2,nil)
-	Duel.SetOperationInfo(0,CATEGORY_DESTROY,g,g:GetCount(),0,0)
+s.listed_series={0xfec}
+function s.thfilter(c)
+	return c:IsSetCard(0xfec) and c:IsAbleToHand()
 end
-function s.desop(e,tp,eg,ep,ev,re,r,rp)
-	local tg=Duel.GetChainInfo(0,CHAININFO_TARGET_CARDS)
-	local g=tg:Filter(Card.IsRelateToEffect,nil,e)
-	if g:GetCount()>0 then
-		Duel.Destroy(g,REASON_EFFECT)
+function s.thtg(e,tp,eg,ep,ev,re,r,rp,chk)
+	if chk==0 then return Duel.IsExistingMatchingCard(s.thfilter,tp,LOCATION_DECK,0,1,nil) end
+	Duel.SetOperationInfo(0,CATEGORY_TOHAND,nil,1,tp,LOCATION_DECK)
+end
+function s.thop(e,tp,eg,ep,ev,re,r,rp)
+	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_ATOHAND)
+	local g=Duel.SelectMatchingCard(tp,s.thfilter,tp,LOCATION_DECK,0,1,1,nil)
+	if #g>0 then
+		Duel.SendtoHand(g,tp,REASON_EFFECT)
+		Duel.ConfirmCards(1-tp,g)
 	end
 end
-function s.cond(e)
+function s.actcon(e)
 	return Duel.IsExistingMatchingCard(Card.IsFacedown,e:GetHandlerPlayer(),LOCATION_MZONE,0,1,nil)
 end
-function s.defval(e,c)
-	return math.max(c:GetBaseDefense(),0)
+function s.actop(e,tp,eg,ep,ev,re,r,rp)
+	local rc=re:GetHandler()
+	if re:IsHasType(EFFECT_TYPE_ACTIVATE) and re:IsActiveType(TYPE_SPELL) then
+		Duel.SetChainLimit(s.chainlm)
+	end
+end
+function s.chainlm(e,rp,tp)
+	return tp==rp
 end
 function s.setcfilter(c)
 	return c:IsFaceup() and c:IsType(TYPE_FUSION)

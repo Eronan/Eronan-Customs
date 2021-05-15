@@ -2,15 +2,12 @@
 local s,id=GetID()
 function s.initial_effect(c)
 	--Activate
-	local e1=Effect.CreateEffect(c)
-	e1:SetCategory(CATEGORY_SPECIAL_SUMMON+CATEGORY_FUSION_SUMMON)
-	e1:SetType(EFFECT_TYPE_ACTIVATE)
-	e1:SetCode(EVENT_FREE_CHAIN)
-	e1:SetTarget(s.target)
+    local e1=Fusion.CreateSummonEff(c,aux.FilterBoolFunction(Card.IsSetCard,0x9d),nil,s.fextra)
+    e1:SetCountLimit(1,id,EFFECT_COUNT_CODE_OATH)
 	e1:SetOperation(s.activate)
-	c:RegisterEffect(e1)
-	if not GhostBelleTable then GhostBelleTable={} end
-	table.insert(GhostBelleTable,e1)
+    c:RegisterEffect(e1)
+    if not AshBlossomTable then AshBlossomTable={} end
+    table.insert(AshBlossomTable,e1)
 	--to hand
 	local e2=Effect.CreateEffect(c)
 	e2:SetDescription(aux.Stringid(id,0))
@@ -24,46 +21,11 @@ function s.initial_effect(c)
 	c:RegisterEffect(e2)
 end
 s.listed_names={912789006}
-function s.filter(c,e)
-	return c:IsAbleToGrave() and not c:IsImmuneToEffect(e)
+function s.exfilter(c)
+	return (c:IsType(TYPE_RITUAL) or c:IsType(TYPE_FLIP)) and c:IsAbleToGrave()
 end
-function s.exfilter0(c)
-	return c:IsType(TYPE_FLIP) and c:IsCanBeFusionMaterial() and c:IsAbleToRemove() and aux.SpElimFilter(c)
-end
-function s.exfilter1(c,e)
-	return c:IsType(TYPE_FLIP) and c:IsCanBeFusionMaterial() and c:IsAbleToRemove()
-		and aux.SpElimFilter(c) and not c:IsImmuneToEffect(e)
-end
-function s.spfilter(c,e,tp,m,f,chkf)
-	return c:IsType(TYPE_FUSION) and (not f or f(c))
-		and c:IsCanBeSpecialSummoned(e,SUMMON_TYPE_FUSION,tp,false,false) and c:CheckFusionMaterial(m,nil,chkf)
-end
-function s.fcheck(tp,sg,fc)
-	return sg:FilterCount(Card.IsLocation,nil,LOCATION_GRAVE)<=1
-end
-function s.target(e,tp,eg,ep,ev,re,r,rp,chk)
-	if chk==0 then
-		local chkf=tp
-		local mg1=Duel.GetFusionMaterial(tp):Filter(Card.IsAbleToGrave,nil)
-		local sg=Duel.GetMatchingGroup(s.exfilter0,tp,LOCATION_MZONE+LOCATION_GRAVE,0,nil)
-		if #sg>0 then
-			mg1:Merge(sg)
-			Auxiliary.FCheckAdditional=s.fcheck
-		end
-		local res=Duel.IsExistingMatchingCard(s.spfilter,tp,LOCATION_EXTRA,0,1,nil,e,tp,mg1,nil,chkf)
-		Auxiliary.FCheckAdditional=nil
-		if not res then
-			local ce=Duel.GetChainMaterial(tp)
-			if ce~=nil then
-				local fgroup=ce:GetTarget()
-				local mg2=fgroup(ce,e,tp)
-				local mf=ce:GetValue()
-				res=Duel.IsExistingMatchingCard(s.spfilter,tp,LOCATION_EXTRA,0,1,nil,e,tp,mg2,mf,chkf)
-			end
-		end
-		return res
-	end
-	Duel.SetOperationInfo(0,CATEGORY_SPECIAL_SUMMON,nil,1,tp,LOCATION_EXTRA)
+function s.fextra(e,tp,mg)
+	return Duel.GetMatchingGroup(Fusion.IsMonsterFilter(s.exfilter),tp,LOCATION_DECK,0,nil)
 end
 function s.activate(e,tp,eg,ep,ev,re,r,rp)
 	local chkf=tp

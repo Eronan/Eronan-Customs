@@ -28,7 +28,6 @@ function s.initial_effect(c)
 	e3:SetRange(LOCATION_MZONE)
 	e3:SetTargetRange(LOCATION_MZONE,0)
 	e3:SetCondition(s.atcon)
-	e3:SetTarget(s.tglimit)
 	e3:SetValue(aux.tgoval)
 	c:RegisterEffect(e3)
 	--position
@@ -68,9 +67,6 @@ function s.atcon(e)
 end
 function s.atlimit(e,c)
 	return c:IsFaceup()
-end
-function s.tglimit(e,c)
-	return c:IsFaceup() and c:IsSetCard(0xfec)
 end
 function s.setcfilter(c)
 	return c:IsFaceup() and c:IsType(TYPE_FUSION)

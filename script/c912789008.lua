@@ -16,12 +16,8 @@ function s.initial_effect(c)
 	c:RegisterEffect(e2)
 end
 s.listed_names={912789003}
-s.listed_series={0xfec}
 function s.forcedgroup(c,e,tp)
     return c:IsType(TYPE_FLIP) or not c:IsLocation(LOCATION_HAND)
-end
-function s.ritfilter(c)
-	return c:IsType(TYPE_RITUAL) and (c:IsLocation(LOCATION_HAND) or (c:IsLocation(LOCATION_GRAVE) and c:IsSetCard(0xfec)))
 end
 function s.ritop(mat,e,tp,eg,ep,ev,re,r,rp,tc)
 	tc:SetMaterial(mat)
