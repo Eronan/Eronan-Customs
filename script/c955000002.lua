@@ -54,9 +54,6 @@ function s.spop(e,tp,eg,ep,ev,re,r,rp)
 		Duel.SpecialSummon(c,0,tp,tp,false,false,POS_FACEUP)
 	end
 end
-function s.exfilter(c)
-	return c:
-end
 function s.runfilter(c,tp)
 	if not c:IsType(TYPE_RUNE) then return false end
 	local mg=Rune.DefaultGroup(c,tp)
