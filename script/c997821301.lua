@@ -34,7 +34,7 @@ function s.sptg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 		or (Duel.GetLocationCount(1-tp,LOCATION_MZONE)>0 and Duel.IsPlayerCanSpecialSummonMonster(tp,999999996,0,0x2fe7,1000,1500,1,RACE_CYBERSE,ATTRIBUTE_DARK,POS_FACEUP,1-tp)) end
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_SPSUMMON)
 	Duel.SetOperationInfo(0,CATEGORY_TOKEN,nil,1,0,0)
-	Duel.SetOperationInfo(0,CATEGORY_SPECIAL_SUMMON,g,1,0,0)
+	Duel.SetOperationInfo(0,CATEGORY_SPECIAL_SUMMON,nil,1,0,0)
 end
 function s.spop(e,tp,eg,ep,ev,re,r,rp)
 	local s1=Duel.GetLocationCount(tp,LOCATION_MZONE)>0 and Duel.IsPlayerCanSpecialSummonMonster(tp,999999996,0,0x2fe7,1000,1500,1,RACE_CYBERSE,ATTRIBUTE_DARK,POS_FACEUP,tp)
