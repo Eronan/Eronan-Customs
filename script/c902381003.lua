@@ -30,7 +30,7 @@ function s.initial_effect(c)
 	e3:SetValue(s.efilter)
 	c:RegisterEffect(e3)
 end
-function s.monfilter(c)
+function s.monfilter(c,rc,sumtype,tp)
 	return c:IsType(TYPE_EFFECT,rc,sumtyp,tp) and c:IsLevelBelow(4)
 end
 function s.slevel(e,c)
