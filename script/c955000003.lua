@@ -22,6 +22,7 @@ function s.initial_effect(c)
 	e2:SetTarget(s.thtg)
 	e2:SetOperation(s.thop)
 	c:RegisterEffect(e2)
+
 end
 function s.target(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return true end
@@ -40,7 +41,7 @@ function s.activate(e,tp,eg,ep,ev,re,r,rp)
 	end
 end
 function s.cfilter(c,tp)
-	return c:IsPreviousLocation(LOCATION_SZONE) and c:IsPreviousControler(tp) and c:IsType(TYPE_NORMAL)
+	return c:IsPreviousControler(tp) and c:IsType(TYPE_NORMAL)
 end
 function s.thcon(e,tp,eg,ep,ev,re,r,rp)
 	return not eg:IsContains(e:GetHandler()) and eg:IsExists(s.cfilter,1,nil,tp)

@@ -38,6 +38,7 @@ function s.initial_effect(c)
 	e4:SetOperation(s.runop)
 	c:RegisterEffect(e4)
 end
+s.listed_series={0xfe7}
 s.listed_names={912389041}
 function s.sptg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.GetLocationCount(1-tp,LOCATION_MZONE)>0
