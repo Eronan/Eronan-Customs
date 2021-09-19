@@ -73,7 +73,7 @@ function s.efilter(e,te)
 	if te:GetOwnerPlayer()==e:GetOwnerPlayer() then return false end
 	if not te:IsHasProperty(EFFECT_FLAG_CARD_TARGET) then return true end
 	local g=Duel.GetChainInfo(0,CHAININFO_TARGET_CARDS)
-	return not #g:IsContains(e:GetHandler())
+	return not g:IsContains(e:GetHandler())
 end
 function s.etarget2(e,c)
 	return c:IsSetCard(0xfed) or c:IsSetCard(0xfff)
