@@ -40,15 +40,12 @@ function s.activate(e,tp,eg,ep,ev,re,r,rp)
 		Duel.SpecialSummonComplete()
 	end
 end
-function s.cfilter(c,tp)
-	return c:IsPreviousControler(tp) and c:IsType(TYPE_NORMAL)
-end
 function s.thcon(e,tp,eg,ep,ev,re,r,rp)
-	return not eg:IsContains(e:GetHandler()) and eg:IsExists(s.cfilter,1,nil,tp)
+	return not eg:IsContains(e:GetHandler()) and eg:IsExists(Card.IsType,1,nil,TYPE_NORMAL)
 end
 function s.thfilter(c,eg,tp)
 	return c:IsSetCard(0xfef) and c:IsAbleToHand()
-		and eg:Filter(s.cfilter,nil,tp):IsExists(Card.IsCode,1,nil,c:GetCode())
+		and eg:Filter(Card.IsType,nil,TYPE_NORMAL):IsExists(Card.IsCode,1,nil,c:GetCode())
 end
 function s.thtg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.IsExistingMatchingCard(s.thfilter,tp,LOCATION_DECK,0,1,nil,eg,tp) end
