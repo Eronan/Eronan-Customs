@@ -16,6 +16,7 @@ function s.initial_effect(c)
 	c:RegisterEffect(e1)
 	--double
 	local e2=Effect.CreateEffect(c)
+	e2:SetDescription(aux.Stringid(id,1))
 	e2:SetType(EFFECT_TYPE_CONTINUOUS+EFFECT_TYPE_FIELD)
 	e2:SetProperty(EFFECT_FLAG_CANNOT_DISABLE)
 	e2:SetCode(EVENT_CHAINING)
@@ -23,7 +24,7 @@ function s.initial_effect(c)
 	e2:SetOperation(aux.chainreg)
 	c:RegisterEffect(e2)
 	local e3=Effect.CreateEffect(c)
-	e3:SetDescription(aux.Stringid(id,0))
+	e3:SetDescription(aux.Stringid(id,2))
 	e3:SetCategory(CATEGORY_COUNTER)
 	e3:SetCode(EVENT_CHAIN_SOLVING)
 	e3:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_TRIGGER_F)
@@ -35,7 +36,7 @@ function s.initial_effect(c)
 	c:RegisterEffect(e3)
 	--Tribute or Return to hand
 	local e4=Effect.CreateEffect(c)
-	e4:SetDescription(aux.Stringid(63533837,0))
+	e4:SetDescription(aux.Stringid(id,2))
 	e4:SetCategory(CATEGORY_TOHAND)
 	e4:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_TRIGGER_O)
 	e4:SetCode(EVENT_BATTLE_START)
@@ -43,6 +44,17 @@ function s.initial_effect(c)
 	e4:SetTarget(s.bttg)
 	e4:SetOperation(s.btop)
 	c:RegisterEffect(e4)
+	--target
+	local e6=Effect.CreateEffect(c)
+	e6:SetDescription(aux.Stringid(id,0))
+	e6:SetType(EFFECT_TYPE_QUICK_O)
+	e6:SetCode(EVENT_FREE_CHAIN)
+	e6:SetRange(LOCATION_MZONE)
+	e6:SetProperty(EFFECT_FLAG_CARD_TARGET)
+	e6:SetCountLimit(1)
+	e6:SetTarget(s.tgtg)
+	e6:SetOperation(s.tgop)
+	c:RegisterEffect(e6)
 end
 function s.sptg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then
@@ -75,31 +87,69 @@ end
 function s.ctop(e,tp,eg,ep,ev,re,r,rp)
 	re:GetHandler():AddCounter(0x10fe,1)
 end
-function s.btcon(e,tp,eg,ep,ev,re,r,rp)
-	local c=e:GetHandler()
-	local bc=c:GetBattleTarget()
-	return c:IsRelateToBattle() and bc and bc:IsFaceup() and bc:IsRelateToBattle() and bc:GetCounter(0x10fe)>=2
+function s.tgtg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
+	if chkc then return chkc:IsOnField() and chkc:IsFaceup() end
+	if chk==0 then return Duel.IsExistingTarget(Card.IsFaceup,tp,LOCATION_ONFIELD,LOCATION_ONFIELD,1,nil) end
+	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_TARGET)
+	Duel.SelectTarget(tp,Card.IsFaceup,tp,LOCATION_ONFIELD,LOCATION_ONFIELD,1,1,nil)
 end
-function s.bttg(e,tp,eg,ep,ev,re,r,rp,chk)
-	local c=e:GetHandler()
-	local tc=c:GetBattleTarget()
-	if chk==0 then return tc and tc:IsControler(1-tp) and tc:IsAbleToHand() end
-	Duel.SetOperationInfo(0,CATEGORY_TOHAND,tc,1,0,0)
+function s.tbfilter(c,tc)
+	return c==tc
 end
-function s.btop(e,tp,eg,ep,ev,re,r,rp)
-	local c=e:GetHandler()
-	local tc=Duel.GetAttacker()
-	if c==tc then tc=Duel.GetAttackTarget() end
-	if tc and tc:IsRelateToBattle() then
-		if tc:GetCounter(0x10fe)>=3 then
-			op=Duel.SelectOption(tp,aux.Stringid(63533837,1),aux.Stringid(63014935,2))+1
-		elseif tc:GetCounter(0x10fe)>=2 then
-			op=1
+function s.tgop(e,tp,eg,ep,ev,re,r,rp)
+	local tc=Duel.GetFirstTarget()
+	if tc and tc:IsRelateToEffect(e) then
+		local ct=tc:GetCounter(0x10fe)
+		if ct==0 then return end
+		
+		--Allowable Effects
+		local ops={}
+		local opval={}
+		local off=1
+		if ct>=1 and ((tc:IsFaceup() and not tc:IsDisabled()) or tc:IsType(TYPE_TRAPMONSTER)) then
+			ops[off]=aux.Stringid(id,3)
+			opval[off-1]=1
 		end
-		if op==1 then
-			Duel.SendtoHand(tc,nil,REASON_EFFECT)
-		elseif op==2 then
+		if ct>=2 then
+			ops[off]=aux.Stringid(id,4)
+			opval[off-1]=2
+		end	
+		if ct>=3 and (Duel.CheckReleaseGroup(1-tp,s.tbfilter,1,nil,tc)) then
+			ops[off]=aux.Stringid(id,5)
+			opval[off-1]=3
+		end
+		
+		--Choose Effect
+		local op=Duel.SelectOption(tp,table.unpack(ops))
+		if opval[op]==1 then
+			--Negate Effect
+			Duel.NegateRelatedChain(tc,RESET_TURN_SET)
+			local e1=Effect.CreateEffect(c)
+			e1:SetType(EFFECT_TYPE_SINGLE)
+			e1:SetProperty(EFFECT_FLAG_CANNOT_DISABLE)
+			e1:SetCode(EFFECT_DISABLE)
+			e1:SetReset(RESET_EVENT+RESETS_STANDARD+RESET_PHASE+PHASE_END)
+			tc:RegisterEffect(e1)
+			local e2=Effect.CreateEffect(c)
+			e2:SetType(EFFECT_TYPE_SINGLE)
+			e2:SetProperty(EFFECT_FLAG_CANNOT_DISABLE)
+			e2:SetCode(EFFECT_DISABLE_EFFECT)
+			e2:SetValue(RESET_TURN_SET)
+			e2:SetReset(RESET_EVENT+RESETS_STANDARD+RESET_PHASE+PHASE_END)
+			tc:RegisterEffect(e2)
+			if tc:IsType(TYPE_TRAPMONSTER) then
+				local e3=Effect.CreateEffect(c)
+				e3:SetType(EFFECT_TYPE_SINGLE)
+				e3:SetProperty(EFFECT_FLAG_CANNOT_DISABLE)
+				e3:SetCode(EFFECT_DISABLE_TRAPMONSTER)
+				e3:SetReset(RESET_EVENT+RESETS_STANDARD+RESET_PHASE+PHASE_END)
+				tc:RegisterEffect(e3)
+			end
+		elseif opval[op]==2 then
+			Duel.Destroy(tc,REASON_EFFECT)
+		else
 			Duel.Release(tc,REASON_EFFECT)
 		end
 	end
 end
+
