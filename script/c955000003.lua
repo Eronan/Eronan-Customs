@@ -44,8 +44,7 @@ function s.thcon(e,tp,eg,ep,ev,re,r,rp)
 	return not eg:IsContains(e:GetHandler()) and eg:IsExists(Card.IsType,1,nil,TYPE_NORMAL)
 end
 function s.thfilter(c,eg,tp)
-	return c:IsSetCard(0xfef) and c:IsAbleToHand()
-		and eg:Filter(Card.IsType,nil,TYPE_NORMAL):IsExists(Card.IsCode,1,nil,c:GetCode())
+	return c:IsAbleToHand() and eg:Filter(Card.IsType,nil,TYPE_NORMAL):IsExists(Card.IsCode,1,nil,c:GetCode())
 end
 function s.thtg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.IsExistingMatchingCard(s.thfilter,tp,LOCATION_DECK,0,1,nil,eg,tp) end
