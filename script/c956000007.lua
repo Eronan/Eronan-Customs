@@ -112,6 +112,7 @@ function s.tgop(e,tp,eg,ep,ev,re,r,rp)
 		--Choose Effect
 		local op=Duel.SelectOption(tp,table.unpack(ops))
 		if opval[op]==1 then
+			local c=e:GetHandler()
 			--Negate Effect
 			Duel.NegateRelatedChain(tc,RESET_TURN_SET)
 			local e1=Effect.CreateEffect(c)
