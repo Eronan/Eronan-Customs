@@ -2,7 +2,7 @@
 local s,id=GetID()
 function s.initial_effect(c)
 	--pendulum summon
-	aux.EnablePendulumAttribute(c)
+	Pendulum.AddProcedure(c)
 	c:EnableReviveLimit()
 	--Ritual Self
 	local e1=Effect.CreateEffect(c)

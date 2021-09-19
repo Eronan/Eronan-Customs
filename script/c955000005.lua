@@ -5,7 +5,7 @@ function s.initial_effect(c)
 	--Gemini
 	aux.EnableGeminiAttribute(c)
 	--pendulum summon
-    Pendulum.AddProcedure(c,false)
+    Pendulum.AddProcedure(c)
 	--Activate
     local e1=Effect.CreateEffect(c)
     e1:SetDescription(1160)
