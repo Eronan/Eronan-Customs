@@ -99,14 +99,17 @@ function s.tgop(e,tp,eg,ep,ev,re,r,rp)
 		if ct>=1 and ((tc:IsFaceup() and not tc:IsDisabled()) or tc:IsType(TYPE_TRAPMONSTER)) then
 			ops[off]=aux.Stringid(id,3)
 			opval[off-1]=1
+			off=off+1
 		end
 		if ct>=2 then
 			ops[off]=aux.Stringid(id,4)
 			opval[off-1]=2
+			off=off+1
 		end	
 		if ct>=3 and (Duel.CheckReleaseGroup(1-tp,s.tbfilter,1,nil,tc)) then
 			ops[off]=aux.Stringid(id,5)
 			opval[off-1]=3
+			off=off+1
 		end
 		
 		--Choose Effect
