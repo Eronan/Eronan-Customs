@@ -63,7 +63,7 @@ function s.runfilter(c,tp)
 	return c:IsRuneSummonable(nil,mg)
 end
 function s.runtg(e,tp,eg,ep,ev,re,r,rp,chk)
-	if chk==0 then return Duel.IsExistingMatchingCard(s.runfilter,tp,LOCATION_HAND,0,1,nil,Group.FromCards(e:GetHandler():GetEquipTarget()),tp) end
+	if chk==0 then return Duel.IsExistingMatchingCard(s.runfilter,tp,LOCATION_HAND,0,1,nil,tp) end
 	Duel.SetOperationInfo(0,CATEGORY_SPECIAL_SUMMON,nil,1,tp,LOCATION_HAND)
 end
 function s.runop(e,tp,eg,ep,ev,re,r,rp)
