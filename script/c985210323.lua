@@ -4,7 +4,7 @@ local s,id=GetID()
 function s.initial_effect(c)
 	--Rune Summon
 	c:EnableReviveLimit()
-	Rune.AddProcedure(c,aux.FilterBoolFunctionEx(Card.IsSetCard,0x1034),1,1,aux.FilterBoolFunctionEx(Card.IsSetCard,0x34),4,99)
+	Rune.AddProcedure(c,aux.FilterBoolFunctionEx(Card.IsSetCard,0x1034),1,1,s.STfilter,4,99)
 	--cannot special summon
 	local e1=Effect.CreateEffect(c)
 	e1:SetProperty(EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_UNCOPYABLE)
@@ -42,6 +42,9 @@ function s.initial_effect(c)
 	c:RegisterEffect(e5)
 end
 s.listed_series={0x1034,0x34}
+function s.STfilter(c,rc,sumtype,tp)
+	return c:IsSetCard(0x34,rc,sumtype,tp) and c:IsType(TYPE_SPELL)
+end
 function s.regop(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
 	if c:GetSummonType()==SUMMON_TYPE_RUNE then

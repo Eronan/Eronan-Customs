@@ -24,7 +24,7 @@ function s.initial_effect(c)
 end
 s.listed_series={0x10ec,0x20ec}
 function s.STMatFilter(c,rc,sumtyp,tp)
-	return c:IsType(TYPE_SPELL,rc,sumtyp,tp) and (c:IsSetCard(0x20ec) or c:IsSetCard(0x10ec))
+	return c:IsType(TYPE_SPELL) and (c:IsSetCard(0x20ec) or c:IsSetCard(0x10ec))
 end
 function s.destg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	if chkc then return false end

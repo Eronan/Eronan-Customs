@@ -319,7 +319,7 @@ function Rune.Condition(monf,mmin,mmax,stf,smin,smax,group,condition)
 				min = min or mmin+smin
 				max = max or mmax+smax
 				--]]
-				local mg=g:Filter(Rune.ConditionFilter,nil,monf,stf,c,tp)
+				local mg=g:Filter(Rune.ConditionFilter,c,monf,stf,c,tp)
 				local mustg=Auxiliary.GetMustBeMaterialGroup(tp,g,tp,c,mg,REASON_RUNE)
 				if must then mustg:Merge(must) end
 				if #mustg>max or mustg:IsExists(aux.NOT(Rune.ConditionFilter),1,nil,monf,stf,c,tp) then return false end
@@ -353,7 +353,7 @@ function Rune.Target(monf,mmin,mmax,stf,smin,smax,group)
 				min = min or (mmin+smin)
 				max = max or (mmax+smax)
 				--Variable Set Up
-				local mg=g:Filter(Rune.ConditionFilter,nil,monf,stf,c,tp)
+				local mg=g:Filter(Rune.ConditionFilter,c,monf,stf,c,tp)
 				local mustg=Auxiliary.GetMustBeMaterialGroup(tp,g,tp,c,mg,REASON_RUNE)
 				if must then mustg:Merge(must) end
 				local emt,tg=aux.GetExtraMaterials(tp,mustg+mg,c,SUMMON_TYPE_RUNE)
@@ -432,7 +432,7 @@ end
 --Extension Functions
 function Card.IsCanBeRuneMaterial(c,runc,tp)
 	--Non-Rune Monsters
-	if runc and not runc:IsType(TYPE_MONSTER) or c:IsStatus(STATUS_FORBIDDEN) then return false end
+	if runc and not runc:IsOriginalType(TYPE_MONSTER) or c:IsStatus(STATUS_FORBIDDEN) then return false end
 	
 	--Search Effects
 	local effs={c:GetCardEffect(EFFECT_CANNOT_BE_RUNE_MATERIAL)}
