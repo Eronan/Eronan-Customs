@@ -52,7 +52,7 @@ function s.contactop(g)
 	Duel.Release(g,REASON_COST+REASON_MATERIAL)
 end
 function s.splimit(e,se,sp,st)
-	return (st&SUMMON_TYPE_FUSION)==SUMMON_TYPE_FUSION
+	return (st&SUMMON_TYPE_FUSION)==SUMMON_TYPE_FUSION or (st&SUMMON_TYPE_PENDULUM)==SUMMON_TYPE_PENDULUM
 end
 function s.targetrange(tp)
 	if Duel.GetMatchingGroupCount(Card.IsFaceup,tp,LOCATION_MZONE,0,nil) > Duel.GetMatchingGroupCount(aux.TRUE,1-tp,LOCATION_MZONE,0,nil) then
