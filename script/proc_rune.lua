@@ -38,13 +38,27 @@ function Rune.AddProcedure(c,monf,mmin,mmax,stf,smin,smax,loc,group,condition)
 	e1:SetType(EFFECT_TYPE_FIELD)
 	e1:SetDescription(1175)
 	e1:SetCode(EFFECT_SPSUMMON_PROC)
-	e1:SetProperty(EFFECT_FLAG_UNCOPYABLE+EFFECT_FLAG_IGNORE_IMMUNE)
+	e1:SetProperty(EFFECT_FLAG_UNCOPYABLE+EFFECT_FLAG_IGNORE_IMMUNE+EFFECT_FLAG_CANNOT_DISABLE)
 	e1:SetRange(LOCATION_HAND+loc)
 	e1:SetCondition(Rune.Condition(monf,mmin,mmax,stf,smin,smax,group,condition))
 	e1:SetTarget(Rune.Target(monf,mmin,mmax,stf,smin,smax,group))
 	e1:SetOperation(Rune.Operation(monf,mmin,mmax,stf,smin,smax,group))
 	e1:SetValue(SUMMON_TYPE_RUNE)
 	c:RegisterEffect(e1)
+	
+	if loc then
+		local e2=Effect.CreateEffect(c)
+		e2:SetType(EFFECT_TYPE_FIELD)
+		e2:SetDescription(1175)
+		e2:SetCode(EFFECT_SPSUMMON_PROC)
+		e2:SetProperty(EFFECT_FLAG_UNCOPYABLE+EFFECT_FLAG_IGNORE_IMMUNE)
+		e2:SetRange(loc)
+		e2:SetCondition(Rune.Condition(monf,mmin,mmax,stf,smin,smax,group,condition))
+		e2:SetTarget(Rune.Target(monf,mmin,mmax,stf,smin,smax,group))
+		e2:SetOperation(Rune.Operation(monf,mmin,mmax,stf,smin,smax,group))
+		e2:SetValue(SUMMON_TYPE_RUNE)
+		c:RegisterEffect(e2)
+	end
 end
 function Rune.AddSecondProcedure(c,monf,mmin,mmax,stf,smin,smax,loc,group,condition)
 	--monf is the monster Filter, stf is the S/T Filter
