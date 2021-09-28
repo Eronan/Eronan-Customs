@@ -67,7 +67,7 @@ function s.retop(e,tp,eg,ep,ev,re,r,rp)
 end
 
 function s.thfilter(c,ctype)
-	return c:IsAbleToHand() and c:IsType(ctype)
+	return c:IsAbleToHand() and c:IsType(ctype) and not c:IsType(TYPE_TOKEN)
 end
 function s.thcon(e,tp,eg,ep,ev,re,r,rp)
 	return e:GetHandler():IsSummonType(SUMMON_TYPE_RUNE)
