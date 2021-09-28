@@ -392,7 +392,7 @@ function Rune.Target(monf,mmin,mmax,stf,smin,smax,group)
 					
 					--Cancellable
 					finish=Rune.CheckGoal(mct,sct,bct,mmin,smin,min,max)
-					cancel=not og and Duel.IsSummonCancelable() and #sg==0
+					cancel=not og and Duel.IsSummonCancelable()
 					
 					--Select a Card
 					--Debug.Message("Cards to Select: "..tostring(#cg)..", Selected: "..tostring(#sg))--..", Selected Card: "..tostring(tc))
