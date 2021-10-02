@@ -36,5 +36,5 @@ function s.activate(e,tp,eg,ep,ev,re,r,rp)
 	end
 end
 function s.acttg(e,c)
-	return bit.band(c:GetType(),0x20004)==0x20004
+	return bit.band(c:GetType(),TYPE_TRAP+TYPE_CONTINUOUS)==TYPE_TRAP+TYPE_CONTINUOUS
 end

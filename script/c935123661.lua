@@ -23,7 +23,7 @@ function s.initial_effect(c)
 end
 s.counter_place_list={0x10fe}--Squale Counter
 function s.filter(c,e,tp)
-	if bit.band(c:GetType(),0x81)~=0x81 or not c:IsRace(RACE_REPTILE)
+	if not c:IsRitualMonster() or not c:IsRace(RACE_REPTILE)
 		or not c:IsCanBeSpecialSummoned(e,SUMMON_TYPE_RITUAL,tp,true,false) then return false end
 	return Duel.IsCanRemoveCounter(c:GetControler(),1,1,0x10fe,c:GetLevel(),REASON_EFFECT)
 end
@@ -51,7 +51,7 @@ function s.cost(e,tp,eg,ep,ev,re,r,rp,chk)
 	Duel.SendtoDeck(e:GetHandler(),nil,2,REASON_COST)
 end
 function s.thfilter(c)
-	return c:GetType()==0x82 and c:IsAbleToHand()
+	return c:IsRitualSpell() and c:IsAbleToHand()
 end
 function s.tg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	if chkc then return chkc:IsLocation(LOCATION_REMOVED) and chkc:IsControler(tp) and s.thfilter(chkc) end

@@ -65,6 +65,6 @@ function s.actcon(e)
 	return Duel.GetCurrentPhase()==PHASE_MAIN1 or Duel.GetCurrentPhase()==PHASE_MAIN2 or Duel.GetCurrentPhase()==PHASE_BATTLE
 end
 function s.acttg(e,c)
-	return bit.band(c:GetType(),0x20004)==0x20004
+	return bit.band(c:GetType(),TYPE_TRAP+TYPE_CONTINUOUS)==TYPE_TRAP+TYPE_CONTINUOUS
 end
 
