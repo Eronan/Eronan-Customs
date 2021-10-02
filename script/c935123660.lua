@@ -10,7 +10,7 @@ function s.initial_effect(c)
 	e2:SetCategory(CATEGORY_TOHAND+CATEGORY_SEARCH)
 	e2:SetType(EFFECT_TYPE_IGNITION)
 	e2:SetRange(LOCATION_GRAVE)
-	e2:SetCost(s.thcost)
+	e1:SetCost(aux.bfgcost)
 	e2:SetTarget(s.thtg)
 	e2:SetOperation(s.thop)
 	c:RegisterEffect(e2)
@@ -18,10 +18,6 @@ end
 s.listed_series={0xfdd}
 function s.ritualfil(c)
     return c:IsRace(RACE_REPTILE) and c:IsRitualMonster()
-end
-function s.thcost(e,tp,eg,ep,ev,re,r,rp,chk)
-	if chk==0 then return e:GetHandler():IsAbleToRemoveAsCost() end
-	Duel.Remove(e:GetHandler(),POS_FACEUP,REASON_COST)
 end
 function s.thfilter(c)
 	return c:IsType(TYPE_MONSTER) and c:IsSetCard(0xfdd) and c:IsAbleToHand()
