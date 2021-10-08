@@ -59,6 +59,9 @@ function s.thop(e,tp,eg,ep,ev,re,r,rp)
 		end
 	end
 end
+function s.sumlimit(e,c,sump,sumtype,sumpos,targetp,se)
+	return c:IsLocation(LOCATION_HAND)
+end
 function s.sumfilter(c)
 	return c:IsRace(RACE_THUNDER) and c:IsSummonable(true,nil)
 end
@@ -73,7 +76,4 @@ function s.sumop(e,tp,eg,ep,ev,re,r,rp)
 	if tc then
 		Duel.Summon(tp,tc,true,nil)
 	end
-end
-function s.smlimit(e,c,sump,sumtype,sumpos,targetp,se)
-	return c:IsLocation(LOCATION_HAND)
 end
