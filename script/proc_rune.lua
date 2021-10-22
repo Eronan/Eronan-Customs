@@ -470,11 +470,11 @@ function Card.IsCanBeRuneMaterial(c,runc,tp)
 			local mnf=rune_table[1]
 			local stf=rune_table[4]
 			if not c:IsType(TYPE_MONSTER) then
-				usable=usable or (not stf or stf(c,runc,SUMMON_TYPE_RUNE))
+				usable=usable or (not stf or stf(c,runc,SUMMON_TYPE_RUNE,tp))
 			elseif not c:IsType(TYPE_SPELL+TYPE_TRAP) then
-				usable=usable or (not mnf or mnf(c,runc,SUMMON_TYPE_RUNE))
+				usable=usable or (not mnf or mnf(c,runc,SUMMON_TYPE_RUNE,tp))
 			else
-				usable=usable or (not mnf or mnf(c,runc,SUMMON_TYPE_RUNE)) or (not stf or stf(c,runc,SUMMON_TYPE_RUNE))
+				usable=usable or (not mnf or mnf(c,runc,SUMMON_TYPE_RUNE,tp)) or (not stf or stf(c,runc,SUMMON_TYPE_RUNE,tp))
 			end
 		end
 		return usable
