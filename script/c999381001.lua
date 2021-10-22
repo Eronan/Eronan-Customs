@@ -32,9 +32,11 @@ function s.tffilter(c,rc,tp)
 		and c:IsCanBeRuneMaterial(rc,tp)
 end
 function s.tftg(e,tp,eg,ep,ev,re,r,rp,chk)
-	local rc=e:GetLabelObject()
-	if chk==0 then return Duel.GetLocationCount(tp,LOCATION_SZONE)>0
-		and Duel.IsExistingMatchingCard(s.tffilter,tp,LOCATION_DECK,0,1,nil,rc,tp) end
+	if chk==0 then
+		local rc=e:GetLabelObject()
+		return Duel.GetLocationCount(tp,LOCATION_SZONE)>0
+			and Duel.IsExistingMatchingCard(s.tffilter,tp,LOCATION_DECK,0,1,nil,rc,tp)
+	end
 end
 function s.tfop(e,tp,eg,ep,ev,re,r,rp)
 	if Duel.GetLocationCount(tp,LOCATION_SZONE)<=0 then return end
