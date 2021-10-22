@@ -33,10 +33,7 @@ function s.thfilter(c,mc,tp)
 		and mc:IsCanBeRuneMaterial(c,tp)
 end
 function s.tg(e,tp,eg,ep,ev,re,r,rp,chk)
-	if chk==0 then
-		local mc=e:GetLabelObject()
-		return Duel.IsExistingMatchingCard(s.thfilter,tp,LOCATION_DECK,0,1,nil,mc,tp)
-	end
+	if chk==0 then Duel.IsExistingMatchingCard(s.rvfilter,tp,LOCATION_HAND,0,1,nil,tp) end
 	Duel.SetOperationInfo(0,CATEGORY_TOHAND,nil,1,tp,LOCATION_DECK)
 end
 function s.op(e,tp,eg,ep,ev,re,r,rp)
