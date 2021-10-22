@@ -466,9 +466,21 @@ end
 function Auxiliary.runlimit(e,se,sp,st)
 	return aux.sumlimit(SUMMON_TYPE_RUNE)(e,se,sp,st)
 end
-function Card.IsRuneSummonable(c,must,materials,tmin,tmax)
-	--Remove Brackets if it doesn't work
-	return c:IsProcedureSummonable(TYPE_RUNE,SUMMON_TYPE_RUNE,must,materials,tmin,tmax)
+function Card.IsRuneSummonable(c,must,materials,tmin,tmax,ignoreloc)
+	if ignoreloc then
+		local mt=tc:GetMetatable()
+		if not mt.rune_parameters then return false end
+		local summonable=false
+		for _,rune_table in ipairs(mt.rune_parameters) do
+			if Rune.Condition(rune_table[1],rune_table[2],rune_table[3],rune_table[4],rune_table[5],rune_table[6],rune_table[8],rune_table[9])(e,tc,nil,Duel.GetMatchingGroup(Card.IsFaceup,tp,LOCATION_ONFIELD,LOCATION_ONFIELD,nil),nil,nil) then
+				summonable=true
+			end
+		end
+		return summonable
+	else
+		--Remove Brackets if it doesn't work
+		return c:IsProcedureSummonable(TYPE_RUNE,SUMMON_TYPE_RUNE,must,materials,tmin,tmax)
+	end
 end
 function Duel.RuneSummon(tp,c,must,materials,tmin,tmax)
 	return Duel.ProcedureSummon(tp,c,SUMMON_TYPE_RUNE,must,materials,tmin,tmax)
