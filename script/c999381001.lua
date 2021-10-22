@@ -20,7 +20,7 @@ function s.rvfilter(c,tp)
 		and Duel.IsExistingMatchingCard(s.tffilter,tp,LOCATION_DECK,0,1,nil,c,tp)
 end
 function s.tfcost(e,tp,eg,ep,ev,re,r,rp,chk)
-    if chk==0 then return Duel.IsExistingMatchingCard(s.rvfilter,tp,LOCATION_HAND,0,1,nil) end
+    if chk==0 then return Duel.IsExistingMatchingCard(s.rvfilter,tp,LOCATION_HAND,0,1,nil,tp) end
     Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_CONFIRM)
     local g=Duel.SelectMatchingCard(tp,s.rvfilter,tp,LOCATION_HAND,0,1,1,nil)
 	e:SetLabelObject(g:GetFirst())
