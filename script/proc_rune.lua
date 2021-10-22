@@ -463,18 +463,18 @@ function Card.IsCanBeRuneMaterial(c,runc,tp)
 		return true
 	else
 		if not runc:IsOriginalType(TYPE_MONSTER) or c:IsStatus(STATUS_FORBIDDEN) then return false end
-		local mt=rc:GetMetatable()
+		local mt=runc:GetMetatable()
 		if not mt.rune_parameters then return false end
 		local usable=false
 		for _,rune_table in ipairs(mt.rune_parameters) do
 			local mnf=rune_table[1]
 			local stf=rune_table[4]
 			if not c:IsType(TYPE_MONSTER) then
-				usable=usable or (not stf or stf(c,rc,SUMMON_TYPE_RUNE))
+				usable=usable or (not stf or stf(c,runc,SUMMON_TYPE_RUNE))
 			elseif not c:IsType(TYPE_SPELL+TYPE_TRAP) then
-				usable=usable or (not mnf or mnf(c,rc,SUMMON_TYPE_RUNE))
+				usable=usable or (not mnf or mnf(c,runc,SUMMON_TYPE_RUNE))
 			else
-				usable=usable or (not mnf or mnf(c,rc,SUMMON_TYPE_RUNE)) or (not stf or stf(c,rc,SUMMON_TYPE_RUNE))
+				usable=usable or (not mnf or mnf(c,runc,SUMMON_TYPE_RUNE)) or (not stf or stf(c,runc,SUMMON_TYPE_RUNE))
 			end
 		end
 		return usable
