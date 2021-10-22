@@ -468,7 +468,7 @@ function Auxiliary.runlimit(e,se,sp,st)
 end
 function Card.IsRuneSummonable(c,must,materials,tmin,tmax,ignoreloc)
 	if ignoreloc then
-		local mt=tc:GetMetatable()
+		local mt=c:GetMetatable()
 		if not mt.rune_parameters then return false end
 		local summonable=false
 		for _,rune_table in ipairs(mt.rune_parameters) do
