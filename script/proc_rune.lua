@@ -91,11 +91,11 @@ function Rune.AddSecondProcedure(c,monf,mmin,mmax,stf,smin,smax,loc,group,condit
 end
 function Rune.MonsterFilter(c,f,rc,tp)
 	return c:IsType(TYPE_MONSTER) and not c:IsLocation(LOCATION_SZONE) and (not f or f(c,rc,SUMMON_TYPE_RUNE,tp))
-		and c:IsCanBeRuneMaterial(rc,tp)
+		and c:IsCanBeRuneMaterial(nil,tp)
 end
 function Rune.STFilter(c,f,rc,tp)
 	return c:IsType(TYPE_SPELL+TYPE_TRAP) and (not f or f(c,rc,SUMMON_TYPE_RUNE,tp))
-		and c:IsCanBeRuneMaterial(rc,tp)
+		and c:IsCanBeRuneMaterial(nil,tp)
 end
 --Check if Usable as Material at all
 function Rune.ConditionFilter(c,monf,stf,rc,tp)
@@ -445,8 +445,6 @@ function Rune.Operation(monf,mmin,mmax,stf,smin,smax,group)
 end
 --Extension Functions
 function Card.IsCanBeRuneMaterial(c,runc,tp)
-	--Non-Rune Monsters
-	if runc and not runc:IsOriginalType(TYPE_MONSTER) or c:IsStatus(STATUS_FORBIDDEN) then return false end
 	
 	--Search Effects
 	local effs={c:GetCardEffect(EFFECT_CANNOT_BE_RUNE_MATERIAL)}
@@ -459,8 +457,28 @@ function Card.IsCanBeRuneMaterial(c,runc,tp)
 	for _,te in ipairs(effs) do
 		if type(te:GetValue())=='function' and te:GetValue()(te,runc,SUMMON_TYPE_RUNE,tp) or te:GetValue() then return false end
 	end
-
-	return true
+	
+	--Non-Rune Monsters
+	if not runc then
+		return true
+	else
+		if runc:IsOriginalType(TYPE_MONSTER) and not c:IsStatus(STATUS_FORBIDDEN) then return false end
+		local mt=rc:GetMetatable()
+		if not mt.rune_parameters then return false end
+		local usable=false
+		for _,rune_table in ipairs(mt.rune_parameters) do
+			local mnf=rune_table[1]
+			local stf=rune_table[4]
+			if not c:IsType(TYPE_MONSTER) then
+				usable=usable or (not stf or stf(c,rc,SUMMON_TYPE_RUNE))
+			elseif not c:IsType(TYPE_SPELL+TYPE_TRAP) then
+				usable=usable or (not mnf or mnf(c,rc,SUMMON_TYPE_RUNE))
+			else
+				usable=usable or (not mnf or mnf(c,rc,SUMMON_TYPE_RUNE)) or (not stf or stf(c,rc,SUMMON_TYPE_RUNE))
+			end
+		end
+		return usable
+	end
 end
 --sp_summon condition for link monster
 function Auxiliary.runlimit(e,se,sp,st)
@@ -484,24 +502,6 @@ function Card.IsRuneSummonable(c,must,materials,tmin,tmax,ignoreloc)
 end
 function Duel.RuneSummon(tp,c,must,materials,tmin,tmax)
 	return Duel.ProcedureSummon(tp,c,SUMMON_TYPE_RUNE,must,materials,tmin,tmax)
-end
-function Card.IsUsableMaterial(c,rc)
-	if not c:IsCanBeRuneMaterial(rc) then return false end
-	local mt=rc:GetMetatable()
-	if not mt.rune_parameters then return false end
-	local usable=false
-	for _,rune_table in ipairs(mt.rune_parameters) do
-		local mnf=rune_table[1]
-		local stf=rune_table[4]
-		if not c:IsType(TYPE_MONSTER) then
-			usable=usable or (not stf or stf(c,rc,SUMMON_TYPE_RUNE))
-		elseif not c:IsType(TYPE_SPELL+TYPE_TRAP) then
-			usable=usable or (not mnf or mnf(c,rc,SUMMON_TYPE_RUNE))
-		else
-			usable=usable or (not mnf or mnf(c,rc,SUMMON_TYPE_RUNE)) or (not stf or stf(c,rc,SUMMON_TYPE_RUNE))
-		end
-	end
-	return usable
 end
 function Card.IsRuneCode(c,code,rc,sumtype,tp)
 	if c:IsCode(code) then return true end
