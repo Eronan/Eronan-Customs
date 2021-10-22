@@ -462,7 +462,7 @@ function Card.IsCanBeRuneMaterial(c,runc,tp)
 	if not runc then
 		return true
 	else
-		if runc:IsOriginalType(TYPE_MONSTER) and not c:IsStatus(STATUS_FORBIDDEN) then return false end
+		if not runc:IsOriginalType(TYPE_MONSTER) or c:IsStatus(STATUS_FORBIDDEN) then return false end
 		local mt=rc:GetMetatable()
 		if not mt.rune_parameters then return false end
 		local usable=false
