@@ -8,7 +8,6 @@ function s.initial_effect(c)
 	e1:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_TRIGGER_O)
 	e1:SetCode(EVENT_SUMMON_SUCCESS)
 	e1:SetCost(s.tfcost)
-	e1:SetTarget(s.tftg)
 	e1:SetOperation(s.tfop)
 	c:RegisterEffect(e1)
 	local e2=e1:Clone()
@@ -30,9 +29,6 @@ end
 function s.tffilter(c,rc,tp)
 	return (c:GetType()&TYPE_CONTINUOUS+TYPE_TRAP)==TYPE_CONTINUOUS+TYPE_TRAP and not c:IsForbidden()
 		and c:IsCanBeRuneMaterial(rc,tp)
-end
-function s.tftg(e,tp,eg,ep,ev,re,r,rp,chk)
-	if chk==0 then Duel.IsExistingMatchingCard(s.rvfilter,tp,LOCATION_HAND,0,1,nil,tp) end
 end
 function s.tfop(e,tp,eg,ep,ev,re,r,rp)
 	if Duel.GetLocationCount(tp,LOCATION_SZONE)<=0 then return end
