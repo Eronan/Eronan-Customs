@@ -18,7 +18,7 @@ function s.initial_effect(c)
 end
 function s.rvfilter(c,tp)
 	return c:IsType(TYPE_SPELL+TYPE_TRAP) and not c:IsPublic()
-		and Duel.IsExistingMatchingCard(s.thfilter,tp,LOCATION_HAND,0,1,nil,c,tp)
+		and Duel.IsExistingMatchingCard(s.thfilter,tp,LOCATION_DECK,0,1,nil,c,tp)
 end
 function s.cost(e,tp,eg,ep,ev,re,r,rp,chk)
     if chk==0 then return Duel.IsExistingMatchingCard(s.rvfilter,tp,LOCATION_HAND,0,1,nil,tp) end
