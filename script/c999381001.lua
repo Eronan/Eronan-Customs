@@ -15,29 +15,34 @@ function s.initial_effect(c)
 	e2:SetCode(EVENT_FLIP_SUMMON_SUCCESS)
 	c:RegisterEffect(e2)
 end
-function s.rvfilter(c)
+function s.rvfilter(c,tp)
 	return c:IsType(TYPE_RUNE) and not c:IsPublic()
+		and Duel.IsExistingMatchingCard(s.tffilter,tp,LOCATION_DECK,0,1,nil,c,tp)
 end
 function s.tfcost(e,tp,eg,ep,ev,re,r,rp,chk)
     if chk==0 then return Duel.IsExistingMatchingCard(s.rvfilter,tp,LOCATION_HAND,0,1,nil) end
     Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_CONFIRM)
     local g=Duel.SelectMatchingCard(tp,s.rvfilter,tp,LOCATION_HAND,0,1,1,nil)
+	e:SetLabelObject(g:GetFirst())
     Duel.ConfirmCards(1-tp,g)
     Duel.ShuffleHand(tp)
 end
-function s.tffilter(c,rc)
+function s.tffilter(c,rc,tp)
 	return (c:GetType()&TYPE_CONTINUOUS+TYPE_TRAP)==TYPE_CONTINUOUS+TYPE_TRAP and not c:IsForbidden()
+		and c:IsCanBeRuneMaterial(rc,tp)
 end
 function s.tftg(e,tp,eg,ep,ev,re,r,rp,chk)
+	local rc=e:GetLabelObject()
 	if chk==0 then return Duel.GetLocationCount(tp,LOCATION_SZONE)>0
-		and Duel.IsExistingMatchingCard(s.rvfilter,tp,LOCATION_HAND,0,1,nil) end
+		and Duel.IsExistingMatchingCard(s.tffilter,tp,LOCATION_DECK,0,1,nil,rc,tp) end
 end
 function s.tfop(e,tp,eg,ep,ev,re,r,rp)
 	if Duel.GetLocationCount(tp,LOCATION_SZONE)<=0 then return end
 	--Get Functions
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_TOFIELD)
 	--Place on Field
-	local tc=Duel.SelectMatchingCard(tp,s.tffilter,tp,LOCATION_DECK,0,1,1,nil,sc):GetFirst()
+	local rc=e:GetLabelObject()
+	local tc=Duel.SelectMatchingCard(tp,s.tffilter,tp,LOCATION_DECK,0,1,1,nil,rc,tp):GetFirst()
 	if tc then
 		local c=e:GetHandler()
 		Duel.MoveToField(tc,tp,tp,LOCATION_SZONE,POS_FACEUP,true)

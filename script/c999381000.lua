@@ -16,26 +16,31 @@ function s.initial_effect(c)
 	e2:SetCode(EVENT_FLIP_SUMMON_SUCCESS)
 	c:RegisterEffect(e2)
 end
-function s.rvfilter(c)
+function s.rvfilter(c,tp)
 	return c:IsType(TYPE_SPELL+TYPE_TRAP) and not c:IsPublic()
+		and Duel.IsExistingMatchingCard(s.thfilter,tp,LOCATION_HAND,0,1,nil,c,tp)
 end
 function s.cost(e,tp,eg,ep,ev,re,r,rp,chk)
-    if chk==0 then return Duel.IsExistingMatchingCard(s.rvfilter,tp,LOCATION_HAND,0,1,nil) end
+    if chk==0 then return Duel.IsExistingMatchingCard(s.rvfilter,tp,LOCATION_HAND,0,1,nil,tp) end
     Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_CONFIRM)
-    local g=Duel.SelectMatchingCard(tp,s.rvfilter,tp,LOCATION_HAND,0,1,1,nil)
+    local g=Duel.SelectMatchingCard(tp,s.rvfilter,tp,LOCATION_HAND,0,1,1,nil,tp)
+	e:SetLabelObject(g:GetFirst())
     Duel.ConfirmCards(1-tp,g)
     Duel.ShuffleHand(tp)
 end
-function s.thfilter(c,mc)
+function s.thfilter(c,mc,tp)
 	return c:IsType(TYPE_RUNE) and c:IsAbleToHand()
+		and mc:IsCanBeRuneMaterial(c,tp)
 end
 function s.tg(e,tp,eg,ep,ev,re,r,rp,chk)
-	if chk==0 then return Duel.IsExistingMatchingCard(s.rvfilter,tp,LOCATION_HAND,0,1,nil) end
+	local mc=e:GetLabelObject()
+	if chk==0 then return Duel.IsExistingMatchingCard(s.thfilter,tp,LOCATION_HAND,0,1,nil,mc,tp) end
 	Duel.SetOperationInfo(0,CATEGORY_TOHAND,nil,1,tp,LOCATION_DECK)
 end
 function s.op(e,tp,eg,ep,ev,re,r,rp)
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_ATOHAND)
-	local g=Duel.SelectMatchingCard(tp,s.thfilter,tp,LOCATION_DECK,0,1,1,nil,mc)
+	local mc=e:GetLabelObject()
+	local g=Duel.SelectMatchingCard(tp,s.thfilter,tp,LOCATION_DECK,0,1,1,nil,mc,tp)
 	if g:GetCount()>0 then
 		Duel.SendtoHand(g,nil,REASON_EFFECT)
 		Duel.ConfirmCards(1-tp,g)
