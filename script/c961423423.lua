@@ -54,7 +54,7 @@ function s.setop(e,tp,eg,ep,ev,re,r,rp)
 	if mg:FilterCount(s.mgfilter,nil)>0 then
 		local tc=mg:FilterSelect(c:GetControler(),s.mgfilter,1,1,nil)
 		Duel.SSet(tp,tc)
-		Duel.ConfirmCards(1-tp,tc)
+		--Duel.ConfirmCards(1-tp,tc)
 	end
 end
 function s.sptg(e,tp,eg,ep,ev,re,r,rp,chk)
