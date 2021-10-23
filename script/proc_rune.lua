@@ -32,7 +32,7 @@ function Rune.AddProcedure(c,monf,mmin,mmax,stf,smin,smax,loc,group,condition)
 		local mt=c:GetMetatable()
 		--mt.rune_monster_filter=function(c) end
 		mt.rune_parameters={}
-		table.insert(mt.rune_parameters,{monf,mmin,mmax,stf,smin,smax,loc,group,condition})
+		table.insert(mt.rune_parameters,{monf,mmin,mmax,stf,smin,smax,loc+LOCATION_HAND,group,condition})
 	end
 	local e1=Effect.CreateEffect(c)
 	e1:SetType(EFFECT_TYPE_FIELD)
@@ -485,14 +485,14 @@ end
 function Auxiliary.runlimit(e,se,sp,st)
 	return aux.sumlimit(SUMMON_TYPE_RUNE)(e,se,sp,st)
 end
-function Card.IsRuneSummonable(c,must,materials,tmin,tmax,ignoreloc)
-	if ignoreloc then
+function Card.IsRuneSummonable(c,must,materials,tmin,tmax,fromloc)
+	if fromloc then
 		if not Duel.IsPlayerCanSpecialSummonMonster(c:GetControler(),c:GetOriginalCode(),{c:GetOriginalSetCard()},c:GetOriginalType(),c:GetBaseAttack(),c:GetBaseDefense(),c:GetOriginalLevel(),c:GetOriginalRace(),c:GetOriginalAttribute(),POS_FACEUP,c:GetControler(),SUMMON_TYPE_RUNE) then return false end
 		local mt=c:GetMetatable()
 		if not mt.rune_parameters then return false end
 		local summonable=false
 		for _,rune_table in ipairs(mt.rune_parameters) do
-			if Rune.Condition(rune_table[1],rune_table[2],rune_table[3],rune_table[4],rune_table[5],rune_table[6],rune_table[8],rune_table[9])(e,c,must,materials,tmin,tmax) then
+			if (fromloc&rune_table[7]==fromloc) and Rune.Condition(rune_table[1],rune_table[2],rune_table[3],rune_table[4],rune_table[5],rune_table[6],rune_table[8],rune_table[9])(e,c,must,materials,tmin,tmax) then
 				summonable=true
 			end
 		end
