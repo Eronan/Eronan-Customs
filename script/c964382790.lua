@@ -38,19 +38,21 @@ function s.setfilter(c)
 	return c:IsType(TYPE_SPELL+TYPE_TRAP) and c:IsFaceup() and c:IsCanTurnSet()
 end
 function s.settg(e,tp,eg,ep,ev,re,r,rp,chk)
-	if chk==0 then return Duel.IsExistingMatchingCard(s.setfilter,e:GetHandler():GetControler(),LOCATION_ONFIELD,LOCATION_ONFIELD,1,nil) end
+	if chk==0 then return Duel.IsExistingMatchingCard(s.setfilter,tp,LOCATION_ONFIELD,LOCATION_ONFIELD,1,nil) end
 end
 function s.setop(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
 	local g=Duel.GetMatchingGroup(s.setfilter,tp,LOCATION_ONFIELD,LOCATION_ONFIELD,nil)
-	if c:IsRelateToEffect(e) and g:GetCount()>0 then
+	if g:GetCount()>0 then
 		Duel.ChangePosition(g,POS_FACEDOWN)
-		if c:GetOriginalType()~=TYPE_SPELL and c:GetOriginalType()~=TYPE_TRAP then
-			local e1=Effect.CreateEffect(e:GetHandler())
-			e1:SetType(EFFECT_TYPE_SINGLE)
-			e1:SetCode(EFFECT_CANNOT_TRIGGER)
-			e1:SetReset(RESET_EVENT+RESETS_STANDARD+RESET_PHASE+PHASE_END)
-			tc:RegisterEffect(e1)
+		for tc in aux.Next(g) do
+			if tc:GetOriginalType()~=TYPE_SPELL and tc:GetOriginalType()~=TYPE_TRAP then
+				local e1=Effect.CreateEffect(c)
+				e1:SetType(EFFECT_TYPE_SINGLE)
+				e1:SetCode(EFFECT_CANNOT_TRIGGER)
+				e1:SetReset(RESET_EVENT+RESETS_STANDARD+RESET_PHASE+PHASE_END)
+				tc:RegisterEffect(e1)
+			end
 		end
 	end
 end
@@ -71,3 +73,4 @@ function s.recop(e,tp,eg,ep,ev,re,r,rp)
 	local p=Duel.GetChainInfo(0,CHAININFO_TARGET_PLAYER)
 	Duel.Recover(p,rt,REASON_EFFECT)
 end
+
