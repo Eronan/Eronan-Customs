@@ -486,6 +486,7 @@ function Auxiliary.runlimit(e,se,sp,st)
 end
 function Card.IsRuneSummonable(c,must,materials,tmin,tmax,ignoreloc)
 	if ignoreloc then
+		if Duel.IsPlayerCanSpecialSummonMonster(c:GetControler(),c:GetOriginalCode(),{c:GetOriginalSetCard()},c:GetOriginalType(),c:GetBaseAttack(),c:GetBaseDefense(),c:GetOriginalLevel(),c:GetOriginalRace(),c:GetOriginalAttribute()) then return false end
 		local mt=c:GetMetatable()
 		if not mt.rune_parameters then return false end
 		local summonable=false
