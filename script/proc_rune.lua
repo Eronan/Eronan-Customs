@@ -502,6 +502,16 @@ function Card.IsRuneSummonable(c,must,materials,tmin,tmax,fromloc)
 		return c:IsProcedureSummonable(TYPE_RUNE,SUMMON_TYPE_RUNE,must,materials,tmin,tmax)
 	end
 end
+function Card.GetMinimumRuneMaterials(c,fromloc)
+	if not c:IsType(TYPE_RUNE) then return nil end
+	local mt=c:GetMetatable()
+	fromloc=fromloc or c:GetLocation()
+	if not mt.rune_parameters then return nil end
+	for _,rune_table in ipairs(mt.rune_parameters) do
+		if (fromloc&rune_table[7])==fromloc then return rune_table[2]+rune_table[5] end
+	end
+	return nil
+end
 function Duel.RuneSummon(tp,c,must,materials,tmin,tmax)
 	return Duel.ProcedureSummon(tp,c,SUMMON_TYPE_RUNE,must,materials,tmin,tmax)
 end
