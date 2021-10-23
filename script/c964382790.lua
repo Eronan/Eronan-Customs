@@ -35,7 +35,7 @@ function s.STMatFilter(c,rc,sumtyp,tp)
 	return c:GetOriginalType()==TYPE_SPELL or c:GetOriginalType()==TYPE_TRAP
 end
 function s.setfilter(c)
-	return c:IsType(TYPE_SPELL+TYPE_TRAP) and c:IsFaceup() and c:IsCanTurnSet()
+	return c:IsType(TYPE_SPELL+TYPE_TRAP) and c:IsFaceup() and c:IsSSetable()
 end
 function s.settg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.IsExistingMatchingCard(s.setfilter,tp,LOCATION_ONFIELD,LOCATION_ONFIELD,1,nil) end
