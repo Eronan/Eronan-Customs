@@ -445,6 +445,7 @@ function Rune.Operation(monf,mmin,mmax,stf,smin,smax,group)
 end
 --Extension Functions
 function Card.IsCanBeRuneMaterial(c,runc,tp)
+	tp=tp or c:GetControler()
 	
 	--Search Effects
 	local effs={c:GetCardEffect(EFFECT_CANNOT_BE_RUNE_MATERIAL)}
@@ -486,12 +487,12 @@ function Auxiliary.runlimit(e,se,sp,st)
 end
 function Card.IsRuneSummonable(c,must,materials,tmin,tmax,ignoreloc)
 	if ignoreloc then
-		if not Duel.IsPlayerCanSpecialSummonMonster(c:GetControler(),c:GetOriginalCode(),{c:GetOriginalSetCard()},c:GetOriginalType(),c:GetBaseAttack(),c:GetBaseDefense(),c:GetOriginalLevel(),c:GetOriginalRace(),c:GetOriginalAttribute()) then return false end
+		if not Duel.IsPlayerCanSpecialSummonMonster(c:GetControler(),c:GetOriginalCode(),{c:GetOriginalSetCard()},c:GetOriginalType(),c:GetBaseAttack(),c:GetBaseDefense(),c:GetOriginalLevel(),c:GetOriginalRace(),c:GetOriginalAttribute(),POS_FACEUP,c:GetControler(),SUMMON_TYPE_RUNE) then return false end
 		local mt=c:GetMetatable()
 		if not mt.rune_parameters then return false end
 		local summonable=false
 		for _,rune_table in ipairs(mt.rune_parameters) do
-			if Rune.Condition(rune_table[1],rune_table[2],rune_table[3],rune_table[4],rune_table[5],rune_table[6],rune_table[8],rune_table[9])(e,c,nil,Duel.GetMatchingGroup(Card.IsFaceup,c:GetControler(),LOCATION_ONFIELD,LOCATION_ONFIELD,nil),nil,nil) then
+			if Rune.Condition(rune_table[1],rune_table[2],rune_table[3],rune_table[4],rune_table[5],rune_table[6],rune_table[8],rune_table[9])(e,c,must,materials,tmin,tmax) then
 				summonable=true
 			end
 		end
