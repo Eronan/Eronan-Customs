@@ -25,6 +25,7 @@ function s.initial_effect(c)
 	e3:SetTargetRange(1,0)
 	e3:SetCondition(s.extracon)
 	e3:SetValue(s.extraval)
+	e3:SetCost(s.afterop)
 	c:RegisterEffect(e3)
 	if s.flagmap==nil then
 		s.flagmap={}
@@ -110,6 +111,9 @@ function s.extraval(chk,summon_type,e,...)
 		end
 		s.flagmap[c]={}
 	end
+end
+function s.afterop(sc,e,tp,sg,mg,lc,og,chk)
+	Duel.Remove(e:GetHandler(),POS_FACEUP,REASON_MATERIAL+REASON_RUNE)
 end
 function s.subcon(e)
     return e:GetHandler():GetEquipTarget()

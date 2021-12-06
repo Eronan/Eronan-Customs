@@ -5,7 +5,6 @@ function s.initial_effect(c)
 	--search
 	local e1=Effect.CreateEffect(c)
 	e1:SetDescription(aux.Stringid(id,0))
-	e1:SetCategory(CATEGORY_TOHAND+CATEGORY_SEARCH)
 	e1:SetType(EFFECT_TYPE_IGNITION)
 	e1:SetRange(LOCATION_HAND)
 	e1:SetCountLimit(1,id,EFFECT_COUNT_CODE_OATH)
@@ -16,7 +15,7 @@ function s.initial_effect(c)
 	--change type and attribute
 	local e2=Effect.CreateEffect(c)
     e2:SetDescription(aux.Stringid(id,0))
-    e2:SetCategory(CATEGORY_TOGRAVE)
+    e2:SetCategory(CATEGORY_TOGRAVE+CATEGORY_SEARCH)
     e2:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_TRIGGER_O)
     e2:SetProperty(EFFECT_FLAG_DAMAGE_STEP)
     e2:SetCode(EVENT_SUMMON_SUCCESS)
@@ -33,6 +32,7 @@ function s.initial_effect(c)
 	e3:SetTargetRange(1,0)
 	e3:SetCondition(s.extracon)
 	e3:SetValue(s.extraval)
+	e3:SetCost(s.afterop)
 	c:RegisterEffect(e3)
 	if s.flagmap==nil then
 		s.flagmap={}
@@ -133,4 +133,7 @@ function s.extraval(chk,summon_type,e,...)
 		end
 		s.flagmap[c]={}
 	end
+end
+function s.afterop(sc,e,tp,sg,mg,lc,og,chk)
+	Duel.Remove(e:GetHandler(),POS_FACEUP,REASON_MATERIAL+REASON_RUNE)
 end
