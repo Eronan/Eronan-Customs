@@ -99,6 +99,6 @@ function s.extraval(chk,summon_type,e,...)
 		s.flagmap[c]={}
 	end
 end
-function s.afterop(sc,e,tp,sg,mg,lc,og,chk)
-	Duel.Remove(e:GetHandler(),POS_FACEUP,REASON_MATERIAL+REASON_RUNE)
+function s.afterop(sc,e,tp,sg,ug,rc,chk)
+	Duel.Remove(ug,POS_FACEUP,REASON_MATERIAL+REASON_RUNE)
 end
