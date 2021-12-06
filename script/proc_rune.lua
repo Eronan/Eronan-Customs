@@ -433,15 +433,56 @@ function Rune.Operation(monf,mmin,mmax,stf,smin,smax,group)
 					end
 				end
 				c:SetMaterial(g)
+				local rmgroup
+				local tdgroup
+				local thgroup
+				for _,ex in ipairs(emt) do
+					local te=ex[3]
+					local ug=Rune.UsedExtraMaterials(g,ex[1])
+					local locfunc=te:GetTarget()
+					if locfunc and #ug>0 then
+						local toloc=locfunc(te:GetHandler(),te,tp,g,ug,c,0)
+						
+						if toloc==LOCATION_REMOVED then
+							if rmgroup then rmgroup:AddCard(ug)
+							else rmgroup=ug end
+						end
+						if toloc==LOCATION_DECK then
+							if tdgroup then tdgroup:AddCard(ug)
+							else tdgroup=ug end
+						end
+						if toloc==LOCATION_HAND then
+							if tdgroup then thgroup:AddCard(ug)
+							else thgroup=ug end
+						end
+					end
+				end
+				if rmgroup then
+					g:Sub(rmgroup)
+					Duel.Remove(rmgroup,POS_FACEUP,REASON_MATERIAL+REASON_RUNE)
+				end
+				if tdgroup then
+					g:Sub(tdgroup)
+					Duel.Remove(tdgroup,POS_FACEUP,REASON_MATERIAL+REASON_RUNE)
+				end
+				if thgroup then
+					g:Sub(thgroup)
+					Duel.Remove(thgroup,POS_FACEUP,REASON_MATERIAL+REASON_RUNE)
+				end
+				--[[
 				local gycards=g:Filter(Card.IsLocation,nil,LOCATION_GRAVE)
 				if gycards:GetCount()>0 then
 					g:Sub(gycards)
 					Duel.Remove(gycards,POS_FACEUP,REASON_MATERIAL+REASON_RUNE)
 				end
+				--]]
 				Duel.SendtoGrave(g,REASON_MATERIAL+REASON_RUNE)
 				g:DeleteGroup()
 				aux.DeleteExtraMaterialGroups(emt)
 			end
+end
+function Rune.UsedExtraMaterials(mg,eg)
+	return eg:Match(function(c,g) return g:IsContains(c) end,nil,mg)
 end
 --Extension Functions
 function Card.IsCanBeRuneMaterial(c,runc,tp)
