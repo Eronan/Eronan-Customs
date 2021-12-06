@@ -29,7 +29,7 @@ function s.initial_effect(c)
 	e3:SetTargetRange(1,0)
 	e3:SetCondition(s.extracon)
 	e3:SetValue(s.extraval)
-	e3:SetCost(s.afterop)
+	e3:SetTarget(s.sendloc)
 	c:RegisterEffect(e3)
 	if s.flagmap==nil then
 		s.flagmap={}
@@ -99,6 +99,6 @@ function s.extraval(chk,summon_type,e,...)
 		s.flagmap[c]={}
 	end
 end
-function s.afterop(c,e,tp,sg,ug,rc,chk)
-	Duel.Remove(ug,POS_FACEUP,REASON_MATERIAL+REASON_RUNE)
+function s.sendloc(c,e,tp,sg,ug,rc,chk)
+	return LOCATION_REMOVED
 end
