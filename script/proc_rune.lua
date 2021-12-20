@@ -526,7 +526,7 @@ end
 function Auxiliary.runlimit(e,se,sp,st)
 	return aux.sumlimit(SUMMON_TYPE_RUNE)(e,se,sp,st)
 end
-function Card.IsRuneSummonable(c,must,materials,tmin,tmax,fromloc)
+function Card.IsRuneSummonable(c,must,materials,tmin,tmax,exclude,fromloc)
 	if fromloc then
 		if not c:IsType(TYPE_RUNE) or not Duel.IsPlayerCanSpecialSummonMonster(c:GetControler(),c:GetOriginalCode(),{c:GetOriginalSetCard()},c:GetOriginalType(),c:GetBaseAttack(),c:GetBaseDefense(),c:GetOriginalLevel(),c:GetOriginalRace(),c:GetOriginalAttribute(),POS_FACEUP,c:GetControler(),SUMMON_TYPE_RUNE) then return false end
 		local mt=c:GetMetatable()
@@ -540,7 +540,7 @@ function Card.IsRuneSummonable(c,must,materials,tmin,tmax,fromloc)
 		return summonable
 	else
 		--Remove Brackets if it doesn't work
-		return c:IsProcedureSummonable(TYPE_RUNE,SUMMON_TYPE_RUNE,must,materials,tmin,tmax)
+		return c:IsProcedureSummonable(TYPE_RUNE,SUMMON_TYPE_RUNE,must,materials,exclude,tmin,tmax)
 	end
 end
 function Card.GetMinimumRuneMaterials(c,fromloc)
@@ -553,8 +553,8 @@ function Card.GetMinimumRuneMaterials(c,fromloc)
 	end
 	return nil
 end
-function Duel.RuneSummon(tp,c,must,materials,tmin,tmax)
-	return Duel.ProcedureSummon(tp,c,SUMMON_TYPE_RUNE,must,materials,tmin,tmax)
+function Duel.RuneSummon(tp,c,must,materials,exclude,tmin,tmax)
+	return Duel.ProcedureSummon(tp,c,SUMMON_TYPE_RUNE,must,materials,exclude,tmin,tmax)
 end
 function Card.IsRuneCode(c,code,rc,sumtype,tp)
 	if c:IsCode(code) then return true end
