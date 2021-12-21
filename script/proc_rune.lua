@@ -330,8 +330,9 @@ function Rune.Condition(monf,mmin,mmax,stf,smin,smax,group,condition)
 				--Determine if Minimum and Maximum is Possible
 				if min and min > mmax+smax then return false end
 				if max and max < mmin+smin then return false end
-				min = min or mmin+smin
-				max = max or mmax+smax
+				--Get Higher or Lower Value
+				if not min or min < mmin+smin then min=mmin+smin end
+				if not max or max > mmax+smax then max=mmax+smax end
 				--]]
 				local mg=g:Filter(Rune.ConditionFilter,c,monf,stf,c,tp)
 				local mustg=Auxiliary.GetMustBeMaterialGroup(tp,g,tp,c,mg,REASON_RUNE)
@@ -362,10 +363,11 @@ function Rune.Target(monf,mmin,mmax,stf,smin,smax,group)
 					else g=group(tp,nil,c) end
 				else g=og:Clone() end
 				--Minimums and Maximums
-				if min and min < mmin+smin then return false end
-				if max and max > mmax+smax then return false end
-				min = min or (mmin+smin)
-				max = max or (mmax+smax)
+				if min and min > mmax+smax then return false end
+				if max and max < mmin+smin then return false end
+				--Get Higher or Lower Value
+				if not min or min < mmin+smin then min=mmin+smin end
+				if not max or max > mmax+smax then max=mmax+smax end
 				--Variable Set Up
 				local mg=g:Filter(Rune.ConditionFilter,c,monf,stf,c,tp)
 				local mustg=Auxiliary.GetMustBeMaterialGroup(tp,g,tp,c,mg,REASON_RUNE)
