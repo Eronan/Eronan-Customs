@@ -66,6 +66,6 @@ function s.desop(e,tp,eg,ep,ev,re,r,rp)
 end
 function s.matcheck(e,c)
 	local g=c:GetMaterial()
-	local ct=g:Match(Card.IsType,nil,TYPE_TRAP)
+	local ct=g:FilterCount(Card.IsType,nil,TYPE_TRAP)
 	e:GetLabelObject():SetLabel(ct)
 end

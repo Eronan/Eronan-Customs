@@ -67,6 +67,6 @@ function s.damop(e,tp,eg,ep,ev,re,r,rp)
 end
 function s.matcheck(e,c)
 	local g=c:GetMaterial()
-	local ct=g:Match(Card.IsType,nil,TYPE_SPELL)
+	local ct=g:FilterCount(Card.IsType,nil,TYPE_SPELL)
 	e:GetLabelObject():SetLabel(ct)
 end

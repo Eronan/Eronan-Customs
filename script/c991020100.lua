@@ -106,6 +106,6 @@ function s.splimit(e,c)
 end
 function s.matcheck(e,c)
 	local g=c:GetMaterial()
-	local ct=g:Match(Card.IsType,nil,TYPE_MONSTER)
+	local ct=g:FilterCount(Card.IsType,nil,TYPE_MONSTER)
 	e:GetLabelObject():SetLabel(ct)
 end
