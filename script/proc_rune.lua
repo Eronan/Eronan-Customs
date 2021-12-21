@@ -327,9 +327,9 @@ function Rune.Condition(monf,mmin,mmax,stf,smin,smax,group,condition)
 					if group then g=group(tp,nil,c)
 					else g=Duel.GetMatchingGroup(Card.IsFaceup,tp,LOCATION_ONFIELD,0,nil) end
 				end
-				--Determine if Minimum Functionality should be enabled
-				if min and min < mmin+smin then return false end
-				if max and max > mmax+smax then return false end
+				--Determine if Minimum and Maximum is Possible
+				if min and min > mmax+smax then return false end
+				if max and max < mmin+smin then return false end
 				min = min or mmin+smin
 				max = max or mmax+smax
 				--]]

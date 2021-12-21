@@ -36,6 +36,13 @@ function s.initial_effect(c)
 	e3:SetTarget(s.sptg)
 	e3:SetOperation(s.spop)
 	c:RegisterEffect(e3)
+	--materialcheck
+	local e4=Effect.CreateEffect(c)
+	e4:SetType(EFFECT_TYPE_SINGLE)
+	e4:SetCode(EFFECT_MATERIAL_CHECK)
+	e4:SetLabelObject(e3)
+	e4:SetValue(s.matcheck)
+	c:RegisterEffect(e4)
 end
 s.listed_names={69890968,69890967}
 function s.discost(e,tp,eg,ep,ev,re,r,rp,chk)
@@ -74,7 +81,7 @@ function s.spop(e,tp,eg,ep,ev,re,r,rp)
 	if Duel.IsPlayerAffectedByEffect(tp,CARD_BLUEEYES_SPIRIT) then ft=1 end
 	if ft~=1 then
 		local ct = {}
-		for i=1,math.min(ft,e:GetHandler():GetMaterialCount()-1) do
+		for i=1,math.min(ft,e:GetLabel()-1) do
 			ct[#ct+1]=i
 		end
 		ft=Duel.AnnounceNumber(tp,table.unpack(ct))
@@ -96,4 +103,9 @@ function s.spop(e,tp,eg,ep,ev,re,r,rp)
 end
 function s.splimit(e,c)
 	return c:IsLocation(LOCATION_EXTRA)
+end
+function s.matcheck(e,c)
+	local g=c:GetMaterial()
+	local ct=g:Match(Card.IsType,nil,TYPE_MONSTER)
+	e:GetLabelObject():SetLabel(ct)
 end

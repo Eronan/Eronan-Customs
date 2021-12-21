@@ -32,6 +32,13 @@ function s.initial_effect(c)
 	e3:SetTarget(s.damtg)
 	e3:SetOperation(s.damop)
 	c:RegisterEffect(e3)
+	--materialcheck
+	local e4=Effect.CreateEffect(c)
+	e4:SetType(EFFECT_TYPE_SINGLE)
+	e4:SetCode(EFFECT_MATERIAL_CHECK)
+	e4:SetLabelObject(e3)
+	e4:SetValue(s.matcheck)
+	c:RegisterEffect(e4)
 end
 function s.altG(tp,ex,c)
 	if Duel.IsPlayerAffectedByEffect(tp,54828837) then
@@ -48,7 +55,7 @@ function s.damcon(e,tp,eg,ep,ev,re,r,rp)
 end
 function s.damtg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return true end
-	local ct=e:GetHandler():GetMaterial():FilterCount(Card.IsType,nil,TYPE_SPELL)
+	local ct=e:GetLabel()
 	local dam=ct*500
 	Duel.SetTargetPlayer(1-tp)
 	Duel.SetTargetParam(dam)
@@ -57,4 +64,9 @@ end
 function s.damop(e,tp,eg,ep,ev,re,r,rp)
 	local p,d=Duel.GetChainInfo(0,CHAININFO_TARGET_PLAYER,CHAININFO_TARGET_PARAM)
 	Duel.Damage(p,d,REASON_EFFECT)
+end
+function s.matcheck(e,c)
+	local g=c:GetMaterial()
+	local ct=g:Match(Card.IsType,nil,TYPE_SPELL)
+	e:GetLabelObject():SetLabel(ct)
 end
