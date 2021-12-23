@@ -18,8 +18,8 @@ function s.matfilter(c,tp,mg)
 		and Duel.IsExistingMatchingCard(s.thfilter1,tp,LOCATION_DECK,0,1,nil,c,nmg)
 end
 function s.thfilter1(c,mc,mg)
-	return c:IsType(TYPE_RUNE) and c:IsAbleToHand() and c:GetMinimumRuneMaterials(LOCATION_HAND)>=3
-		and c:IsRuneSummonable(mc,mg,nil,nil,LOCATION_HAND)
+	return c:IsType(TYPE_RUNE) and c:IsAbleToHand()-- and c:GetMinimumRuneMaterials(LOCATION_HAND)>=3
+		and c:IsRuneSummonable(mc,mg,3,nil,LOCATION_HAND)
 end
 function s.thfilter2(c)
 	return c:IsType(TYPE_RUNE) and c:IsAbleToHand() and c:IsRuneSummonable(nil,nil,nil,nil,LOCATION_HAND)
@@ -63,8 +63,8 @@ function s.thop1(e,tp,eg,ep,ev,re,r,rp)
 			mg:AddCard(tc)
 			--Debug.Message(tostring(rc:IsRuneSummonable(Group.FromCards(tc),mg,3)).." : "..tostring(rc:IsRuneSummonable(tc,mg,3,nil,LOCATION_HAND)))
 			--Debug.Message(tostring(rc:GetLocation()).." : "..tostring(LOCATION_HAND))
-			if rc:IsRuneSummonable(tc,mg) then
-				Duel.RuneSummon(tp,rc,tc,mg)
+			if rc:IsRuneSummonable(tc,mg,3,nil) then
+				Duel.RuneSummon(tp,rc,tc,mg,3,nil)
 			end
 		end
 	end
