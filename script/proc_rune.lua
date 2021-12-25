@@ -304,17 +304,20 @@ function Rune.CheckGoal(mnct,stct,bothct,mmin,smin,tmin,tmax)
 		and stct+bothct>=smin
 		and mnct+stct+bothct<=tmax
 end
-function Rune.DefaultGroup(rc,tp)
+function Rune.DefaultGroup(rc,tp,checkloc)
 	if not rc:IsType(TYPE_RUNE) then return false end
 	local mt=rc:GetMetatable()
+	if not checkloc then checkloc=rc:GetLocation() end
 	if mt.rune_parameters then
 		local group=nil
 		for _,rune_table in ipairs(mt.rune_parameters) do
 			local loc=rune_table[7]
 			group=rune_table[8]
-			group=group or (rc:IsLocation(loc) and group and group(tp,nil,rc))
+			if group and loc&checkloc==checkloc then
+				group=group(tp,nil,rc)
+				return group
+			end
 		end
-		if group then return group end
 	end
 	return Duel.GetMatchingGroup(Card.IsFaceup,tp,LOCATION_ONFIELD,0,nil)
 end
@@ -533,6 +536,7 @@ function Card.IsRuneSummonable(c,must,materials,tmin,tmax,fromloc)
 		if not c:IsType(TYPE_RUNE) or not Duel.IsPlayerCanSpecialSummonMonster(c:GetControler(),c:GetOriginalCode(),{c:GetOriginalSetCard()},c:GetOriginalType(),c:GetBaseAttack(),c:GetBaseDefense(),c:GetOriginalLevel(),c:GetOriginalRace(),c:GetOriginalAttribute(),POS_FACEUP,c:GetControler(),SUMMON_TYPE_RUNE) then return false end
 		local mt=c:GetMetatable()
 		if not mt.rune_parameters then return false end
+		if not materials then materials=Rune.DefaultGroup(c,c:GetControler(),fromloc) end
 		local summonable=false
 		for _,rune_table in ipairs(mt.rune_parameters) do
 			if (fromloc&rune_table[7])==fromloc and Rune.Condition(rune_table[1],rune_table[2],rune_table[3],rune_table[4],rune_table[5],rune_table[6],rune_table[8],rune_table[9])(e,c,must,materials,tmin,tmax) then

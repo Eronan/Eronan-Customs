@@ -14,11 +14,10 @@ end
 function s.matfilter(c,tp,mg)
 	local nmg=mg:Clone()
 	nmg:AddCard(c)
-	return c:IsFaceup() and c:IsCanBeRuneMaterial(nil,tp)
-		and Duel.IsExistingMatchingCard(s.thfilter1,tp,LOCATION_DECK,0,1,nil,c,nmg)
+	return c:IsFaceup() and Duel.IsExistingMatchingCard(s.thfilter1,tp,LOCATION_DECK,0,1,nil,c,nmg)
 end
 function s.thfilter1(c,mc,mg)
-	return c:IsType(TYPE_RUNE) and c:IsAbleToHand()-- and c:GetMinimumRuneMaterials(LOCATION_HAND)>=3
+	return c:IsType(TYPE_RUNE) and c:IsAbleToHand() and mc:IsCanBeRuneMaterial(c,tp)-- and c:GetMinimumRuneMaterials(LOCATION_HAND)>=3
 		and c:IsRuneSummonable(mc,mg,3,nil,LOCATION_HAND)
 end
 function s.thfilter2(c)
