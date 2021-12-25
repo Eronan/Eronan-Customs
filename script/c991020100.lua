@@ -81,7 +81,7 @@ function s.spop(e,tp,eg,ep,ev,re,r,rp)
 	if Duel.IsPlayerAffectedByEffect(tp,CARD_BLUEEYES_SPIRIT) then ft=1 end
 	if ft~=1 then
 		local ct = {}
-		for i=1,math.min(ft,e:GetLabel()-1) do
+		for i=1,math.min(ft,e:GetLabel()) do
 			ct[#ct+1]=i
 		end
 		ft=Duel.AnnounceNumber(tp,table.unpack(ct))
