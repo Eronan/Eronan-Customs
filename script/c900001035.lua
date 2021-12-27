@@ -50,7 +50,7 @@ function s.runfilter(c,must,mg)
 end
 function s.runtg(e,tp,eg,ep,ev,re,r,rp,chk)
 	local mg=Duel.GetMatchingGroup(Card.IsFaceup,tp,LOCATION_ONFIELD,0,nil)
-	local ec=e:GetHandler:GetEquipTarget()
+	local ec=e:GetHandler():GetEquipTarget()
 	mg:AddCard(ec)
 	if chk==0 then return Duel.IsExistingMatchingCard(s.runfilter,tp,LOCATION_HAND+LOCATION_GRAVE,0,1,nil,Group.FromCards(ec),mg) end
 	Duel.SetOperationInfo(0,CATEGORY_SPECIAL_SUMMON,nil,1,tp,LOCATION_HAND+LOCATION_GRAVE)
