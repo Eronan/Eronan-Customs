@@ -330,6 +330,8 @@ function Rune.Condition(monf,mmin,mmax,stf,smin,smax,group,condition)
 					if group then g=group(tp,nil,c)
 					else g=Duel.GetMatchingGroup(Card.IsFaceup,tp,LOCATION_ONFIELD,0,nil) end
 				end
+				--There is a bug in the IsProcedureSummonable Condition where nil becomes 0 for max if min has been set
+				--if max==0 and min>0 then max=nil end
 				--Determine if Minimum and Maximum is Possible
 				if min and min > mmax+smax then return false end
 				if max and max < mmin+smin then return false end
@@ -365,6 +367,8 @@ function Rune.Target(monf,mmin,mmax,stf,smin,smax,group)
 					if not group then g=Duel.GetMatchingGroup(Card.IsFaceup,tp,LOCATION_ONFIELD,0,nil)
 					else g=group(tp,nil,c) end
 				else g=og:Clone() end
+				--There is a bug in the IsProcedureSummonable Condition where nil becomes 0 for max if min has been set
+				--if max==0 and min>0 then max=nil end
 				--Minimums and Maximums
 				if min and min > mmax+smax then return false end
 				if max and max < mmin+smin then return false end
@@ -546,7 +550,7 @@ function Card.IsRuneSummonable(c,must,materials,tmin,tmax,fromloc)
 		return summonable
 	else
 		--Remove Brackets if it doesn't work
-		return c:IsProcedureSummonable(TYPE_RUNE,SUMMON_TYPE_RUNE,must,materials,nil,tmin,tmax)
+		return c:IsProcedureSummonable(TYPE_RUNE,SUMMON_TYPE_RUNE,must,materials,tmin,tmax)
 	end
 end
 function Card.GetMinimumRuneMaterials(c,fromloc)
@@ -560,7 +564,7 @@ function Card.GetMinimumRuneMaterials(c,fromloc)
 	return nil
 end
 function Duel.RuneSummon(tp,c,must,materials,tmin,tmax)
-	return Duel.ProcedureSummon(tp,c,SUMMON_TYPE_RUNE,must,materials,nil,tmin,tmax)
+	return Duel.ProcedureSummon(tp,c,SUMMON_TYPE_RUNE,must,materials,tmin,tmax)
 end
 function Card.IsRuneCode(c,code,rc,sumtype,tp)
 	if c:IsCode(code) then return true end

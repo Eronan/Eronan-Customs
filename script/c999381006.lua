@@ -62,8 +62,8 @@ function s.thop1(e,tp,eg,ep,ev,re,r,rp)
 			mg:AddCard(tc)
 			--Debug.Message(tostring(rc:IsRuneSummonable(Group.FromCards(tc),mg,3)).." : "..tostring(rc:IsRuneSummonable(tc,mg,3,nil,LOCATION_HAND)))
 			--Debug.Message(tostring(rc:GetLocation()).." : "..tostring(LOCATION_HAND))
-			if rc:IsRuneSummonable(tc,mg,3,nil) then
-				Duel.RuneSummon(tp,rc,tc,mg,3,nil)
+			if rc:IsRuneSummonable(tc,mg,3,99) then
+				Duel.RuneSummon(tp,rc,tc,mg,3,99)
 			end
 		end
 	end
