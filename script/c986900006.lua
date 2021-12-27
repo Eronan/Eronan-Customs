@@ -19,6 +19,7 @@ function s.initial_effect(c)
 	c:RegisterEffect(e1)
 	local e2=e1:Clone()
 	e2:SetRange(LOCATION_MZONE)
+	e1:SetOperation(s.tkop2)
 	e2:SetCountLimit(1,id,EFFECT_COUNT_CODE_OATH)
 	--e2:SetCountLimit(1,id,EFFECT_COUNT_CODE_OATH)
 	c:RegisterEffect(e2)
@@ -52,6 +53,26 @@ function s.tktg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	Duel.SetOperationInfo(0,CATEGORY_SPECIAL_SUMMON,nil,1,tp,0)
 end
 function s.tkop(e,tp,eg,ep,ev,re,r,rp)
+	if c:IsRelateToEffect(e) and Duel.GetLocationCount(tp,LOCATION_MZONE)>0 
+		and Duel.IsPlayerCanSpecialSummonMonster(tp,986900019,0xfe5,TYPES_TOKEN,500,1850,3,RACE_FAIRY,ATTRIBUTE_FIRE) then
+		local token=Duel.CreateToken(tp,986900019)
+		Duel.SpecialSummonStep(token,0,tp,tp,false,false,POS_FACEUP)
+		local fid=e:GetHandler():GetFieldID()
+		token:RegisterFlagEffect(id,RESET_EVENT+RESETS_STANDARD,0,1,fid)
+		local e1=Effect.CreateEffect(e:GetHandler())
+		e1:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
+		e1:SetCode(EVENT_PHASE+PHASE_END)
+		e1:SetCountLimit(1)
+		e1:SetProperty(EFFECT_FLAG_IGNORE_IMMUNE)
+		e1:SetLabel(fid)
+		e1:SetLabelObject(token)
+		e1:SetCondition(s.descon)
+		e1:SetOperation(s.desop)
+		Duel.RegisterEffect(e1,tp)
+		Duel.SpecialSummonComplete()
+	end
+end
+function s.tkop2(e,tp,eg,ep,ev,re,r,rp)
 	if Duel.GetLocationCount(tp,LOCATION_MZONE)>0 
 		and Duel.IsPlayerCanSpecialSummonMonster(tp,986900019,0xfe5,TYPES_TOKEN,500,1850,3,RACE_FAIRY,ATTRIBUTE_FIRE) then
 		local token=Duel.CreateToken(tp,986900019)

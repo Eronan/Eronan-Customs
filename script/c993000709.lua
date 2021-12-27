@@ -54,6 +54,7 @@ function s.tgfilter(e,c)
 	return c:IsType(TYPE_RUNE) and c:IsSetCard(0xffa)
 end
 function s.efilter(e,te)
+	if e:GetOwnerPlayer()==re:GetOwnerPlayer() then return false end
 	if not te:IsHasProperty(EFFECT_FLAG_CARD_TARGET) then return true end
 	local g=Duel.GetChainInfo(0,CHAININFO_TARGET_CARDS)
 	return not g:IsContains(e:GetHandler())

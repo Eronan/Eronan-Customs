@@ -65,7 +65,7 @@ function s.runtg(e,tp,eg,ep,ev,re,r,rp,chk)
 end
 function s.runop(e,tp,eg,ep,ev,re,r,rp)
 	local g=Duel.GetMatchingGroup(s.runfilter,tp,LOCATION_HAND,0,nil,e)
-	if g:GetCount()>0 then
+	if e:GetHandler():IsRelateToEffect(e) and g:GetCount()>0 then
 		Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_SPSUMMON)
 		local tg=g:Select(tp,1,1,nil)
 		local sc=tg:GetFirst()

@@ -44,7 +44,8 @@ function s.thcon(e,tp,eg,ep,ev,re,r,rp)
     return e:GetHandler():GetFlagEffect(id)~=0
 end
 function s.thop(e,tp,eg,ep,ev,re,r,rp)
-    Duel.Hint(HINT_SELECTMSG,tp,aux.Stringid(id,1))
+    if not c:IsRelateToEffect(e) then return end
+	Duel.Hint(HINT_SELECTMSG,tp,aux.Stringid(id,1))
     local g=Duel.SelectMatchingCard(tp,Card.IsType,tp,LOCATION_DECK,0,1,1,nil,TYPE_RUNE)
     local tc=g:GetFirst()
     if tc then

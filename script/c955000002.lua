@@ -49,7 +49,7 @@ end
 function s.spop(e,tp,eg,ep,ev,re,r,rp)
 	if Duel.GetLocationCount(1-tp,LOCATION_MZONE)<=0 then return end
 	local c=e:GetHandler()
-	if not Duel.IsPlayerCanSpecialSummonMonster(tp,999999996,0,0x2fe7,1000,1500,1,RACE_CYBERSE,ATTRIBUTE_DARK,POS_FACEUP,1-tp) then return end
+	if not c:IsRelateToEffect(e) or not Duel.IsPlayerCanSpecialSummonMonster(tp,999999996,0,0x2fe7,1000,1500,1,RACE_CYBERSE,ATTRIBUTE_DARK,POS_FACEUP,1-tp) then return end
 	local token=Duel.CreateToken(tp,999999996)
 	if Duel.SpecialSummon(token,0,tp,1-tp,false,false,POS_FACEUP) and c:IsRelateToEffect(e) then
 		Duel.BreakEffect()

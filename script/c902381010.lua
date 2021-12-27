@@ -47,8 +47,8 @@ function s.operation(e,tp,eg,ep,ev,re,r,rp)
 		tc:RegisterEffect(e1)
 	end
 end
-function s.immcon(e,tp,eg,ep,ev,re,r,rp)
-	return Duel.IsExistingMatchingCard(Card.IsType,tp,LOCATION_MZONE,0,1,nil,TYPE_RUNE)
+function s.immcon(e)
+	return Duel.IsExistingMatchingCard(Card.IsType,e:GetHandlerPlayer(),LOCATION_MZONE,0,1,nil,TYPE_RUNE)
 end
 function s.etarget(e,c)
 	return c==e:GetHandler() or e:GetHandler():GetColumnGroup():IsContains(c)

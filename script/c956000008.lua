@@ -70,7 +70,6 @@ function s.etarget(e,c)
 	return c==e:GetHandler() or e:GetHandler():GetLinkedGroup():IsContains(c)
 end
 function s.efilter(e,te)
-	if te:GetOwnerPlayer()==e:GetOwnerPlayer() then return false end
 	if not te:IsHasProperty(EFFECT_FLAG_CARD_TARGET) then return true end
 	local g=Duel.GetChainInfo(0,CHAININFO_TARGET_CARDS)
 	return not g:IsContains(e:GetHandler())
