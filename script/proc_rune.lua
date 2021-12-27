@@ -338,7 +338,7 @@ function Rune.Condition(monf,mmin,mmax,stf,smin,smax,group,condition)
 				local tp=c:GetControler()
 				--get usable group
 				if not g then
-					g=Duel.GetMatchingGroup(Card.IsFaceup,tp,LOCATION_ONFIELD,0,nil) end
+					g=Duel.GetMatchingGroup(Card.IsFaceup,tp,LOCATION_ONFIELD,0,nil)
 				end
 				--no extra materials if effect is negated
 				if group and not c:IsDisabled() then
