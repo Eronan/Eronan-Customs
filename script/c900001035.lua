@@ -44,24 +44,26 @@ function s.initial_effect(c)
 	e5:SetCondition(s.subcon)
 	c:RegisterEffect(e5)
 end
-function s.runfilter(c,must,tp)
+function s.runfilter(c,must,mg)
 	--return c:IsSetCard(0xffa) and c:IsRuneSummonable(Group.FromCards(ec))
-	if not c:IsType(TYPE_RUNE) then return false end
-	local mg=Rune.DefaultGroup(c,tp)
-	mg:Merge(must)
-	return c:IsRuneSummonable(must,mg)
+	return c:IsType(TYPE_RUNE) and c:IsRuneSummonable(must,mg)
 end
 function s.runtg(e,tp,eg,ep,ev,re,r,rp,chk)
-	if chk==0 then return Duel.IsExistingMatchingCard(s.runfilter,tp,LOCATION_HAND+LOCATION_GRAVE,0,1,nil,Group.FromCards(e:GetHandler():GetEquipTarget()),tp) end
+	local mg=Duel.GetMatchingGroup(Card.IsFaceup,tp,LOCATION_ONFIELD,0,nil)
+	local ec=e:GetHandler:GetEquipTarget()
+	mg:AddCard(ec)
+	if chk==0 then return Duel.IsExistingMatchingCard(s.runfilter,tp,LOCATION_HAND+LOCATION_GRAVE,0,1,nil,Group.FromCards(ec),mg) end
 	Duel.SetOperationInfo(0,CATEGORY_SPECIAL_SUMMON,nil,1,tp,LOCATION_HAND+LOCATION_GRAVE)
 end
 function s.runop(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
 	local tc=c:GetEquipTarget()
 	if c:IsRelateToEffect(e) and tc and tc:IsFaceup() and not tc:IsImmuneToEffect(e) then
+		local mg=Duel.GetMatchingGroup(Card.IsFaceup,tp,LOCATION_ONFIELD,0,nil)
 		local must=Group.FromCards(tc)
+		mg:AddCard(tc)
 		Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_SPSUMMON)
-		local g=Duel.SelectMatchingCard(tp,s.runfilter,tp,LOCATION_HAND+LOCATION_GRAVE,0,1,1,nil,must,tp)
+		local g=Duel.SelectMatchingCard(tp,s.runfilter,tp,LOCATION_HAND+LOCATION_GRAVE,0,1,1,nil,must,mg)
 		local sc=g:GetFirst()
 		if sc then
 			local mg=Rune.DefaultGroup(sc,tp)
