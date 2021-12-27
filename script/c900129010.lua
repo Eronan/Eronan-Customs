@@ -31,7 +31,7 @@ function s.runcon(e,tp,eg,ep,ev,re,r,rp)
 	return Duel.IsMainPhase()
 end
 function s.runfilter(c,mg)
-	return c:IsRace(RACE_INSECT) and c:IsRuneSummonable(nil,mg,2,2)
+	return c:IsRace(RACE_INSECT) and c:IsRuneSummonable(mg,mg,2,2)
 end
 function s.mtfilter(tc,c,tp)
 	local mg=Group.FromCards(c,tc)
@@ -53,7 +53,7 @@ function s.runop(e,tp,eg,ep,ev,re,r,rp)
 		local g=Duel.SelectMatchingCard(tp,s.runfilter,tp,LOCATION_HAND,0,1,1,nil,mg)
 		local sc=g:GetFirst()
 		if sc then
-			Duel.RuneSummon(tp,sc,nil,mg,2,2)
+			Duel.RuneSummon(tp,sc,mg,mg,2,2)
 		end
 	end
 end

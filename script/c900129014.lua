@@ -25,7 +25,7 @@ function s.initial_effect(c)
 end
 s.listed_series={0xfda}
 function s.runfilter(c,mg,tp)
-	return c:IsAttribute(ATTRIBUTE_WIND) and c:IsRuneSummonable(nil,mg,2,2)
+	return c:IsAttribute(ATTRIBUTE_WIND) and c:IsRuneSummonable(mg,mg,2,2)
 end
 function s.mtfilter(tc,c,tp)
 	return tc:IsFaceup() and tc:IsCanBeRuneMaterial() and Duel.IsExistingMatchingCard(s.runfilter,tp,LOCATION_HAND,0,1,nil,Group.FromCards(c,tc),tp)
@@ -47,7 +47,7 @@ function s.runop(e,tp,eg,ep,ev,re,r,rp)
 		local g=Duel.SelectMatchingCard(tp,s.runfilter,tp,LOCATION_HAND,0,1,1,nil,mg,tp)
 		local sc=g:GetFirst()
 		if sc then
-			Duel.RuneSummon(tp,sc,nil,mg,2,2)
+			Duel.RuneSummon(tp,sc,mg,mg,2,2)
 		end
 	end
 end
