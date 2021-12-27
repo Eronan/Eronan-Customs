@@ -304,33 +304,6 @@ function Rune.CheckGoal(mnct,stct,bothct,mmin,smin,tmin,tmax)
 		and stct+bothct>=smin
 		and mnct+stct+bothct<=tmax
 end
---[[
-function Rune.DefaultGroup(rc,tp)
-	if not rc:IsType(TYPE_RUNE) then return false end
-	--nil value
-	--if not checkloc then checkloc=rc:GetLocation() end
-	return Duel.GetMatchingGroup(Card.IsFaceup,tp,LOCATION_ONFIELD,0,nil)
-	--[[
-	--no extra materials if effect is negated
-	if rc:IsLocation(checkloc) and rc:IsDisabled() then return g end
-	--get extra materials
-	local mt=rc:GetMetatable()
-	if mt.rune_parameters then
-		local group=nil
-		for _,rune_table in ipairs(mt.rune_parameters) do
-			local loc=rune_table[7]
-			group=rune_table[8]
-			if group and loc&checkloc==checkloc then
-				group=group(tp,nil,rc)
-				
-				return group
-			end
-		end
-	end
-	return g
-	--]]
-end
---]]
 function Rune.Condition(monf,mmin,mmax,stf,smin,smax,group,condition)
 	return	function(e,c,must,g,min,max)
 				if c==nil then return true end
