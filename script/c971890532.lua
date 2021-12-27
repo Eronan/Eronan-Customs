@@ -18,8 +18,8 @@ function s.initial_effect(c)
 end
 s.listed_series={0x1fe7}
 s.listed_names={912389041}
-function s.getGroup(tp,ex)
-	return Duel.GetMatchingGroup(Card.IsFaceup,tp,LOCATION_ONFIELD,LOCATION_ONFIELD,ex)
+function s.getGroup(tp,ex,c)
+	return Duel.GetMatchingGroup(Card.IsFaceup,tp,0,LOCATION_ONFIELD,ex)
 end
 function s.zfilter(c)
 	--Face-up "Contaminet-" card or face-down monster

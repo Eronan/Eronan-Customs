@@ -20,8 +20,8 @@ s.listed_series={0x1fe7}
 function s.rune_filter(c,tp)
 	return c:IsFaceup() and ((c:IsType(TYPE_SPELL+TYPE_TRAP) and c:IsControler(tp)) or c:IsType(TYPE_MONSTER))
 end
-function s.getGroup(tp,ex)
-	return Duel.GetMatchingGroup(s.rune_filter,tp,LOCATION_ONFIELD,LOCATION_ONFIELD,ex,tp)
+function s.getGroup(tp,ex,c)
+	return Duel.GetMatchingGroup(s.rune_filter,tp,0,LOCATION_ONFIELD,ex,tp)
 end
 function s.copyfilter(c)
 	return c:IsFaceup() and c:IsSetCard(0x1fe7)

@@ -20,6 +20,7 @@ function s.initial_effect(c)
 	e2:SetCode(EVENT_CHAINING)
 	e2:SetProperty(EFFECT_FLAG_DAMAGE_STEP+EFFECT_FLAG_DAMAGE_CAL)
 	e2:SetRange(LOCATION_MZONE)
+	e2:SetCountLimit(1)
 	e2:SetCost(s.discost)
 	e2:SetCondition(s.discon)
 	e2:SetTarget(s.distg)
@@ -32,6 +33,7 @@ function s.initial_effect(c)
 	e3:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_TRIGGER_O)
 	e3:SetProperty(EFFECT_FLAG_DELAY)
 	e3:SetCode(EVENT_SPSUMMON_SUCCESS)
+	e3:SetCountLimit(1,id,EFFECT_COUNT_CODE_OATH)
 	e3:SetCondition(s.spcon)
 	e3:SetTarget(s.sptg)
 	e3:SetOperation(s.spop)
@@ -46,8 +48,8 @@ function s.initial_effect(c)
 end
 s.listed_names={69890968,69890967}
 function s.discost(e,tp,eg,ep,ev,re,r,rp,chk)
-	if chk==0 then return Duel.CheckReleaseGroup(tp,s.cfilter,1,nil) end
-	local g=Duel.SelectReleaseGroup(tp,s.cfilter,1,1,nil)
+	if chk==0 then return Duel.CheckReleaseGroupCost(tp,Card.IsType,1,false,nil,nil,TYPE_NORMAL) end
+	local g=Duel.SelectReleaseGroupCost(tp,Card.IsType,1,1,false,nil,nil,TYPE_NORMAL)
 	Duel.Release(g,REASON_COST)
 end
 function s.discon(e,tp,eg,ep,ev,re,r,rp)

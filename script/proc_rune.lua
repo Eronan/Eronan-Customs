@@ -304,10 +304,17 @@ function Rune.CheckGoal(mnct,stct,bothct,mmin,smin,tmin,tmax)
 		and stct+bothct>=smin
 		and mnct+stct+bothct<=tmax
 end
-function Rune.DefaultGroup(rc,tp,checkloc)
+--[[
+function Rune.DefaultGroup(rc,tp)
 	if not rc:IsType(TYPE_RUNE) then return false end
+	--nil value
+	--if not checkloc then checkloc=rc:GetLocation() end
+	return Duel.GetMatchingGroup(Card.IsFaceup,tp,LOCATION_ONFIELD,0,nil)
+	--[[
+	--no extra materials if effect is negated
+	if rc:IsLocation(checkloc) and rc:IsDisabled() then return g end
+	--get extra materials
 	local mt=rc:GetMetatable()
-	if not checkloc then checkloc=rc:GetLocation() end
 	if mt.rune_parameters then
 		local group=nil
 		for _,rune_table in ipairs(mt.rune_parameters) do
@@ -315,20 +322,27 @@ function Rune.DefaultGroup(rc,tp,checkloc)
 			group=rune_table[8]
 			if group and loc&checkloc==checkloc then
 				group=group(tp,nil,rc)
+				
 				return group
 			end
 		end
 	end
-	return Duel.GetMatchingGroup(Card.IsFaceup,tp,LOCATION_ONFIELD,0,nil)
+	return g
+	--]]
 end
+--]]
 function Rune.Condition(monf,mmin,mmax,stf,smin,smax,group,condition)
 	return	function(e,c,must,g,min,max)
 				if c==nil then return true end
 				if condition and not condition(e,c) then return false end
 				local tp=c:GetControler()
+				--get usable group
 				if not g then
-					if group then g=group(tp,nil,c)
-					else g=Duel.GetMatchingGroup(Card.IsFaceup,tp,LOCATION_ONFIELD,0,nil) end
+					g=Duel.GetMatchingGroup(Card.IsFaceup,tp,LOCATION_ONFIELD,0,nil) end
+				end
+				--no extra materials if effect is negated
+				if group and not c:IsDisabled() then
+					g:Merge(group(tp,nil,c))
 				end
 				--There is a bug in the IsProcedureSummonable Condition where nil becomes 0 for max if min has been set
 				--if max==0 and min>0 then max=nil end
@@ -363,10 +377,13 @@ function Rune.Condition(monf,mmin,mmax,stf,smin,smax,group,condition)
 end
 function Rune.Target(monf,mmin,mmax,stf,smin,smax,group)
 	return 	function(e,tp,eg,ep,ev,re,r,rp,chk,c,must,og,min,max)
-				if not og then
-					if not group then g=Duel.GetMatchingGroup(Card.IsFaceup,tp,LOCATION_ONFIELD,0,nil)
-					else g=group(tp,nil,c) end
+				--get usable group
+				if not og then g=Duel.GetMatchingGroup(Card.IsFaceup,tp,LOCATION_ONFIELD,0,nil)
 				else g=og:Clone() end
+				--no extra materials if effect is negated
+				if group and not c:IsDisabled() then
+					g:Merge(group(tp,nil,c))
+				end
 				--There is a bug in the IsProcedureSummonable Condition where nil becomes 0 for max if min has been set
 				--if max==0 and min>0 then max=nil end
 				--Minimums and Maximums
@@ -540,7 +557,7 @@ function Card.IsRuneSummonable(c,must,materials,tmin,tmax,fromloc)
 		if not c:IsType(TYPE_RUNE) or not Duel.IsPlayerCanSpecialSummonMonster(c:GetControler(),c:GetOriginalCode(),{c:GetOriginalSetCard()},c:GetOriginalType(),c:GetBaseAttack(),c:GetBaseDefense(),c:GetOriginalLevel(),c:GetOriginalRace(),c:GetOriginalAttribute(),POS_FACEUP,c:GetControler(),SUMMON_TYPE_RUNE) then return false end
 		local mt=c:GetMetatable()
 		if not mt.rune_parameters then return false end
-		if not materials then materials=Rune.DefaultGroup(c,c:GetControler(),fromloc) end
+		--if not materials then materials=Duel.GetMatchingGroup(Card.IsFaceup,tp,LOCATION_ONFIELD,0,nil) end
 		local summonable=false
 		for _,rune_table in ipairs(mt.rune_parameters) do
 			if (fromloc&rune_table[7])==fromloc and Rune.Condition(rune_table[1],rune_table[2],rune_table[3],rune_table[4],rune_table[5],rune_table[6],rune_table[8],rune_table[9])(e,c,must,materials,tmin,tmax) then

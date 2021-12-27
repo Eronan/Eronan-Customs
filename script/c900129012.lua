@@ -37,15 +37,14 @@ end
 function s.runcon(e,tp,eg,ep,ev,re,r,rp)
 	return Duel.IsMainPhase()
 end
-function s.runfilter(c,must,tp)
-	if not c:IsType(TYPE_RUNE) then return false end
-	local mg=Rune.DefaultGroup(c,tp)
-	mg:Merge(must)
-	return c:IsAttribute(ATTRIBUTE_WIND) and c:IsRuneSummonable(must,mg)
+function s.runfilter(c,must,mg)
+	return c:IsType(TYPE_RUNE) and c:IsAttribute(ATTRIBUTE_WIND) and c:IsRuneSummonable(must,mg)
 end
 function s.mtfilter(tc,c,tp)
 	local must=Group.FromCards(c,tc)
-	return tc:IsFaceup() and tc:IsCanBeRuneMaterial() and Duel.IsExistingMatchingCard(s.runfilter,tp,LOCATION_HAND,0,1,nil,must,tp)
+	local mg=Duel.GetMatchingGroup(Card.IsFaceup,tp,LOCATION_ONFIELD,0,nil)
+	mg:AddCard(must)
+	return tc:IsFaceup() and tc:IsCanBeRuneMaterial() and Duel.IsExistingMatchingCard(s.runfilter,tp,LOCATION_HAND,0,1,nil,must,mg)
 end
 function s.runtg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	if chkc then return chkc:IsLocation(LOCATION_ONFIELD) and chkc:IsControler(1-tp) and s.mtfilter(chkc,e:GetHandler(),tp) end
@@ -59,12 +58,12 @@ function s.runop(e,tp,eg,ep,ev,re,r,rp)
 	local tc=Duel.GetFirstTarget()
 		if c:IsRelateToEffect(e) and c:IsFaceup() and tc and tc:IsFaceup() and tc:IsRelateToEffect(e) and not tc:IsImmuneToEffect(e) then
 		local must=Group.FromCards(c,tc)
+		local mg=Duel.GetMatchingGroup(Card.IsFaceup,tp,LOCATION_ONFIELD,0,nil)
+		mg:AddCard(must)
 		Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_SPSUMMON)
-		local g=Duel.SelectMatchingCard(tp,s.runfilter,tp,LOCATION_HAND,0,1,1,nil,must,tp)
+		local g=Duel.SelectMatchingCard(tp,s.runfilter,tp,LOCATION_HAND,0,1,1,nil,must,mg)
 		local sc=g:GetFirst()
 		if sc then
-			local mg=Rune.DefaultGroup(sc,tp)
-			mg:Merge(must)
 			Duel.RuneSummon(tp,sc,must,mg)
 		end
 	end

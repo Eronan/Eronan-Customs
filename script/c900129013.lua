@@ -59,20 +59,19 @@ end
 function s.runcon(e,tp,eg,ep,ev,re,r,rp)
 	return Duel.IsMainPhase()
 end
-function s.runfilter(c,must,tp)
-	if not c:IsType(TYPE_RUNE) then return false end
-	local mg=Rune.DefaultGroup(c,tp)
-	mg:AddCard(must)
-	return c:IsRuneSummonable(must,mg)
+function s.runfilter(c,must,mg)
+	if c:IsType(TYPE_RUNE) and c:IsRuneSummonable(must,mg)
 end
-function s.mtfilter(tc,c,tp)
-	return tc:IsFaceup() and tc:IsCanBeRuneMaterial() and Duel.IsExistingMatchingCard(s.runfilter,tp,LOCATION_HAND,0,1,nil,tc,tp)
+function s.mtfilter(tc,tp)
+	local mg=Duel.GetMatchingGroup(Card.IsFaceup,tp,LOCATION_ONFIELD,0,nil)
+	mg:AddCard(tc)
+	return tc:IsFaceup() and tc:IsCanBeRuneMaterial() and Duel.IsExistingMatchingCard(s.runfilter,tp,LOCATION_HAND,0,1,nil,tc,mg)
 end
 function s.runtg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
-	if chkc then return chkc:IsLocation(LOCATION_ONFIELD) and chkc:IsControler(1-tp) and s.mtfilter(chkc,e:GetHandler(),tp) end
-	if chk==0 then return Duel.IsExistingTarget(s.mtfilter,tp,0,LOCATION_ONFIELD,1,nil,e:GetHandler(),tp) end
+	if chkc then return chkc:IsLocation(LOCATION_ONFIELD) and chkc:IsControler(1-tp) and s.mtfilter(chkc,tp) end
+	if chk==0 then return Duel.IsExistingTarget(s.mtfilter,tp,0,LOCATION_ONFIELD,1,nil,tp) end
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_FACEUP)
-	Duel.SelectTarget(tp,s.mtfilter,tp,0,LOCATION_ONFIELD,1,1,nil,e:GetHandler(),tp)
+	Duel.SelectTarget(tp,s.mtfilter,tp,0,LOCATION_ONFIELD,1,1,nil,tp)
 	Duel.SetOperationInfo(0,CATEGORY_SPECIAL_SUMMON,nil,1,tp,LOCATION_HAND)
 end
 function s.runop(e,tp,eg,ep,ev,re,r,rp)
@@ -80,11 +79,11 @@ function s.runop(e,tp,eg,ep,ev,re,r,rp)
 	local tc=Duel.GetFirstTarget()
 		if c:IsRelateToEffect(e) and c:IsFaceup() and tc and tc:IsFaceup() and tc:IsRelateToEffect(e) and not tc:IsImmuneToEffect(e) then
 		Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_SPSUMMON)
-		local g=Duel.SelectMatchingCard(tp,s.runfilter,tp,LOCATION_HAND,0,1,1,nil,tc,tp)
+		local mg=Duel.GetMatchingGroup(Card.IsFaceup,tp,LOCATION_ONFIELD,0,nil)
+		mg:AddCard(tc)
+		local g=Duel.SelectMatchingCard(tp,s.runfilter,tp,LOCATION_HAND,0,1,1,nil,tc,mg)
 		local sc=g:GetFirst()
 		if sc then
-			local mg=Rune.DefaultGroup(sc,tp)
-			mg:AddCard(tc)
 			Duel.RuneSummon(tp,sc,tc,mg)
 		end
 	end

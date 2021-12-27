@@ -13,27 +13,27 @@ function s.initial_effect(c)
 	e1:SetOperation(s.thop2)
 	c:RegisterEffect(e1)
 end
-function s.thfilter(c,tp,mg)
+function s.thfilter(c,mg)
 	return c:IsType(TYPE_RUNE) and c:IsAbleToHand()
 		and Duel.IsExistingMatchingCard(Card.IsAttribute,tp,0,LOCATION_MZONE,1,nil,c:GetAttribute())
 		and c:IsRuneSummonable(nil,mg,3,nil,LOCATION_HAND)
 end
 function s.target(e,tp,eg,ep,ev,re,r,rp,chk)
-	local mg=Duel.GetMatchingGroup(Card.IsFaceup,tp,LOCATION_ONFIELD,LOCATION_ONFIELD,c)
-	if chk==0 then return Duel.IsExistingMatchingCard(s.thfilter,tp,LOCATION_DECK,0,1,nil,tp,mg) end
+	local mg=Duel.GetMatchingGroup(Card.IsFaceup,tp,LOCATION_ONFIELD,LOCATION_ONFIELD,nil)
+	if chk==0 then return Duel.IsExistingMatchingCard(s.thfilter,tp,LOCATION_DECK,0,1,nil,mg) end
 	Duel.SetOperationInfo(0,CATEGORY_TOHAND,nil,1,tp,LOCATION_DECK)
 	Duel.SetOperationInfo(0,CATEGORY_SPECIAL_SUMMON,nil,1,tp,LOCATION_HAND)
 end
 function s.thop2(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
-	local mg=Duel.GetMatchingGroup(Card.IsFaceup,tp,LOCATION_ONFIELD,LOCATION_ONFIELD,c)
-	if not Duel.IsExistingMatchingCard(s.thfilter,tp,LOCATION_DECK,0,1,nil,tp,mg) then return end
+	if not Duel.IsExistingMatchingCard(s.thfilter,tp,LOCATION_DECK,0,1,nil,tp) then return end
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_ATOHAND)
-	local g=Duel.SelectMatchingCard(tp,s.thfilter,tp,LOCATION_DECK,0,1,1,nil,tp,mg)
+	local g=Duel.SelectMatchingCard(tp,s.thfilter,tp,LOCATION_DECK,0,1,1,nil,tp)
 	if #g>0 and Duel.SendtoHand(g,nil,REASON_EFFECT) then
 		Duel.ConfirmCards(1-tp,g)
 		
 		local rc=g:GetFirst()
+		local mg=Duel.GetMatchingGroup(Card.IsFaceup,tp,LOCATION_ONFIELD,LOCATION_ONFIELD,nil)
 		if rc:IsRuneSummonable(nil,mg,3,99) then
 			Duel.RuneSummon(tp,rc,nil,mg,3,99)
 		end
