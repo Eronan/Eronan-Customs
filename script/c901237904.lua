@@ -32,7 +32,6 @@ function s.thop2(e,tp,eg,ep,ev,re,r,rp)
 	local g=Duel.SelectMatchingCard(tp,s.thfilter,tp,LOCATION_DECK,0,1,1,nil,tp,mg)
 	if #g>0 and Duel.SendtoHand(g,nil,REASON_EFFECT) then
 		Duel.ConfirmCards(1-tp,g)
-		
 		local rc=g:GetFirst()
 		if rc:IsRuneSummonable(nil,mg,3,99) then
 			Duel.RuneSummon(tp,rc,nil,mg,3,99)
