@@ -49,7 +49,7 @@ end
 function s.thop1(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
 	local tc=Duel.GetFirstTarget()
-	local mg=Duel.GetMatchingGroup(Card.IsFaceup,tp,LOCATION_ONFIELD,0,c)
+	local mg=Duel.GetMatchingGroup(Card.IsCanBeRuneGroup,tp,LOCATION_ONFIELD,LOCATION_ONFIELD,nil,Duel.GetCurrentChain())
 	mg:AddCard(tc)
 	if tc and tc:IsFaceup() and tc:IsRelateToEffect(e) and not tc:IsImmuneToEffect(e) and Duel.IsExistingMatchingCard(s.thfilter1,tp,LOCATION_DECK,0,1,nil,tc,mg) then
 		Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_ATOHAND)
@@ -59,7 +59,6 @@ function s.thop1(e,tp,eg,ep,ev,re,r,rp)
 			
 			--Rune Summon
 			local rc=g:GetFirst()
-			mg:AddCard(tc)
 			--Debug.Message(tostring(rc:IsRuneSummonable(Group.FromCards(tc),mg,3)).." : "..tostring(rc:IsRuneSummonable(tc,mg,3,nil,LOCATION_HAND)))
 			--Debug.Message(tostring(rc:GetLocation()).." : "..tostring(LOCATION_HAND))
 			if rc:IsRuneSummonable(tc,mg,3,99) then

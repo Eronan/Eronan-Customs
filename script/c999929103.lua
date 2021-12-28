@@ -96,7 +96,7 @@ function s.thop(e,tp,eg,ep,ev,re,r,rp)
 	if Duel.SendtoHand(tc,nil,REASON_EFFECT) then
 		Duel.ConfirmCards(1-tp,tc)
 		
-		local mg=Duel.GetMatchingGroup(Card.IsFaceup,tp,LOCATION_ONFIELD,LOCATION_ONFIELD,nil)
+		local mg=Duel.GetMatchingGroup(Card.IsCanBeRuneGroup,tp,LOCATION_ONFIELD,LOCATION_ONFIELD,nil,Duel.GetCurrentChain())
 		if tc:IsRuneSummonable(nil,mg) then
 			Duel.RuneSummon(tp,tc,nil,mg)
 		end

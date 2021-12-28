@@ -481,7 +481,7 @@ function Rune.Operation(monf,mmin,mmax,stf,smin,smax,group)
 			end
 end
 function Rune.UsedExtraMaterials(mg,eg)
-	return eg:Match(function(c,g) return g:IsContains(c) end,nil,mg)
+	return eg:Filter(function(c,g) return g:IsContains(c) end,nil,mg)
 end
 --Extension Functions
 function Card.IsCanBeRuneMaterial(c,runc,tp)
@@ -499,7 +499,7 @@ function Card.IsCanBeRuneMaterial(c,runc,tp)
 		if type(te:GetValue())=='function' and te:GetValue()(te,runc,SUMMON_TYPE_RUNE,tp) or te:GetValue() then return false end
 	end
 	
-	--Non-Rune Monsters
+	--Check if can be Material for Rune Monster
 	if not runc then
 		return true
 	else
@@ -525,6 +525,7 @@ end
 function Auxiliary.runlimit(e,se,sp,st)
 	return aux.sumlimit(SUMMON_TYPE_RUNE)(e,se,sp,st)
 end
+--Checks if a Rune Monster can Rune Summoned from a specific Location
 function Card.IsRuneSummonable(c,must,materials,tmin,tmax,fromloc)
 	if fromloc then
 		if not c:IsType(TYPE_RUNE) or not Duel.IsPlayerCanSpecialSummonMonster(c:GetControler(),c:GetOriginalCode(),{c:GetOriginalSetCard()},c:GetOriginalType(),c:GetBaseAttack(),c:GetBaseDefense(),c:GetOriginalLevel(),c:GetOriginalRace(),c:GetOriginalAttribute(),POS_FACEUP,c:GetControler(),SUMMON_TYPE_RUNE) then return false end
@@ -543,6 +544,7 @@ function Card.IsRuneSummonable(c,must,materials,tmin,tmax,fromloc)
 		return c:IsProcedureSummonable(TYPE_RUNE,SUMMON_TYPE_RUNE,must,materials,tmin,tmax)
 	end
 end
+--Gets the Minimum Number of Rune Materials necessary to Summon a Rune Monster
 function Card.GetMinimumRuneMaterials(c,fromloc)
 	if not c:IsType(TYPE_RUNE) then return nil end
 	local mt=c:GetMetatable()
@@ -553,9 +555,11 @@ function Card.GetMinimumRuneMaterials(c,fromloc)
 	end
 	return nil
 end
+--Duel.RuneSummon for Duel.ProcedureSummon
 function Duel.RuneSummon(tp,c,must,materials,tmin,tmax)
 	return Duel.ProcedureSummon(tp,c,SUMMON_TYPE_RUNE,must,materials,tmin,tmax)
 end
+--Checks if Card be counted as a Mentioned Card
 function Card.IsRuneCode(c,code,rc,sumtype,tp)
 	if c:IsCode(code) then return true end
 	local effs = {c:GetCardEffect(EFFECT_RUNE_SUBSTITUTE)}
@@ -564,4 +568,11 @@ function Card.IsRuneCode(c,code,rc,sumtype,tp)
 		if not tcon or tcon(te,rc,sumtype,tp) then return true end
 	end
 	return false
+end
+--For use in the Operation Procedure when Rune Summoning
+---Filters out cards that would be sent to the graveyard upon use of the Duel.RuneSummon Function
+---Not necessary for Target Procedure
+function Card.IsCanBeRuneGroup(c,chain)
+	if not chain then chain=Duel.GetCurrentChain() end
+	return c:IsFaceup() and (chain~=1 or not c:IsStatus(STATUS_LEAVE_CONFIRMED))
 end

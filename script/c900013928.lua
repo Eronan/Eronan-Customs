@@ -44,28 +44,29 @@ function s.plyroperation(e,tp,eg,ep,ev,re,r,rp)
 	end
 end
 function s.exfilter(c)
-	return c:IsType(TYPE_SPELL+TYPE_TRAP) and c:IsFaceup()
+	return c:IsType(TYPE_SPELL+TYPE_TRAP) and c:IsCanBeRuneGroup()
 end
-function s.oppfilter(c,e,tp,exg)
-	local dfg=Rune.DefaultGroup(c,1-tp)
-	if dfg then
-		return c:IsRuneSummonable(e:GetHandler(),dfg+exg)
-	else return false end
+function s.oppfilter(c,ec,mg)
+	return c:IsRuneSummonable(ec,mg)
 end
 function s.oppoperation(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
-	local exg=Duel.GetMatchingGroup(s.exfilter,tp,LOCATION_ONFIELD,0,nil)
-	if Duel.IsExistingMatchingCard(s.oppfilter,tp,0,0x3ff~LOCATION_MZONE,1,nil,e,tp,exg)
+	c:CancelToGrave()
+	local mg=Duel.GetMatchingGroup(Card.IsCanBeRuneGroup,tp,0,LOCATION_ONFIELD,nil,Duel.GetCurrentChain())
+	mg:Merge(Duel.GetMatchingGroup(s.exfilter,tp,LOCATION_ONFIELD,0,nil))
+	if Duel.IsExistingMatchingCard(s.oppfilter,tp,0,0x3ff~LOCATION_MZONE,1,nil,e:GetHandler(),mg)
 			and Duel.SelectYesNo(1-tp,aux.Stringid(id,3)) then
 		--Summon
 		Duel.Hint(HINT_SELECTMSG,1-tp,HINTMSG_SPSUMMON)
-		local g=Duel.SelectMatchingCard(1-tp,s.oppfilter,tp,0,0x3ff~LOCATION_MZONE,1,1,nil,e,tp,exg)
-		if g:GetCount()>0 then
-			local sc=g:GetFirst()
-			local dfg=Rune.DefaultGroup(sc,1-tp)
-			Duel.RuneSummon(1-tp,sc,e:GetHandler(),exg+dfg)
+		local g=Duel.SelectMatchingCard(1-tp,s.oppfilter,tp,0,0x3ff~LOCATION_MZONE,1,1,nil,e:GetHandler(),tp,mg)
+		if #g>0 then
+			local rc=g:GetFirst()
+			Duel.RuneSummon(1-tp,rc,e:GetHandler(),mg)
+		else
+			c:CancelToGrave(false)
 		end
 	else
+		c:CancelToGrave(false)
 		--Send to the Grave
 		Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_TOGRAVE)
 		local tc=Duel.SelectMatchingCard(tp,Card.IsAbleToGrave,tp,LOCATION_MZONE,0,1,1,nil):GetFirst()

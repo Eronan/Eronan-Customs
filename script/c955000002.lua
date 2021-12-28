@@ -68,7 +68,8 @@ end
 function s.runop(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
 	if c:IsRelateToEffect(e) then
-		local mg=Duel.GetMatchingGroup(Card.IsFaceup,tp,LOCATION_ONFIELD,nil):Merge(Duel.GetMatchingGroup(aux.AND(Card.IsSetCard,Card.IsFaceup),tp,0,LOCATION_ONFIELD,nil,0xfe7))
+		local mg=Duel.GetMatchingGroup(Card.IsCanBeRuneGroup,tp,LOCATION_ONFIELD,LOCATION_ONFIELD,nil,Duel.GetCurrentChain())
+		mg:Merge(Duel.GetMatchingGroup(aux.AND(Card.IsSetCard,Card.IsFaceup),tp,0,LOCATION_ONFIELD,nil,0xfe7))
 		Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_SPSUMMON)
 		local g=Duel.SelectMatchingCard(tp,s.runfilter,tp,LOCATION_HAND,0,1,1,nil,mg)
 		local sc=g:GetFirst()

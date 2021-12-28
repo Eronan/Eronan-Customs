@@ -18,9 +18,6 @@ function s.thfilter(c,tp,mg)
 		and Duel.IsExistingMatchingCard(Card.IsAttribute,tp,0,LOCATION_MZONE,1,nil,c:GetAttribute())
 		and c:IsRuneSummonable(nil,mg,3,nil,LOCATION_HAND)
 end
-function s.matfilter(c)
-	return c:IsFaceup() and not c:IsStatus(STATUS_LEAVE_CONFIRMED)
-end
 function s.target(e,tp,eg,ep,ev,re,r,rp,chk)
 	local mg=Duel.GetMatchingGroup(s.matfilter,tp,LOCATION_ONFIELD,LOCATION_ONFIELD,e:GetHandler())
 	if chk==0 then return Duel.IsExistingMatchingCard(s.thfilter,tp,LOCATION_DECK,0,1,nil,tp,mg) end
@@ -30,13 +27,12 @@ end
 function s.thop2(e,tp,eg,ep,ev,re,r,rp)
 	Debug.Message(Duel.GetCurrentChain())
 	local c=e:GetHandler()
-	local mg=Duel.GetMatchingGroup(Card.IsFaceup,tp,LOCATION_ONFIELD,LOCATION_ONFIELD,c)
+	local mg=Duel.GetMatchingGroup(Card.IsCanBeRuneGroup,tp,LOCATION_ONFIELD,LOCATION_ONFIELD,c,Duel.GetCurrentChain())
 	if not Duel.IsExistingMatchingCard(s.thfilter,tp,LOCATION_DECK,0,1,nil,tp,mg) then return end
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_ATOHAND)
 	local g=Duel.SelectMatchingCard(tp,s.thfilter,tp,LOCATION_DECK,0,1,1,nil,tp,mg)
 	if #g>0 and Duel.SendtoHand(g,nil,REASON_EFFECT) then
 		Duel.ConfirmCards(1-tp,g)
-		mg=Duel.GetMatchingGroup(s.matfilter,tp,LOCATION_ONFIELD,LOCATION_ONFIELD,c)
 		local rc=g:GetFirst()
 		if rc:IsRuneSummonable(nil,mg,3,99) then
 			Duel.RuneSummon(tp,rc,nil,mg,3,99)
