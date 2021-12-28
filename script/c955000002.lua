@@ -61,14 +61,14 @@ function s.runfilter(c,mg)
 	return c:IsType(TYPE_RUNE) and c:IsRuneSummonable(nil,mg)
 end
 function s.runtg(e,tp,eg,ep,ev,re,r,rp,chk)
-	local mg=Duel.GetMatchingGroup(Card.IsFaceup,tp,LOCATION_ONFIELD,nil):Merge(Duel.GetMatchingGroup(aux.AND(Card.IsSetCard,Card.IsFaceup),tp,0,LOCATION_ONFIELD,nil,0xfe7))
+	local mg=Duel.GetMatchingGroup(Card.IsFaceup,tp,LOCATION_ONFIELD,0,nil):Merge(Duel.GetMatchingGroup(aux.AND(Card.IsSetCard,Card.IsFaceup),tp,0,LOCATION_ONFIELD,nil,0xfe7))
 	if chk==0 then return Duel.IsExistingMatchingCard(s.runfilter,tp,LOCATION_HAND,0,1,nil,mg) end
 	Duel.SetOperationInfo(0,CATEGORY_SPECIAL_SUMMON,nil,1,tp,LOCATION_HAND)
 end
 function s.runop(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
 	if c:IsRelateToEffect(e) then
-		local mg=Duel.GetMatchingGroup(Card.IsCanBeRuneGroup,tp,LOCATION_ONFIELD,LOCATION_ONFIELD,nil,Duel.GetCurrentChain())
+		local mg=Duel.GetMatchingGroup(Card.IsCanBeRuneGroup,tp,LOCATION_ONFIELD,0,nil,Duel.GetCurrentChain())
 		mg:Merge(Duel.GetMatchingGroup(aux.AND(Card.IsSetCard,Card.IsFaceup),tp,0,LOCATION_ONFIELD,nil,0xfe7))
 		Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_SPSUMMON)
 		local g=Duel.SelectMatchingCard(tp,s.runfilter,tp,LOCATION_HAND,0,1,1,nil,mg)

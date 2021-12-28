@@ -305,14 +305,14 @@ function Rune.CheckGoal(mnct,stct,bothct,mmin,smin,tmin,tmax)
 		and mnct+stct+bothct<=tmax
 end
 function Rune.Condition(monf,mmin,mmax,stf,smin,smax,group,condition)
-	return	function(e,c,must,g,min,max)
+	return	function(e,c,must,og,min,max)
 				if c==nil then return true end
 				if condition and not condition(e,c) then return false end
 				local tp=c:GetControler()
 				--get usable group
-				if not g then
-					g=Duel.GetMatchingGroup(Card.IsFaceup,tp,LOCATION_ONFIELD,0,nil)
-				end
+				local g
+				if not og then g=Duel.GetMatchingGroup(Card.IsFaceup,tp,LOCATION_ONFIELD,0,nil)
+				else g=og:Clone() end
 				--no extra materials if effect is negated
 				if group and not c:IsDisabled() then
 					g:Merge(group(tp,nil,c))
@@ -351,6 +351,7 @@ end
 function Rune.Target(monf,mmin,mmax,stf,smin,smax,group)
 	return 	function(e,tp,eg,ep,ev,re,r,rp,chk,c,must,og,min,max)
 				--get usable group
+				local g
 				if not og then g=Duel.GetMatchingGroup(Card.IsFaceup,tp,LOCATION_ONFIELD,0,nil)
 				else g=og:Clone() end
 				--no extra materials if effect is negated
