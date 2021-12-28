@@ -60,7 +60,7 @@ function s.runcon(e,tp,eg,ep,ev,re,r,rp)
 	return Duel.IsMainPhase()
 end
 function s.runfilter(c,must,mg)
-	if c:IsType(TYPE_RUNE) and c:IsRuneSummonable(must,mg)
+	return c:IsType(TYPE_RUNE) and c:IsRuneSummonable(must,mg)
 end
 function s.mtfilter(tc,tp)
 	local mg=Duel.GetMatchingGroup(Card.IsFaceup,tp,LOCATION_ONFIELD,0,nil)

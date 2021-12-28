@@ -66,8 +66,6 @@ function s.runop(e,tp,eg,ep,ev,re,r,rp)
 		local g=Duel.SelectMatchingCard(tp,s.runfilter,tp,LOCATION_HAND+LOCATION_GRAVE,0,1,1,nil,must,mg)
 		local sc=g:GetFirst()
 		if sc then
-			local mg=Rune.DefaultGroup(sc,tp)
-			mg:Merge(must)
 			Duel.RuneSummon(tp,sc,must,mg)
 		end
 	end
