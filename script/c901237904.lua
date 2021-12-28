@@ -19,7 +19,7 @@ function s.thfilter(c,tp,mg)
 		and c:IsRuneSummonable(nil,mg,3,nil,LOCATION_HAND)
 end
 function s.target(e,tp,eg,ep,ev,re,r,rp,chk)
-	local mg=Duel.GetMatchingGroup(s.matfilter,tp,LOCATION_ONFIELD,LOCATION_ONFIELD,e:GetHandler())
+	local mg=Duel.GetMatchingGroup(Card.IsFaceup,tp,LOCATION_ONFIELD,LOCATION_ONFIELD,e:GetHandler())
 	if chk==0 then return Duel.IsExistingMatchingCard(s.thfilter,tp,LOCATION_DECK,0,1,nil,tp,mg) end
 	Duel.SetOperationInfo(0,CATEGORY_TOHAND,nil,1,tp,LOCATION_DECK)
 	Duel.SetOperationInfo(0,CATEGORY_SPECIAL_SUMMON,nil,1,tp,LOCATION_HAND)
