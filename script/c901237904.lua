@@ -16,7 +16,7 @@ end
 function s.thfilter(c,tp,mg)
 	return c:IsType(TYPE_RUNE) and c:IsAbleToHand()
 		and Duel.IsExistingMatchingCard(Card.IsAttribute,tp,0,LOCATION_MZONE,1,nil,c:GetAttribute())
-		and c:IsRuneSummonable(nil,mg,3,nil,LOCATION_HAND)
+		and c:IsRuneSummonable(nil,mg,4,nil,LOCATION_HAND)
 end
 function s.target(e,tp,eg,ep,ev,re,r,rp,chk)
 	local mg=Duel.GetMatchingGroup(Card.IsFaceup,tp,LOCATION_ONFIELD,LOCATION_ONFIELD,e:GetHandler())
@@ -33,8 +33,8 @@ function s.thop2(e,tp,eg,ep,ev,re,r,rp)
 	if #g>0 and Duel.SendtoHand(g,nil,REASON_EFFECT) then
 		Duel.ConfirmCards(1-tp,g)
 		local rc=g:GetFirst()
-		if rc:IsRuneSummonable(nil,mg,3,99) then
-			Duel.RuneSummon(tp,rc,nil,mg,3,99)
+		if rc:IsRuneSummonable(nil,mg,4,99) then
+			Duel.RuneSummon(tp,rc,nil,mg,4,99)
 		end
 	end
 end
