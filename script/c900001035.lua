@@ -59,7 +59,7 @@ function s.runop(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
 	local tc=c:GetEquipTarget()
 	if c:IsRelateToEffect(e) and tc and tc:IsFaceup() and not tc:IsImmuneToEffect(e) then
-		local mg=Duel.GetMatchingGroup(Card.IsCanBeRuneGroup,tp,LOCATION_ONFIELD,LOCATION_ONFIELD,nil,Duel.GetCurrentChain())
+		local mg=Duel.GetMatchingGroup(Card.IsCanBeRuneGroup,tp,LOCATION_ONFIELD,0,nil,Duel.GetCurrentChain())
 		local must=Group.FromCards(tc)
 		mg:AddCard(tc)
 		Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_SPSUMMON)
