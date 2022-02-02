@@ -90,7 +90,7 @@ function Rune.AddSecondProcedure(c,monf,mmin,mmax,stf,smin,smax,loc,group,condit
 	c:RegisterEffect(e1)
 end
 function Rune.MonsterFilter(c,f,rc,tp)
-	return c:IsType(TYPE_MONSTER) and not c:IsLocation(LOCATION_SZONE) and (not f or f(c,rc,SUMMON_TYPE_RUNE,tp))
+	return c:IsType(TYPE_MONSTER) and (not f or f(c,rc,SUMMON_TYPE_RUNE,tp))
 		and c:IsCanBeRuneMaterial(nil,tp)
 end
 function Rune.STFilter(c,f,rc,tp)
