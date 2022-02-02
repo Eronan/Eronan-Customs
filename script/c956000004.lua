@@ -60,9 +60,8 @@ function s.rettg(e,tp,eg,ep,ev,re,r,rp,chk)
 	Duel.SetOperationInfo(0,CATEGORY_TOHAND,g,1,0,0)
 end
 function s.retop(e,tp,eg,ep,ev,re,r,rp)
-	if not c:IsRelateToEffect(e) then return end
 	local tc=Duel.GetFirstTarget()
-	if c:IsRelateToEffect(e) and tc:IsRelateToEffect(e) then
+	if e:GetHandler():IsRelateToEffect(e) and tc:IsRelateToEffect(e) then
 		Duel.SendtoHand(tc,nil,REASON_EFFECT)
 	end
 end
