@@ -251,7 +251,7 @@ function Rune.CheckRecursive2(c,mg,sg,csg,mct,sct,bct,monf,mmin,mmax,stf,smin,sm
 	
 	--Check for Valid Extra Materials
 	filt=filt or {}
-	local oldfilt=(table.unpack(filt))
+	local oldfilt={table.unpack(filt)}
 	for _,filt in ipairs(filt) do
 		if not filt[2](c,filt[3]) then
 			sg:RemoveCard(c)
