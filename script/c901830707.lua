@@ -4,8 +4,8 @@ function s.initial_effect(c)
 	local e1=Ritual.CreateProc({handler=c,filter=s.ritualfil,lvtype=RITPROC_EQUAL,extraop=s.extraop,extrafil=s.extrafil,location=LOCATION_DECK|LOCATION_PZONE,matfilter=s.mfilter})
 	e1:SetCountLimit(1,id,EFFECT_COUNT_CODE_OATH)
 	c:RegisterEffect(e1)
-    if not AshBlossomTable then AshBlossomTable={} end
-    table.insert(AshBlossomTable,e1)
+    --if not AshBlossomTable then AshBlossomTable={} end
+    --table.insert(AshBlossomTable,e1)
 	--to hand
 	local e2=Effect.CreateEffect(c)
 	e2:SetDescription(aux.Stringid(id,0))

@@ -3,8 +3,8 @@ local s,id=GetID()
 function s.initial_effect(c)
 	--Ritual
 	local e1=Ritual.AddProcGreater({handler=c,filter=s.ritualfil,extrafil=s.extrafil,extraop=s.extraop,location=LOCATION_HAND|LOCATION_GRAVE})
-	if not GhostBelleTable then GhostBelleTable={} end
-    table.insert(GhostBelleTable,e1)
+	--if not GhostBelleTable then GhostBelleTable={} end
+    --table.insert(GhostBelleTable,e1)
 	--to hand
 	local e2=Effect.CreateEffect(c)
 	e2:SetDescription(aux.Stringid(id,0))
