@@ -114,7 +114,6 @@ end
 function s.extraval(chk,summon_type,e,...)
 	local c=e:GetHandler()
 	if chk==0 then
-		if not sc:IsLocation(LOCATION_HAND) then Debug.Message(tostring(sc:IsLocation(LOCATION_SZONE)).." | "..tostring(sc:IsType(TYPE_RUNE))) end
 		local tp,sc=...
 		if summon_type~=SUMMON_TYPE_RUNE or not sc:IsType(TYPE_RUNE) or Duel.GetFlagEffect(tp,id)>0 then
 			return Group.CreateGroup()
