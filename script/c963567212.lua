@@ -20,7 +20,7 @@ function s.STMatFilter(c,rc,sumtyp,tp)
 	return c:IsOriginalType(TYPE_PENDULUM) and c:IsType(TYPE_SPELL)
 	--return (c:GetType(rc,sumtyp,tp)&TYPE_PENDULUM+TYPE_SPELL)==TYPE_SPELL+TYPE_PENDULUM
 end
-function s.runop(e,tp,chk,mg)
+function s.runchk(e,tp,chk,mg)
 	if chk==0 then return Duel.GetFlagEffect(tp,id)==0 and Duel.GetFlagEffect(0,id+1)>0 end
 	Duel.RegisterFlagEffect(tp,id,RESET_PHASE+PHASE_END,0,1)
 	return true
