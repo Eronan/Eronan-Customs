@@ -4,7 +4,7 @@ local s,id=GetID()
 function s.initial_effect(c)
 	--Rune Summon
 	c:EnableReviveLimit()
-	Rune.AddProcedure(c,aux.FilterBoolFunctionEx(aux.NOT(Card.IsType),TYPE_TOKEN),1,1,s.STMatFilter,1,1,LOCATION_GRAVE,nil,s.runchk)
+	Rune.AddProcedure(c,aux.FilterBoolFunctionEx(aux.NOT(Card.IsType),TYPE_TOKEN),1,1,s.STMatFilter,1,1,LOCATION_GRAVE,nil,nil,s.runchk)
 	--Place in Pendulum Zone
 	local e1=Effect.CreateEffect(c)
 	e1:SetDescription(aux.Stringid(id,0))
@@ -21,7 +21,7 @@ function s.STMatFilter(c,rc,sumtyp,tp)
 	--return (c:GetType(rc,sumtyp,tp)&TYPE_PENDULUM+TYPE_SPELL)==TYPE_SPELL+TYPE_PENDULUM
 end
 function s.runchk(e,tp,chk,mg)
-	if chk==0 then return Duel.GetFlagEffect(tp,id)==0 and Duel.GetFlagEffect(0,id+1)>0 end
+	if chk==0 then return Duel.GetFlagEffect(tp,id)==0 end
 	Duel.RegisterFlagEffect(tp,id,RESET_PHASE+PHASE_END,0,1)
 	return true
 end

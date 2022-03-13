@@ -308,7 +308,7 @@ function Rune.Condition(monf,mmin,mmax,stf,smin,smax,group,condition,exchk)
 	return	function(e,c,must,og,min,max)
 				if c==nil then return true end
 				if condition and not condition(e,c) then return false end
-				if exchk and not exchk(e,tp,0) then return false end
+				if exchk and not exchk(e,e:GetHandlerPlayer(),0) then return false end
 				local tp=c:GetControler()
 				--get usable group
 				local g
