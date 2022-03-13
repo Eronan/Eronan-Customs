@@ -19,7 +19,7 @@ if not Rune then
 	Rune = aux.RuneProcedure
 end
 --Procedure Functions
-function Rune.AddProcedure(c,monf,mmin,mmax,stf,smin,smax,loc,group,condition)
+function Rune.AddProcedure(c,monf,mmin,mmax,stf,smin,smax,loc,group,condition,exchk)
 	--monf is the monster Filter, stf is the S/T Filter
 	--mmin, mmax are the minimums and maximums for the monsters
 	--smin, smax are the minimums and maximums for the Spell/Trap cards
@@ -53,14 +53,14 @@ function Rune.AddProcedure(c,monf,mmin,mmax,stf,smin,smax,loc,group,condition)
 		e2:SetCode(EFFECT_SPSUMMON_PROC)
 		e2:SetProperty(EFFECT_FLAG_UNCOPYABLE+EFFECT_FLAG_IGNORE_IMMUNE)
 		e2:SetRange(loc)
-		e2:SetCondition(Rune.Condition(monf,mmin,mmax,stf,smin,smax,group,condition))
-		e2:SetTarget(Rune.Target(monf,mmin,mmax,stf,smin,smax,group))
+		e2:SetCondition(Rune.Condition(monf,mmin,mmax,stf,smin,smax,group,condition,exchk))
+		e2:SetTarget(Rune.Target(monf,mmin,mmax,stf,smin,smax,group,exchk))
 		e2:SetOperation(Rune.Operation(monf,mmin,mmax,stf,smin,smax,group))
 		e2:SetValue(SUMMON_TYPE_RUNE)
 		c:RegisterEffect(e2)
 	end
 end
-function Rune.AddSecondProcedure(c,monf,mmin,mmax,stf,smin,smax,loc,group,condition)
+function Rune.AddSecondProcedure(c,monf,mmin,mmax,stf,smin,smax,loc,group,condition,exchk)
 	--monf is the monster Filter, stf is the S/T Filter
 	--mmin, mmax are the minimums and maximums for the monsters
 	--smin, smax are the minimums and maximums for the Spell/Trap cards
@@ -83,8 +83,8 @@ function Rune.AddSecondProcedure(c,monf,mmin,mmax,stf,smin,smax,loc,group,condit
 	e1:SetCode(EFFECT_SPSUMMON_PROC)
 	e1:SetProperty(EFFECT_FLAG_UNCOPYABLE+EFFECT_FLAG_IGNORE_IMMUNE)
 	e1:SetRange(loc)
-	e1:SetCondition(Rune.Condition(monf,mmin,mmax,stf,smin,smax,group,condition))
-	e1:SetTarget(Rune.Target(monf,mmin,mmax,stf,smin,smax,group))
+	e1:SetCondition(Rune.Condition(monf,mmin,mmax,stf,smin,smax,group,condition,exchk))
+	e1:SetTarget(Rune.Target(monf,mmin,mmax,stf,smin,smax,group,exchk))
 	e1:SetOperation(Rune.Operation(monf,mmin,mmax,stf,smin,smax,group))
 	e1:SetValue(SUMMON_TYPE_RUNE)
 	c:RegisterEffect(e1)
@@ -95,7 +95,7 @@ function Rune.MonsterFilter(c,f,rc,tp)
 end
 function Rune.STFilter(c,f,rc,tp)
 	return c:IsType(TYPE_SPELL+TYPE_TRAP) and (not f or f(c,rc,SUMMON_TYPE_RUNE,tp))
-		and c:IsCanBeRuneMaterial(nil,tp)
+		and c:IsCanBeRuneMaterial(nil,tp) and c~=rc
 end
 --Check if Usable as Material at all
 function Rune.ConditionFilter(c,monf,stf,rc,tp)
@@ -304,10 +304,11 @@ function Rune.CheckGoal(mnct,stct,bothct,mmin,smin,tmin,tmax)
 		and stct+bothct>=smin
 		and mnct+stct+bothct<=tmax
 end
-function Rune.Condition(monf,mmin,mmax,stf,smin,smax,group,condition)
+function Rune.Condition(monf,mmin,mmax,stf,smin,smax,group,condition,exchk)
 	return	function(e,c,must,og,min,max)
 				if c==nil then return true end
 				if condition and not condition(e,c) then return false end
+				if exchk and not exchk(e,tp,0) then return false end
 				local tp=c:GetControler()
 				--get usable group
 				local g
@@ -326,7 +327,7 @@ function Rune.Condition(monf,mmin,mmax,stf,smin,smax,group,condition)
 				if not min or min < mmin+smin then min=mmin+smin end
 				if not max or max > mmax+smax then max=mmax+smax end
 				--]]
-				local mg=g:Filter(Rune.ConditionFilter,c,monf,stf,c,tp)
+				local mg=g:Filter(Rune.ConditionFilter,nil,monf,stf,c,tp)
 				local mustg=Auxiliary.GetMustBeMaterialGroup(tp,g,tp,c,mg,REASON_RUNE)
 				if must then mustg:Merge(must) end
 				if #mustg>max or mustg:IsExists(aux.NOT(Rune.ConditionFilter),1,nil,monf,stf,c,tp) then return false end
@@ -348,7 +349,7 @@ function Rune.Condition(monf,mmin,mmax,stf,smin,smax,group,condition)
 				return res
 			end
 end
-function Rune.Target(monf,mmin,mmax,stf,smin,smax,group)
+function Rune.Target(monf,mmin,mmax,stf,smin,smax,group,exchk)
 	return 	function(e,tp,eg,ep,ev,re,r,rp,chk,c,must,og,min,max)
 				--get usable group
 				local g
@@ -367,7 +368,7 @@ function Rune.Target(monf,mmin,mmax,stf,smin,smax,group)
 				if not min or min < mmin+smin then min=mmin+smin end
 				if not max or max > mmax+smax then max=mmax+smax end
 				--Variable Set Up
-				local mg=g:Filter(Rune.ConditionFilter,c,monf,stf,c,tp)
+				local mg=g:Filter(Rune.ConditionFilter,nil,monf,stf,c,tp)
 				local mustg=Auxiliary.GetMustBeMaterialGroup(tp,g,tp,c,mg,REASON_RUNE)
 				if must then mustg:Merge(must) end
 				local emt,tg=aux.GetExtraMaterials(tp,mustg+mg,c,SUMMON_TYPE_RUNE)
@@ -416,6 +417,7 @@ function Rune.Target(monf,mmin,mmax,stf,smin,smax,group)
 					local reteff=Effect.GlobalEffect()
 					reteff:SetTarget(function() return sg,filters,emt end)
 					e:SetLabelObject(reteff)
+					if exchk then exchk(e,tp,1,sg) end
 					return true
 				else
 					aux.DeleteExtraMaterialGroups(emt)
