@@ -108,7 +108,7 @@ function s.spcost2(e,tp,eg,ep,ev,re,r,rp,chk)
 end
 function s.spcon2(e,tp,eg,ep,ev,re,r,rp)
 	local de,dp=Duel.GetChainInfo(ev,CHAININFO_DISABLE_REASON,CHAININFO_DISABLE_PLAYER)
-	return re:GetHandlerPlayer()==e:GetHandlerPlayer() and dp~=e:GetHandlerPlayer()
+	return re:GetHandlerPlayer()==e:GetHandlerPlayer() and dp==1-e:GetHandlerPlayer()
 end
 --Activation legality
 function s.sptg2(e,tp,eg,ep,ev,re,r,rp,chk)

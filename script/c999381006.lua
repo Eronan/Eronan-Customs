@@ -24,8 +24,9 @@ function s.thfilter2(c)
 	return c:IsType(TYPE_RUNE) and c:IsAbleToHand() and c:IsRuneSummonable(nil,nil,nil,nil,LOCATION_HAND)
 end
 function s.target(e,tp,eg,ep,ev,re,r,rp,chk)
-	local mg=Duel.GetMatchingGroup(Card.IsFaceup,tp,LOCATION_ONFIELD,0,c)
-	local b1=Duel.IsExistingTarget(s.matfilter,tp,0,LOCATION_ONFIELD,1,nil,tp,mg)
+	local mg=Duel.GetMatchingGroup(Card.IsCanBeRuneGroup,tp,LOCATION_ONFIELD,0,nil)
+	mg:AddCard(e:GetHandler())
+	local b1=Duel.IsExistingTarget(s.matfilter,tp,0,LOCATION_ONFIELD,1,c,tp,mg)
 	local b2=Duel.IsExistingMatchingCard(s.thfilter2,tp,LOCATION_DECK,0,1,nil)
 	if chk==0 then return b1 or b2 end
 	local op=0

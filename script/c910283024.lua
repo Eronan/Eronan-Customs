@@ -46,17 +46,17 @@ end
 function s.repfilter(c,tp)
     return c:IsControler(tp) and c:IsLocation(LOCATION_ONFIELD)
 end
-function s.thfilter(c,e,tp)
+function s.tdfilter(c,e,tp)
     return c:IsControler(1-tp) and c:IsType(TYPE_MONSTER) and c:IsAbleToDeckOrExtraAsCost()
         and not c:IsStatus(STATUS_DESTROY_CONFIRMED+STATUS_BATTLE_DESTROYED)
 end
 function s.desreptg(e,tp,eg,ep,ev,re,r,rp,chk)
     local g=Duel.GetMatchingGroup(Card.IsFaceup,tp,0,LOCATION_MZONE,nil)
     if chk==0 then return eg:IsExists(s.repfilter,1,nil,tp)
-        and g:IsExists(s.thfilter,1,nil,e,tp) end
+        and g:IsExists(s.tdfilter,1,nil,e,tp) end
     if Duel.SelectEffectYesNo(tp,e:GetHandler(),96) then
         Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_DESREPLACE)
-        local sg=g:FilterSelect(tp,s.thfilter,1,1,nil,e,tp)
+        local sg=g:FilterSelect(tp,s.tdfilter,1,1,nil,e,tp)
         e:SetLabelObject(sg:GetFirst())
         Duel.HintSelection(sg)
         return true
@@ -102,7 +102,7 @@ function s.spcost2(e,tp,eg,ep,ev,re,r,rp,chk)
 end
 function s.spcon2(e,tp,eg,ep,ev,re,r,rp)
 	local de,dp=Duel.GetChainInfo(ev,CHAININFO_DISABLE_REASON,CHAININFO_DISABLE_PLAYER)
-	return re:GetHandlerPlayer()==e:GetHandlerPlayer() and dp~=e:GetHandlerPlayer()
+	return re:GetHandlerPlayer()==e:GetHandlerPlayer() and dp==1-e:GetHandlerPlayer()
 end
 --Activation legality
 function s.sptg2(e,tp,eg,ep,ev,re,r,rp,chk)

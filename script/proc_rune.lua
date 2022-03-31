@@ -1,7 +1,17 @@
 --[[
-Strings
+--Strings
 1175 = Rune Summon
-]]
+--]]
+--[[
+--Copy the below for a Rune Monster
+if not Rune then Duel.LoadScript("proc_rune.lua") end
+local s,id=GetID()
+function s.initial_effect(c)
+	--Rune Summon
+	c:EnableReviveLimit()
+	Rune.AddProcedure(c,monf,mmin,mmax,stf,smin,smax,loc,group,condition,exchk)
+end
+--]]
 --Constants
 TYPE_RUNE			= 0x80000000
 MATERIAL_RUNE		= 0x20<<32
