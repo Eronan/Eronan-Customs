@@ -20,14 +20,14 @@ function s.thfilter1(c,mc,mg)
 	return c:IsType(TYPE_RUNE) and c:IsAbleToHand() and mc:IsCanBeRuneMaterial(c,tp)-- and c:GetMinimumRuneMaterials(LOCATION_HAND)>=3
 		and c:IsRuneSummonable(mc,mg,3,nil,LOCATION_HAND)
 end
-function s.thfilter2(c)
-	return c:IsType(TYPE_RUNE) and c:IsAbleToHand() and c:IsRuneSummonable(nil,nil,nil,nil,LOCATION_HAND)
+function s.thfilter2(c,mg)
+	return c:IsType(TYPE_RUNE) and c:IsAbleToHand() and c:IsRuneSummonable(nil,mg,nil,nil,LOCATION_HAND)
 end
 function s.target(e,tp,eg,ep,ev,re,r,rp,chk)
-	local mg=Duel.GetMatchingGroup(Card.IsCanBeRuneGroup,tp,LOCATION_ONFIELD,0,nil)
+	local mg=Duel.GetMatchingGroup(Card.IsCanBeRuneGroup,tp,LOCATION_ONFIELD,0,nil,Duel.GetCurrentChain())
+	local b1=Duel.IsExistingTarget(s.matfilter,tp,0,LOCATION_ONFIELD,1,nil,tp,mg)
 	mg:AddCard(e:GetHandler())
-	local b1=Duel.IsExistingTarget(s.matfilter,tp,0,LOCATION_ONFIELD,1,c,tp,mg)
-	local b2=Duel.IsExistingMatchingCard(s.thfilter2,tp,LOCATION_DECK,0,1,nil)
+	local b2=Duel.IsExistingMatchingCard(s.thfilter2,tp,LOCATION_DECK,0,1,nil,mg)
 	if chk==0 then return b1 or b2 end
 	local op=0
 	if b1 and b2 then
@@ -51,17 +51,15 @@ function s.thop1(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
 	local tc=Duel.GetFirstTarget()
 	local mg=Duel.GetMatchingGroup(Card.IsCanBeRuneGroup,tp,LOCATION_ONFIELD,0,nil,Duel.GetCurrentChain())
-	mg:AddCard(tc)
 	if tc and tc:IsFaceup() and tc:IsRelateToEffect(e) and not tc:IsImmuneToEffect(e) and Duel.IsExistingMatchingCard(s.thfilter1,tp,LOCATION_DECK,0,1,nil,tc,mg) then
 		Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_ATOHAND)
 		local g=Duel.SelectMatchingCard(tp,s.thfilter1,tp,LOCATION_DECK,0,1,1,nil,tc,mg)
+		mg:AddCard(tc)
 		if #g>0 and Duel.SendtoHand(g,nil,REASON_EFFECT) then
 			Duel.ConfirmCards(1-tp,g)
 			
 			--Rune Summon
 			local rc=g:GetFirst()
-			--Debug.Message(tostring(rc:IsRuneSummonable(Group.FromCards(tc),mg,3)).." : "..tostring(rc:IsRuneSummonable(tc,mg,3,nil,LOCATION_HAND)))
-			--Debug.Message(tostring(rc:GetLocation()).." : "..tostring(LOCATION_HAND))
 			if rc:IsRuneSummonable(tc,mg,3,99) then
 				Duel.RuneSummon(tp,rc,tc,mg,3,99)
 			end
