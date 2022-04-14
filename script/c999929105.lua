@@ -22,14 +22,14 @@ function s.runfilter(c,mg)
 	return c:IsOriginalType(TYPE_RUNE) and c:IsRuneSummonable(nil,mg)
 end
 function s.runtg(e,tp,eg,ep,ev,re,r,rp,chk)
-	local mg=e:GetHandler():GetColumnGroup(1,1):AddCard(e:GetHandler())
+	local mg=e:GetHandler():GetColumnGroup(1,1):AddCard(e:GetHandler()):Filter(Card.IsCanBeRuneGroup,nil,Duel.GetCurrentChain())
 	if chk==0 then return Duel.IsExistingMatchingCard(s.runfilter,tp,LOCATION_ALL-LOCATION_MZONE,0,1,nil,mg) end
 	Duel.SetOperationInfo(0,CATEGORY_SPECIAL_SUMMON,nil,1,tp,LOCATION_ALL-LOCATION_MZONE)
 end
 function s.runop(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
 	if not c:IsRelateToEffect(e) or not c:IsLocation(LOCATION_MZONE) or not c:IsFaceup() then return false end
-	local mg=c:GetColumnGroup(1,1):AddCard(e:GetHandler())
+	local mg=c:GetColumnGroup(1,1):AddCard(e:GetHandler()):Filter(Card.IsCanBeRuneGroup,nil,Duel.GetCurrentChain())
 	if #mg>=0 then
 		Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_SPSUMMON)
 		local g=Duel.SelectMatchingCard(tp,s.runfilter,tp,LOCATION_ALL-LOCATION_MZONE,0,1,1,nil,mg)
