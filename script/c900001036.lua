@@ -88,7 +88,7 @@ function s.extraval(chk,summon_type,e,...)
 		end
 	elseif chk==1 then
 		local sg,sc,tp=...
-		if summon_type&SUMMON_TYPE_RUNE == SUMMON_TYPE_RUNE and #sg>0 then
+		if summon_type&SUMMON_TYPE_RUNE == SUMMON_TYPE_RUNE and #sg>0 and Duel.GetFlagEffect(tp,id)==0 then
 			Duel.Hint(HINT_CARD,tp,id)
 			Duel.RegisterFlagEffect(tp,id,RESET_PHASE+PHASE_END,0,1)
 		end
