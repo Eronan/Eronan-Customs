@@ -15,7 +15,7 @@ function s.initial_effect(c)
 end
 function s.thfilter(c,tp,mg)
 	return c:IsType(TYPE_RUNE) and c:IsAbleToHand()
-		and Duel.IsExistingMatchingCard(Card.IsAttribute,tp,0,LOCATION_MZONE,1,nil,c:GetAttribute())
+		and Duel.IsExistingMatchingCard(aux.AND(Card.IsAttribute,Card.IsFaceup),tp,0,LOCATION_MZONE,1,nil,c:GetAttribute())
 		and c:IsRuneSummonable(nil,mg,4,nil,LOCATION_HAND)
 end
 function s.target(e,tp,eg,ep,ev,re,r,rp,chk)
