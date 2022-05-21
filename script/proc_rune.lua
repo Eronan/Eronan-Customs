@@ -585,6 +585,8 @@ end
 --For use in the Operation Procedure when Rune Summoning
 ---Filters out cards that would be sent to the graveyard upon use of the Duel.RuneSummon Function
 ---Not necessary for Target Procedure
+
+--To be integrated into the main Rune Procedure to fix bugs.
 function Card.IsCanBeRuneGroup(c,chain)
 	if not chain then chain=Duel.GetCurrentChain() end
 	return c:IsFaceup() and (chain~=1 or not c:IsStatus(STATUS_LEAVE_CONFIRMED))
