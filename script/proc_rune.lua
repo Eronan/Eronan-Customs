@@ -101,7 +101,7 @@ function Rune.AddSecondProcedure(c,monf,mmin,mmax,stf,smin,smax,loc,group,condit
 end
 function Rune.MonsterFilter(c,f,rc,tp)
 	return c:IsType(TYPE_MONSTER) and (not f or f(c,rc,SUMMON_TYPE_RUNE,tp))
-		and c:IsCanBeRuneMaterial(nil,tp)
+		and c:IsCanBeRuneMaterial(nil,tp) and c~=rc
 end
 function Rune.STFilter(c,f,rc,tp)
 	return c:IsType(TYPE_SPELL+TYPE_TRAP) and (not f or f(c,rc,SUMMON_TYPE_RUNE,tp))
@@ -342,6 +342,7 @@ function Rune.Condition(monf,mmin,mmax,stf,smin,smax,group,condition,exchk)
 				if must then mustg:Merge(must) end
 				if #mustg>max or mustg:IsExists(aux.NOT(Rune.ConditionFilter),1,nil,monf,stf,c,tp) then return false end
 				local emt,tg=aux.GetExtraMaterials(tp,mustg+mg,c,SUMMON_TYPE_RUNE)
+				--Remove cards that go to the Graveyard at the end of the Chain
 				local res=(mg+tg):Includes(mustg) and #mustg<=max
 				if res then
 					if #mustg==max then
@@ -476,10 +477,11 @@ function Rune.Operation(monf,mmin,mmax,stf,smin,smax,group)
 				if tdgroup then
 					g:Sub(tdgroup)
 					Duel.Remove(tdgroup,POS_FACEUP,REASON_MATERIAL+REASON_RUNE)
+					Duel.SendtoDeck(tdgroup,nil,SEQ_DECKBOTTOM,REASON_MATERIAL+REASON_RUNE)
 				end
 				if thgroup then
 					g:Sub(thgroup)
-					Duel.Remove(thgroup,POS_FACEUP,REASON_MATERIAL+REASON_RUNE)
+					Duel.SendtoHand(thgroup,nil,REASON_MATERIAL+REASON_RUNE)
 				end
 				--[[
 				local gycards=g:Filter(Card.IsLocation,nil,LOCATION_GRAVE)
@@ -582,11 +584,8 @@ function Card.IsRuneCode(c,code,rc,sumtype,tp)
 	end
 	return false
 end
---For use in the Operation Procedure when Rune Summoning
----Filters out cards that would be sent to the graveyard upon use of the Duel.RuneSummon Function
----Not necessary for Target Procedure
-
---To be integrated into the main Rune Procedure to fix bugs.
+--Only for use in the Operation Procedure when Rune Summoning using a special Group of Materials
+---Filters out cards that would be sent to the graveyard upon resolution of Duel.RuneSummon Function
 function Card.IsCanBeRuneGroup(c,chain)
 	if not chain then chain=Duel.GetCurrentChain() end
 	return c:IsFaceup() and (chain~=1 or not c:IsStatus(STATUS_LEAVE_CONFIRMED))

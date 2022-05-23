@@ -13,8 +13,11 @@ function s.initial_effect(c)
 	c:RegisterEffect(e1)
 end
 function s.runtg(e,tp,eg,ep,ev,re,r,rp,chk)
-	local mg=Duel.GetMatchingGroup(Card.IsFaceup,tp,LOCATION_ONFIELD,0,nil):AddCard(e:GetHandler())
-	if chk==0 then return Duel.IsExistingMatchingCard(Card.IsRuneSummonable,tp,0x3ff~LOCATION_MZONE,0,1,nil,nil,mg) end
+	if chk==0 then
+		local mg=nil
+		if Duel.GetCurrentChain()>0 then mg=Duel.GetMatchingGroup(Card.IsFaceup,tp,LOCATION_ONFIELD,0,nil):AddCard(e:GetHandler()) end
+		return Duel.IsExistingMatchingCard(Card.IsRuneSummonable,tp,0x3ff~LOCATION_MZONE,0,1,nil,nil,mg)
+	end
 	Duel.SetOperationInfo(0,CATEGORY_SPECIAL_SUMMON,nil,1,tp,0x3ff~LOCATION_MZONE)
 end
 function s.runop(e,tp,eg,ep,ev,re,r,rp)

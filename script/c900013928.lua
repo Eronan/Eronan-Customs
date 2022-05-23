@@ -12,12 +12,13 @@ function s.initial_effect(c)
 	c:RegisterEffect(e1)
 end
 s.listed_series={0xfe8}
-function s.plyrfilter(c,e)
-	return c:IsSetCard(0xfe8) and c:IsRuneSummonable(e:GetHandler())
+function s.plyrfilter(c,ec,mg)
+	return c:IsSetCard(0xfe8) and c:IsRuneSummonable(ec,mg)
 end
 function s.target(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return true end
-	local b1=Duel.IsExistingMatchingCard(s.plyrfilter,tp,LOCATION_HAND,0,1,nil,e)
+	local mg=Duel.GetMatchingGroup(Card.IsFaceup,tp,LOCATION_ONFIELD,0,nil):AddCard(e:GetHandler())
+	local b1=Duel.IsExistingMatchingCard(s.plyrfilter,tp,LOCATION_HAND,0,1,nil,e:GetHandler(),mg)
 	local b2=true
 	local op=0
 	if b1 and b2 then
@@ -35,12 +36,14 @@ function s.target(e,tp,eg,ep,ev,re,r,rp,chk)
 	end
 end
 function s.plyroperation(e,tp,eg,ep,ev,re,r,rp)
-	if not Duel.IsExistingMatchingCard(s.plyrfilter,tp,LOCATION_HAND,0,1,nil,e) then return end
+	--if not Duel.IsExistingMatchingCard(s.plyrfilter,tp,LOCATION_HAND,0,1,nil,c) then return end
+	local c=e:GetHandler()
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_SPSUMMON)
-	local g=Duel.SelectMatchingCard(tp,s.plyrfilter,tp,LOCATION_HAND,0,1,1,nil,e)
-	if g:GetCount()>0 then
-		local sc=g:GetFirst()
-		Duel.RuneSummon(tp,sc,e:GetHandler())
+	local g=Duel.GetMatchingGroup(s.plyrfilter,tp,LOCATION_HAND,0,nil,c)
+	if #g>0 then
+		local sc=g:Select(tp,1,1,nil):GetFirst()
+		c:CancelToGrave()
+		Duel.RuneSummon(tp,sc,c)
 	end
 end
 function s.exfilter(c)
