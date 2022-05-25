@@ -218,7 +218,7 @@ function Rune.CheckRecursive2(c,mg,sg,csg,mct,sct,bct,monf,mmin,mmax,stf,smin,sm
 	--Check Filters
 	local mon=Rune.MonsterFilter(c,monf,rc,tp)
 	local st=Rune.STFilter(c,stf,rc,tp)
-
+	
 	--Count Maximums
 	if #sg>=tmax then return Rune.CheckGoal(mct,sct,bct,mmin,smin,tmin,tmax) end --If the total count exceeds maximum
 	if not st and mct>=mmax then return false end --If cannot be used as S/T Material and Monster Max is full
@@ -263,7 +263,7 @@ function Rune.CheckRecursive2(c,mg,sg,csg,mct,sct,bct,monf,mmin,mmax,stf,smin,sm
 	filt=filt or {}
 	local oldfilt={table.unpack(filt)}
 	for _,filt in ipairs(filt) do
-		if not filt[2](c,filt[3]) then
+		if not filt[2](c,filt[3],tp,sg,mg,rc,filt[1],1) then
 			sg:RemoveCard(c)
 			return false
 		end
@@ -423,11 +423,10 @@ function Rune.Target(monf,mmin,mmax,stf,smin,smax,group,exchk)
 				local mct=sg:FilterCount(aux.NOT(Rune.STFilter),nil,stf,c,tp)
 				if Rune.CheckGoal(mct,sct,#sg-mct-sct,mmin,smin,min,max) then
 					local filters={}
-					Rune.CheckRecursive2(sg:GetFirst(),(mg+tg),Group.CreateGroup(),sg,mct,sct,#sg-mct-sct,monf,mmin,mmax,stf,smin,smax,min,max,c,tp,mg,emt,filters)
+					Rune.CheckRecursive2(sg:GetFirst(),(mg+tg),Group.CreateGroup(),sg,0,0,0,monf,mmin,mmax,stf,smin,smax,min,max,c,tp,mg,emt,filters)
 					sg:KeepAlive()
-					local reteff=Effect.GlobalEffect()
-					reteff:SetTarget(function() return sg,filters,emt end)
-					e:SetLabelObject(reteff)
+					e:SetLabelObject({sg,filters,emt})
+					Debug.Message(#filters)
 					if exchk then exchk(e,tp,1,sg) end
 					return true
 				else
@@ -438,8 +437,8 @@ function Rune.Target(monf,mmin,mmax,stf,smin,smax,group,exchk)
 end
 function Rune.Operation(monf,mmin,mmax,stf,smin,smax,group)
 	return 	function(e,tp,eg,ep,ev,re,r,rp,c,must,g,min,max)
-				local g,filt,emt=e:GetLabelObject():GetTarget()()
-				e:GetLabelObject():Reset()
+				local g,filt,emt=table.unpack(e:GetLabelObject())
+				Debug.Message(#filt)
 				for _,ex in ipairs(filt) do
 					if ex[3]:GetValue() then
 						ex[3]:GetValue()(1,SUMMON_TYPE_RUNE,ex[3],ex[1]&g,c,tp)
@@ -492,6 +491,7 @@ function Rune.Operation(monf,mmin,mmax,stf,smin,smax,group)
 				--]]
 				Duel.SendtoGrave(g,REASON_MATERIAL+REASON_RUNE)
 				g:DeleteGroup()
+				e:GetLabelObject(nil)
 				aux.DeleteExtraMaterialGroups(emt)
 			end
 end

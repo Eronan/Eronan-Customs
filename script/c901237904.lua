@@ -37,7 +37,6 @@ function s.thop2(e,tp,eg,ep,ev,re,r,rp)
 			Duel.RuneSummon(tp,rc,nil,mg,4,99)
 			
 			if Duel.GetFieldGroupCount(tp,0,LOCATION_MZONE)==0 then
-				Debug.Message("Reached")
 				--Cannot activate its effects
 				local e1=Effect.CreateEffect(e:GetHandler())
 				e1:SetDescription(3302)
