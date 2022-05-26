@@ -9,7 +9,7 @@ local s,id=GetID()
 function s.initial_effect(c)
 	--Rune Summon
 	c:EnableReviveLimit()
-	Rune.AddProcedure(c,monf,mmin,mmax,stf,smin,smax,loc,group,condition,exchk)
+	Rune.AddProcedure(c,monf,mmin,mmax,stf,smin,smax,loc,group,condition,excondition,specialchk)
 end
 --]]
 --Constants
@@ -29,7 +29,7 @@ if not Rune then
 	Rune = aux.RuneProcedure
 end
 --Procedure Functions
-function Rune.AddProcedure(c,monf,mmin,mmax,stf,smin,smax,loc,group,condition,exchk)
+function Rune.AddProcedure(c,monf,mmin,mmax,stf,smin,smax,loc,group,condition,excondition,specialchk)
 	--monf is the monster Filter, stf is the S/T Filter
 	--mmin, mmax are the minimums and maximums for the monsters
 	--smin, smax are the minimums and maximums for the Spell/Trap cards
@@ -42,7 +42,7 @@ function Rune.AddProcedure(c,monf,mmin,mmax,stf,smin,smax,loc,group,condition,ex
 		local mt=c:GetMetatable()
 		--mt.rune_monster_filter=function(c) end
 		mt.rune_parameters={}
-		table.insert(mt.rune_parameters,{monf,mmin,mmax,stf,smin,smax,loc+LOCATION_HAND,group,condition})
+		table.insert(mt.rune_parameters,{monf,mmin,mmax,stf,smin,smax,loc+LOCATION_HAND,group,condition,specialchk})
 	end
 	local e1=Effect.CreateEffect(c)
 	e1:SetType(EFFECT_TYPE_FIELD)
@@ -50,8 +50,8 @@ function Rune.AddProcedure(c,monf,mmin,mmax,stf,smin,smax,loc,group,condition,ex
 	e1:SetCode(EFFECT_SPSUMMON_PROC)
 	e1:SetProperty(EFFECT_FLAG_UNCOPYABLE+EFFECT_FLAG_IGNORE_IMMUNE+EFFECT_FLAG_CANNOT_DISABLE)
 	e1:SetRange(LOCATION_HAND)
-	e1:SetCondition(Rune.Condition(monf,mmin,mmax,stf,smin,smax,group,condition))
-	e1:SetTarget(Rune.Target(monf,mmin,mmax,stf,smin,smax,group))
+	e1:SetCondition(Rune.Condition(monf,mmin,mmax,stf,smin,smax,group,condition,nil,specialchk))
+	e1:SetTarget(Rune.Target(monf,mmin,mmax,stf,smin,smax,group,nil,specialchk))
 	e1:SetOperation(Rune.Operation(monf,mmin,mmax,stf,smin,smax,group))
 	e1:SetValue(SUMMON_TYPE_RUNE)
 	c:RegisterEffect(e1)
@@ -63,14 +63,14 @@ function Rune.AddProcedure(c,monf,mmin,mmax,stf,smin,smax,loc,group,condition,ex
 		e2:SetCode(EFFECT_SPSUMMON_PROC)
 		e2:SetProperty(EFFECT_FLAG_UNCOPYABLE+EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_IGNORE_IMMUNE)
 		e2:SetRange(loc)
-		e2:SetCondition(Rune.Condition(monf,mmin,mmax,stf,smin,smax,group,condition,exchk))
-		e2:SetTarget(Rune.Target(monf,mmin,mmax,stf,smin,smax,group,exchk))
+		e2:SetCondition(Rune.Condition(monf,mmin,mmax,stf,smin,smax,group,condition,excondition,specialchk))
+		e2:SetTarget(Rune.Target(monf,mmin,mmax,stf,smin,smax,group,excondition,specialchk))
 		e2:SetOperation(Rune.Operation(monf,mmin,mmax,stf,smin,smax,group))
 		e2:SetValue(SUMMON_TYPE_RUNE)
 		c:RegisterEffect(e2)
 	end
 end
-function Rune.AddSecondProcedure(c,monf,mmin,mmax,stf,smin,smax,loc,group,condition,exchk)
+function Rune.AddSecondProcedure(c,monf,mmin,mmax,stf,smin,smax,loc,group,condition,excondition)
 	--monf is the monster Filter, stf is the S/T Filter
 	--mmin, mmax are the minimums and maximums for the monsters
 	--smin, smax are the minimums and maximums for the Spell/Trap cards
@@ -82,10 +82,10 @@ function Rune.AddSecondProcedure(c,monf,mmin,mmax,stf,smin,smax,loc,group,condit
 		local mt=c:GetMetatable()
 		--mt.rune_monster_filter=function(c) end
 		mt.rune_parameters={}
-		table.insert(mt.rune_parameters,{monf,mmin,mmax,stf,smin,smax,loc,group,condition})
+		table.insert(mt.rune_parameters,{monf,mmin,mmax,stf,smin,smax,loc,group,condition,specialchk})
 	else
 		local mt=c:GetMetatable()
-		table.insert(mt.rune_parameters,{monf,mmin,mmax,stf,smin,smax,loc,group,condition})
+		table.insert(mt.rune_parameters,{monf,mmin,mmax,stf,smin,smax,loc,group,condition,specialchk})
 	end
 	local e1=Effect.CreateEffect(c)
 	e1:SetType(EFFECT_TYPE_FIELD)
@@ -93,8 +93,8 @@ function Rune.AddSecondProcedure(c,monf,mmin,mmax,stf,smin,smax,loc,group,condit
 	e1:SetCode(EFFECT_SPSUMMON_PROC)
 	e1:SetProperty(EFFECT_FLAG_UNCOPYABLE+EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_IGNORE_IMMUNE)
 	e1:SetRange(loc)
-	e1:SetCondition(Rune.Condition(monf,mmin,mmax,stf,smin,smax,group,condition,exchk))
-	e1:SetTarget(Rune.Target(monf,mmin,mmax,stf,smin,smax,group,exchk))
+	e1:SetCondition(Rune.Condition(monf,mmin,mmax,stf,smin,smax,group,condition,excondition,specialchk))
+	e1:SetTarget(Rune.Target(monf,mmin,mmax,stf,smin,smax,group,excondition,specialchk))
 	e1:SetOperation(Rune.Operation(monf,mmin,mmax,stf,smin,smax,group))
 	e1:SetValue(SUMMON_TYPE_RUNE)
 	c:RegisterEffect(e1)
@@ -124,7 +124,7 @@ tmin & tmax = The min/max material requirements from an Effect
 og = All Usable Materials without Extra Materials
 emt = Extra Material Table
 ]]
-function Rune.CheckRecursive(c,mg,sg,mct,sct,bct,monf,mmin,mmax,stf,smin,smax,tmin,tmax,rc,tp,og,emt,filt)
+function Rune.CheckRecursive(c,mg,sg,mct,sct,bct,monf,mmin,mmax,stf,smin,smax,tmin,tmax,rc,tp,og,emt,filt,specialchk)
 	--Check Filters
 	local mon=Rune.MonsterFilter(c,monf,rc,tp)
 	local st=Rune.STFilter(c,stf,rc,tp)
@@ -190,14 +190,14 @@ function Rune.CheckRecursive(c,mg,sg,mct,sct,bct,monf,mmin,mmax,stf,smin,smax,tm
 	--Check Recursive and Increment Count based on Type
 	local res=false
 	if mon and st then
-		res=Rune.CheckGoal(mct,sct,bct+1,mmin,smin,tmin,tmax) or
-			mg:IsExists(Rune.CheckRecursive,1,sg,mg,sg,mct,sct,bct+1,monf,mmin,mmax,stf,smin,smax,tmin,tmax,rc,tp,og,emt,filt)
+		res=(Rune.CheckGoal(mct,sct,bct+1,mmin,smin,tmin,tmax) and (not specialchk or specialchk(sg,rc,SUMMON_TYPE_RUNE|MATERIAL_RUNE,tp))) or
+			mg:IsExists(Rune.CheckRecursive,1,sg,mg,sg,mct,sct,bct+1,monf,mmin,mmax,stf,smin,smax,tmin,tmax,rc,tp,og,emt,filt,specialchk)
 	elseif mon then
-		res=Rune.CheckGoal(mct+1,sct,bct,mmin,smin,tmin,tmax) or
-			mg:IsExists(Rune.CheckRecursive,1,sg,mg,sg,mct+1,sct,bct,monf,mmin,mmax,stf,smin,smax,tmin,tmax,rc,tp,og,emt,filt)
+		res=(Rune.CheckGoal(mct+1,sct,bct,mmin,smin,tmin,tmax) and (not specialchk or specialchk(sg,rc,SUMMON_TYPE_RUNE|MATERIAL_RUNE,tp))) or
+			mg:IsExists(Rune.CheckRecursive,1,sg,mg,sg,mct+1,sct,bct,monf,mmin,mmax,stf,smin,smax,tmin,tmax,rc,tp,og,emt,filt,specialchk)
 	elseif st then
-		res=Rune.CheckGoal(mct,sct+1,bct,mmin,smin,tmin,tmax) or
-			mg:IsExists(Rune.CheckRecursive,1,sg,mg,sg,mct,sct+1,bct,monf,mmin,mmax,stf,smin,smax,tmin,tmax,rc,tp,og,emt,filt)
+		res=(Rune.CheckGoal(mct,sct+1,bct,mmin,smin,tmin,tmax) and (not specialchk or specialchk(sg,rc,SUMMON_TYPE_RUNE|MATERIAL_RUNE,tp))) or
+			mg:IsExists(Rune.CheckRecursive,1,sg,mg,sg,mct,sct+1,bct,monf,mmin,mmax,stf,smin,smax,tmin,tmax,rc,tp,og,emt,filt,specialchk)
 	end
 	
 	if rc:IsLocation(LOCATION_EXTRA) then
@@ -214,13 +214,13 @@ function Rune.CheckRecursive(c,mg,sg,mct,sct,bct,monf,mmin,mmax,stf,smin,smax,tm
 end
 --csg represents the cards already chosen in the Target Function: Current SG
 --Function Sets up Filters
-function Rune.CheckRecursive2(c,mg,sg,csg,mct,sct,bct,monf,mmin,mmax,stf,smin,smax,tmin,tmax,rc,tp,og,emt,filt)
+function Rune.CheckRecursive2(c,mg,sg,csg,mct,sct,bct,monf,mmin,mmax,stf,smin,smax,tmin,tmax,rc,tp,og,emt,filt,specialchk)
 	--Check Filters
 	local mon=Rune.MonsterFilter(c,monf,rc,tp)
 	local st=Rune.STFilter(c,stf,rc,tp)
 	
 	--Count Maximums
-	if #sg>=tmax then return Rune.CheckGoal(mct,sct,bct,mmin,smin,tmin,tmax) end --If the total count exceeds maximum
+	if #sg>=tmax then return Rune.CheckGoal(mct,sct,bct,mmin,smin,tmin,tmax) and (not specialchk or specialchk(sg,rc,SUMMON_TYPE_RUNE|MATERIAL_RUNE,tp)) end --If the total count exceeds maximum
 	if not st and mct>=mmax then return false end --If cannot be used as S/T Material and Monster Max is full
 	if not mon and sct>=smax then return false end --If cannot be used as Monster Material and S/T Max is full
 	
@@ -281,16 +281,16 @@ function Rune.CheckRecursive2(c,mg,sg,csg,mct,sct,bct,monf,mmin,mmax,stf,smin,sm
 	if #(csg-sg)==0 then
 		if mg and #mg>0 then
 			if mon and st then
-				res=mg:IsExists(Rune.CheckRecursive,1,sg,mg,sg,mct,sct,bct+1,monf,mmin,mmax,stf,smin,smax,tmin,tmax,rc,tp,og,emt,filt)
+				res=mg:IsExists(Rune.CheckRecursive,1,sg,mg,sg,mct,sct,bct+1,monf,mmin,mmax,stf,smin,smax,tmin,tmax,rc,tp,og,emt,filt,specialchk)
 			elseif mon then
-				res=mg:IsExists(Rune.CheckRecursive,1,sg,mg,sg,mct+1,sct,bct,monf,mmin,mmax,stf,smin,smax,tmin,tmax,rc,tp,og,emt,filt)
+				res=mg:IsExists(Rune.CheckRecursive,1,sg,mg,sg,mct+1,sct,bct,monf,mmin,mmax,stf,smin,smax,tmin,tmax,rc,tp,og,emt,filt,specialchk)
 			elseif st then
-				res=mg:IsExists(Rune.CheckRecursive,1,sg,mg,sg,mct,sct+1,bct,monf,mmin,mmax,stf,smin,smax,tmin,tmax,rc,tp,og,emt,filt)
+				res=mg:IsExists(Rune.CheckRecursive,1,sg,mg,sg,mct,sct+1,bct,monf,mmin,mmax,stf,smin,smax,tmin,tmax,rc,tp,og,emt,filt,specialchk)
 			end
 			sg:RemoveCard(c)
 			return res
 		else
-			local res=Auxiliary.CheckGoal(mct,sct,bct,mmin,smin,tmin,tmax)
+			local res=Rune.CheckGoal(mct,sct,bct,mmin,smin,tmin,tmax)
 			sg:RemoveCard(c)
 			return res
 		end
@@ -298,11 +298,11 @@ function Rune.CheckRecursive2(c,mg,sg,csg,mct,sct,bct,monf,mmin,mmax,stf,smin,sm
 	
 	--Self-Recursion
 	if mon and st then
-		res=Rune.CheckRecursive2((csg-sg):GetFirst(),mg,sg,csg,mct,sct,bct+1,monf,mmin,mmax,stf,smin,smax,tmin,tmax,rc,tp,og,emt,filt)
+		res=Rune.CheckRecursive2((csg-sg):GetFirst(),mg,sg,csg,mct,sct,bct+1,monf,mmin,mmax,stf,smin,smax,tmin,tmax,rc,tp,og,emt,filt,specialchk)
 	elseif mon then
-		res=Rune.CheckRecursive2((csg-sg):GetFirst(),mg,sg,csg,mct+1,sct,bct,monf,mmin,mmax,stf,smin,smax,tmin,tmax,rc,tp,og,emt,filt)
+		res=Rune.CheckRecursive2((csg-sg):GetFirst(),mg,sg,csg,mct+1,sct,bct,monf,mmin,mmax,stf,smin,smax,tmin,tmax,rc,tp,og,emt,filt,specialchk)
 	elseif st then
-		res=Rune.CheckRecursive2((csg-sg):GetFirst(),mg,sg,csg,mct,sct+1,bct,monf,mmin,mmax,stf,smin,smax,tmin,tmax,rc,tp,og,emt,filt)
+		res=Rune.CheckRecursive2((csg-sg):GetFirst(),mg,sg,csg,mct,sct+1,bct,monf,mmin,mmax,stf,smin,smax,tmin,tmax,rc,tp,og,emt,filt,specialchk)
 	end
 	
 	--Reset all Values (Groups, Filters, etc)
@@ -314,11 +314,11 @@ function Rune.CheckGoal(mnct,stct,bothct,mmin,smin,tmin,tmax)
 		and stct+bothct>=smin
 		and mnct+stct+bothct<=tmax
 end
-function Rune.Condition(monf,mmin,mmax,stf,smin,smax,group,condition,exchk)
+function Rune.Condition(monf,mmin,mmax,stf,smin,smax,group,condition,excondition,specialchk)
 	return	function(e,c,must,og,min,max)
 				if c==nil then return true end
 				if condition and not condition(e,c) then return false end
-				if exchk and not exchk(e,e:GetHandlerPlayer(),0) then return false end
+				if excondition and not excondition(e,e:GetHandlerPlayer(),0) then return false end
 				local tp=c:GetControler()
 				--get usable group
 				local g
@@ -347,20 +347,20 @@ function Rune.Condition(monf,mmin,mmax,stf,smin,smax,group,condition,exchk)
 				if res then
 					if #mustg==max then
 						local sg=Group.CreateGroup()
-						res=mustg:IsExists(Rune.CheckRecursive,1,sg,mg+tg,sg,0,0,0,monf,mmin,mmax,stf,smin,smax,min,max,c,tp,mg,emt)
+						res=mustg:IsExists(Rune.CheckRecursive,1,sg,mg+tg,sg,0,0,0,monf,mmin,mmax,stf,smin,smax,min,max,c,tp,mg,emt,nil,specialchk)
 					elseif #mustg<max then
 						local sg=mustg
 						local mct=sg:FilterCount(aux.NOT(Card.IsType),nil,TYPE_SPELL+TYPE_TRAP)
 						local sct=sg:FilterCount(aux.NOT(Card.IsType),nil,TYPE_MONSTER)
 						if mct>mmax or sct>smax then return false end
-						res=(mg+tg):IsExists(Rune.CheckRecursive,1,sg,mg+tg,sg,mct,sct,#sg-mct-sct,monf,mmin,mmax,stf,smin,smax,min,max,c,tp,mg,emt)
+						res=(mg+tg):IsExists(Rune.CheckRecursive,1,sg,mg+tg,sg,mct,sct,#sg-mct-sct,monf,mmin,mmax,stf,smin,smax,min,max,c,tp,mg,emt,nil,specialchk)
 					end
 				end
 				aux.DeleteExtraMaterialGroups(emt)
 				return res
 			end
 end
-function Rune.Target(monf,mmin,mmax,stf,smin,smax,group,exchk)
+function Rune.Target(monf,mmin,mmax,stf,smin,smax,group,excondition,specialchk)
 	return 	function(e,tp,eg,ep,ev,re,r,rp,chk,c,must,og,min,max)
 				--get usable group
 				local g
@@ -395,15 +395,15 @@ function Rune.Target(monf,mmin,mmax,stf,smin,smax,group,exchk)
 					--Filters
 					local filters={}
 					if #sg>0 then
-						Rune.CheckRecursive2(sg:GetFirst(),mg+tg,Group.CreateGroup(),sg,mct,sct,bct,monf,mmin,mmax,stf,smin,smax,min,max,c,tp,mg,emt,filters)
+						Rune.CheckRecursive2(sg:GetFirst(),mg+tg,Group.CreateGroup(),sg,mct,sct,bct,monf,mmin,mmax,stf,smin,smax,min,max,c,tp,mg,emt,filters,specialchk)
 					end
 					
 					--Get Selectable Cards
-					local cg=(mg+tg):Filter(Rune.CheckRecursive,sg,mg+tg,sg,mct,sct,bct,monf,mmin,mmax,stf,smin,smax,min,max,c,tp,mg,emt,filters)
+					local cg=(mg+tg):Filter(Rune.CheckRecursive,sg,mg+tg,sg,mct,sct,bct,monf,mmin,mmax,stf,smin,smax,min,max,c,tp,mg,emt,filters,specialchk)
 					if #cg==0 then break end
 					
 					--Cancellable
-					finish=Rune.CheckGoal(mct,sct,bct,mmin,smin,min,max)
+					finish=Rune.CheckGoal(mct,sct,bct,mmin,smin,min,max) and (not specialchk or specialchk(sg,c,SUMMON_TYPE_RUNE|MATERIAL_RUNE,tp))
 					cancel=not og and Duel.IsSummonCancelable()
 					
 					--Select a Card
@@ -421,13 +421,12 @@ function Rune.Target(monf,mmin,mmax,stf,smin,smax,group,exchk)
 				end
 				local sct=sg:FilterCount(aux.NOT(Rune.MonsterFilter),nil,monf,c,tp)
 				local mct=sg:FilterCount(aux.NOT(Rune.STFilter),nil,stf,c,tp)
-				if Rune.CheckGoal(mct,sct,#sg-mct-sct,mmin,smin,min,max) then
+				if Rune.CheckGoal(mct,sct,#sg-mct-sct,mmin,smin,min,max) and (not specialchk or specialchk(sg,c,SUMMON_TYPE_RUNE|MATERIAL_RUNE,tp))then
 					local filters={}
-					Rune.CheckRecursive2(sg:GetFirst(),(mg+tg),Group.CreateGroup(),sg,0,0,0,monf,mmin,mmax,stf,smin,smax,min,max,c,tp,mg,emt,filters)
+					Rune.CheckRecursive2(sg:GetFirst(),(mg+tg),Group.CreateGroup(),sg,0,0,0,monf,mmin,mmax,stf,smin,smax,min,max,c,tp,mg,emt,filters,specialchk)
 					sg:KeepAlive()
 					e:SetLabelObject({sg,filters,emt})
-					Debug.Message(#filters)
-					if exchk then exchk(e,tp,1,sg) end
+					if excondition then excondition(e,tp,1,sg) end
 					return true
 				else
 					aux.DeleteExtraMaterialGroups(emt)
@@ -438,7 +437,6 @@ end
 function Rune.Operation(monf,mmin,mmax,stf,smin,smax,group)
 	return 	function(e,tp,eg,ep,ev,re,r,rp,c,must,g,min,max)
 				local g,filt,emt=table.unpack(e:GetLabelObject())
-				Debug.Message(#filt)
 				for _,ex in ipairs(filt) do
 					if ex[3]:GetValue() then
 						ex[3]:GetValue()(1,SUMMON_TYPE_RUNE,ex[3],ex[1]&g,c,tp)
