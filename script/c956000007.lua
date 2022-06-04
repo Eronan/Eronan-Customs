@@ -57,7 +57,7 @@ function s.sptg(e,tp,eg,ep,ev,re,r,rp,chk)
 	Duel.SetOperationInfo(0,CATEGORY_SPECIAL_SUMMON,c,1,0,0)
 end
 function s.spop(e,tp,eg,ep,ev,re,r,rp)
-	if not c:IsRelateToEffect(e) then return end
+	if not e:GetHandler():IsRelateToEffect(e) then return end
 	local mg1=Duel.GetRitualMaterial(tp)
 	mg1:Remove(Card.IsLocation,nil,LOCATION_HAND)
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_SPSUMMON)
