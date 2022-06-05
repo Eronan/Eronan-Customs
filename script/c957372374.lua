@@ -57,7 +57,7 @@ function s.initial_effect(c)
 	e5:SetOperation(s.negop)
 	e5:SetLabelObject(e4)
 	c:RegisterEffect(e5)
-	aux.DoubleSnareValidity(c,LOCATION_MZONE)
+	--aux.DoubleSnareValidity(c,LOCATION_MZONE)
 end
 s.listed_series={0xfeb}
 function s.monfilter(c,fc,sumtype,tp)

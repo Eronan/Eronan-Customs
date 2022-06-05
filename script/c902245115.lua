@@ -44,13 +44,13 @@ function s.repfilter(c,e,tp)
 	return c:IsControler(tp) and c:IsLocation(LOCATION_ONFIELD)
 end
 function s.repcon(e,tp,eg,ep,ev,re,r,rp)
-	if e==re or not re:IsHasProperty(EFFECT_FLAG_CARD_TARGET) then return false end
+	if e:GetHandlerPlayer()==re:GetHandlerPlayer() or not re:IsHasProperty(EFFECT_FLAG_CARD_TARGET) then return false end
 	local g=Duel.GetChainInfo(ev,CHAININFO_TARGET_CARDS)
 	if not g then return false end
-	g:Filter(s.repfilter,nil,e,tp)
-	e:SetLabelObject(g)
-	g:KeepAlive()
-	return #g>0
+	local tg=g:Filter(s.repfilter,nil,e,tp)
+	e:SetLabelObject(tg)
+	tg:KeepAlive()
+	return #tg>0
 end
 function s.repop(e,tp,eg,ep,ev,re,r,rp)
 	local g=e:GetLabelObject()

@@ -101,11 +101,11 @@ function Rune.AddSecondProcedure(c,monf,mmin,mmax,stf,smin,smax,loc,group,condit
 end
 function Rune.MonsterFilter(c,f,rc,tp)
 	return c:IsType(TYPE_MONSTER) and (not f or f(c,rc,SUMMON_TYPE_RUNE,tp))
-		and c:IsCanBeRuneMaterial(nil,tp) and c~=rc
+		and c:IsCanBeRuneMaterial(rc,tp) and c~=rc
 end
 function Rune.STFilter(c,f,rc,tp)
 	return c:IsType(TYPE_SPELL+TYPE_TRAP) and (not f or f(c,rc,SUMMON_TYPE_RUNE,tp))
-		and c:IsCanBeRuneMaterial(nil,tp) and c~=rc
+		and c:IsCanBeRuneMaterial(rc,tp) and c~=rc
 end
 --Check if Usable as Material at all
 function Rune.ConditionFilter(c,monf,stf,rc,tp)
