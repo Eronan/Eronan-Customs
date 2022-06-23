@@ -124,7 +124,7 @@ tmin & tmax = The min/max material requirements from an Effect
 og = All Usable Materials without Extra Materials
 emt = Extra Material Table
 ]]
-function Rune.CheckRecursive(c,mg,sg,mct,sct,bct,monf,mmin,mmax,stf,smin,smax,tmin,tmax,rc,tp,og,emt,filt,specialchk)
+function Rune.CheckRecursive(c,mg,sg,mct,sct,bct,monf,mmin,mmax,stf,smin,smax,tmin,tmax,rc,tp,og,emt,filt,runechk)
 	--Check Filters
 	local mon=Rune.MonsterFilter(c,monf,rc,tp)
 	local st=Rune.STFilter(c,stf,rc,tp)
@@ -190,14 +190,14 @@ function Rune.CheckRecursive(c,mg,sg,mct,sct,bct,monf,mmin,mmax,stf,smin,smax,tm
 	--Check Recursive and Increment Count based on Type
 	local res=false
 	if mon and st then
-		res=(Rune.CheckGoal(mct,sct,bct+1,mmin,smin,tmin,tmax) and (not specialchk or specialchk(sg,rc,SUMMON_TYPE_RUNE|MATERIAL_RUNE,tp))) or
-			mg:IsExists(Rune.CheckRecursive,1,sg,mg,sg,mct,sct,bct+1,monf,mmin,mmax,stf,smin,smax,tmin,tmax,rc,tp,og,emt,filt,specialchk)
+		res=(Rune.CheckGoal(mct,sct,bct+1,mmin,smin,tmin,tmax) and (not runechk or runechk(sg,rc,SUMMON_TYPE_RUNE|MATERIAL_RUNE,tp))) or
+			mg:IsExists(Rune.CheckRecursive,1,sg,mg,sg,mct,sct,bct+1,monf,mmin,mmax,stf,smin,smax,tmin,tmax,rc,tp,og,emt,filt,runechk)
 	elseif mon then
-		res=(Rune.CheckGoal(mct+1,sct,bct,mmin,smin,tmin,tmax) and (not specialchk or specialchk(sg,rc,SUMMON_TYPE_RUNE|MATERIAL_RUNE,tp))) or
-			mg:IsExists(Rune.CheckRecursive,1,sg,mg,sg,mct+1,sct,bct,monf,mmin,mmax,stf,smin,smax,tmin,tmax,rc,tp,og,emt,filt,specialchk)
+		res=(Rune.CheckGoal(mct+1,sct,bct,mmin,smin,tmin,tmax) and (not runechk or runechk(sg,rc,SUMMON_TYPE_RUNE|MATERIAL_RUNE,tp))) or
+			mg:IsExists(Rune.CheckRecursive,1,sg,mg,sg,mct+1,sct,bct,monf,mmin,mmax,stf,smin,smax,tmin,tmax,rc,tp,og,emt,filt,runechk)
 	elseif st then
-		res=(Rune.CheckGoal(mct,sct+1,bct,mmin,smin,tmin,tmax) and (not specialchk or specialchk(sg,rc,SUMMON_TYPE_RUNE|MATERIAL_RUNE,tp))) or
-			mg:IsExists(Rune.CheckRecursive,1,sg,mg,sg,mct,sct+1,bct,monf,mmin,mmax,stf,smin,smax,tmin,tmax,rc,tp,og,emt,filt,specialchk)
+		res=(Rune.CheckGoal(mct,sct+1,bct,mmin,smin,tmin,tmax) and (not runechk or runechk(sg,rc,SUMMON_TYPE_RUNE|MATERIAL_RUNE,tp))) or
+			mg:IsExists(Rune.CheckRecursive,1,sg,mg,sg,mct,sct+1,bct,monf,mmin,mmax,stf,smin,smax,tmin,tmax,rc,tp,og,emt,filt,runechk)
 	end
 	
 	if rc:IsLocation(LOCATION_EXTRA) then
@@ -214,13 +214,13 @@ function Rune.CheckRecursive(c,mg,sg,mct,sct,bct,monf,mmin,mmax,stf,smin,smax,tm
 end
 --csg represents the cards already chosen in the Target Function: Current SG
 --Function Sets up Filters
-function Rune.CheckRecursive2(c,mg,sg,csg,mct,sct,bct,monf,mmin,mmax,stf,smin,smax,tmin,tmax,rc,tp,og,emt,filt,specialchk)
+function Rune.CheckRecursive2(c,mg,sg,csg,mct,sct,bct,monf,mmin,mmax,stf,smin,smax,tmin,tmax,rc,tp,og,emt,filt,runechk)
 	--Check Filters
 	local mon=Rune.MonsterFilter(c,monf,rc,tp)
 	local st=Rune.STFilter(c,stf,rc,tp)
 	
 	--Count Maximums
-	if #sg>=tmax then return Rune.CheckGoal(mct,sct,bct,mmin,smin,tmin,tmax) and (not specialchk or specialchk(sg,rc,SUMMON_TYPE_RUNE|MATERIAL_RUNE,tp)) end --If the total count exceeds maximum
+	if #sg>=tmax then return Rune.CheckGoal(mct,sct,bct,mmin,smin,tmin,tmax) and (not runechk or runechk(sg,rc,SUMMON_TYPE_RUNE|MATERIAL_RUNE,tp)) end --If the total count exceeds maximum
 	if not st and mct>=mmax then return false end --If cannot be used as S/T Material and Monster Max is full
 	if not mon and sct>=smax then return false end --If cannot be used as Monster Material and S/T Max is full
 	
@@ -281,11 +281,11 @@ function Rune.CheckRecursive2(c,mg,sg,csg,mct,sct,bct,monf,mmin,mmax,stf,smin,sm
 	if #(csg-sg)==0 then
 		if mg and #mg>0 then
 			if mon and st then
-				res=mg:IsExists(Rune.CheckRecursive,1,sg,mg,sg,mct,sct,bct+1,monf,mmin,mmax,stf,smin,smax,tmin,tmax,rc,tp,og,emt,filt,specialchk)
+				res=mg:IsExists(Rune.CheckRecursive,1,sg,mg,sg,mct,sct,bct+1,monf,mmin,mmax,stf,smin,smax,tmin,tmax,rc,tp,og,emt,filt,runechk)
 			elseif mon then
-				res=mg:IsExists(Rune.CheckRecursive,1,sg,mg,sg,mct+1,sct,bct,monf,mmin,mmax,stf,smin,smax,tmin,tmax,rc,tp,og,emt,filt,specialchk)
+				res=mg:IsExists(Rune.CheckRecursive,1,sg,mg,sg,mct+1,sct,bct,monf,mmin,mmax,stf,smin,smax,tmin,tmax,rc,tp,og,emt,filt,runechk)
 			elseif st then
-				res=mg:IsExists(Rune.CheckRecursive,1,sg,mg,sg,mct,sct+1,bct,monf,mmin,mmax,stf,smin,smax,tmin,tmax,rc,tp,og,emt,filt,specialchk)
+				res=mg:IsExists(Rune.CheckRecursive,1,sg,mg,sg,mct,sct+1,bct,monf,mmin,mmax,stf,smin,smax,tmin,tmax,rc,tp,og,emt,filt,runechk)
 			end
 			sg:RemoveCard(c)
 			return res
@@ -298,11 +298,11 @@ function Rune.CheckRecursive2(c,mg,sg,csg,mct,sct,bct,monf,mmin,mmax,stf,smin,sm
 	
 	--Self-Recursion
 	if mon and st then
-		res=Rune.CheckRecursive2((csg-sg):GetFirst(),mg,sg,csg,mct,sct,bct+1,monf,mmin,mmax,stf,smin,smax,tmin,tmax,rc,tp,og,emt,filt,specialchk)
+		res=Rune.CheckRecursive2((csg-sg):GetFirst(),mg,sg,csg,mct,sct,bct+1,monf,mmin,mmax,stf,smin,smax,tmin,tmax,rc,tp,og,emt,filt,runechk)
 	elseif mon then
-		res=Rune.CheckRecursive2((csg-sg):GetFirst(),mg,sg,csg,mct+1,sct,bct,monf,mmin,mmax,stf,smin,smax,tmin,tmax,rc,tp,og,emt,filt,specialchk)
+		res=Rune.CheckRecursive2((csg-sg):GetFirst(),mg,sg,csg,mct+1,sct,bct,monf,mmin,mmax,stf,smin,smax,tmin,tmax,rc,tp,og,emt,filt,runechk)
 	elseif st then
-		res=Rune.CheckRecursive2((csg-sg):GetFirst(),mg,sg,csg,mct,sct+1,bct,monf,mmin,mmax,stf,smin,smax,tmin,tmax,rc,tp,og,emt,filt,specialchk)
+		res=Rune.CheckRecursive2((csg-sg):GetFirst(),mg,sg,csg,mct,sct+1,bct,monf,mmin,mmax,stf,smin,smax,tmin,tmax,rc,tp,og,emt,filt,runechk)
 	end
 	
 	--Reset all Values (Groups, Filters, etc)
@@ -328,6 +328,11 @@ function Rune.Condition(monf,mmin,mmax,stf,smin,smax,group,condition,excondition
 				if group and not c:IsDisabled() then
 					g:Merge(group(tp,nil,c))
 				end
+				--Get Material Check function
+				local matchk=specialchk
+				if c.rune_custom_check then
+					matchk=aux.AND(specialchk,c.rune_custom_check)
+				end
 				--There is a bug in the IsProcedureSummonable Condition where nil becomes 0 for max if min has been set
 				--if max==0 and min>0 then max=nil end
 				--Determine if Minimum and Maximum is Possible
@@ -347,13 +352,13 @@ function Rune.Condition(monf,mmin,mmax,stf,smin,smax,group,condition,excondition
 				if res then
 					if #mustg==max then
 						local sg=Group.CreateGroup()
-						res=mustg:IsExists(Rune.CheckRecursive,1,sg,mg+tg,sg,0,0,0,monf,mmin,mmax,stf,smin,smax,min,max,c,tp,mg,emt,nil,specialchk)
+						res=mustg:IsExists(Rune.CheckRecursive,1,sg,mg+tg,sg,0,0,0,monf,mmin,mmax,stf,smin,smax,min,max,c,tp,mg,emt,nil,matchk)
 					elseif #mustg<max then
 						local sg=mustg
 						local mct=sg:FilterCount(aux.NOT(Card.IsType),nil,TYPE_SPELL+TYPE_TRAP)
 						local sct=sg:FilterCount(aux.NOT(Card.IsType),nil,TYPE_MONSTER)
 						if mct>mmax or sct>smax then return false end
-						res=(mg+tg):IsExists(Rune.CheckRecursive,1,sg,mg+tg,sg,mct,sct,#sg-mct-sct,monf,mmin,mmax,stf,smin,smax,min,max,c,tp,mg,emt,nil,specialchk)
+						res=(mg+tg):IsExists(Rune.CheckRecursive,1,sg,mg+tg,sg,mct,sct,#sg-mct-sct,monf,mmin,mmax,stf,smin,smax,min,max,c,tp,mg,emt,nil,matchk)
 					end
 				end
 				aux.DeleteExtraMaterialGroups(emt)
@@ -369,6 +374,11 @@ function Rune.Target(monf,mmin,mmax,stf,smin,smax,group,excondition,specialchk)
 				--no extra materials if effect is negated
 				if group and not c:IsDisabled() then
 					g:Merge(group(tp,nil,c))
+				end
+				--Get Material Check function
+				local matchk=specialchk
+				if c.rune_custom_check then
+					matchk=aux.AND(specialchk,c.rune_custom_check)
 				end
 				--There is a bug in the IsProcedureSummonable Condition where nil becomes 0 for max if min has been set
 				--if max==0 and min>0 then max=nil end
@@ -395,15 +405,15 @@ function Rune.Target(monf,mmin,mmax,stf,smin,smax,group,excondition,specialchk)
 					--Filters
 					local filters={}
 					if #sg>0 then
-						Rune.CheckRecursive2(sg:GetFirst(),mg+tg,Group.CreateGroup(),sg,mct,sct,bct,monf,mmin,mmax,stf,smin,smax,min,max,c,tp,mg,emt,filters,specialchk)
+						Rune.CheckRecursive2(sg:GetFirst(),mg+tg,Group.CreateGroup(),sg,mct,sct,bct,monf,mmin,mmax,stf,smin,smax,min,max,c,tp,mg,emt,filters,matchk)
 					end
 					
 					--Get Selectable Cards
-					local cg=(mg+tg):Filter(Rune.CheckRecursive,sg,mg+tg,sg,mct,sct,bct,monf,mmin,mmax,stf,smin,smax,min,max,c,tp,mg,emt,filters,specialchk)
+					local cg=(mg+tg):Filter(Rune.CheckRecursive,sg,mg+tg,sg,mct,sct,bct,monf,mmin,mmax,stf,smin,smax,min,max,c,tp,mg,emt,filters,matchk)
 					if #cg==0 then break end
 					
 					--Cancellable
-					finish=Rune.CheckGoal(mct,sct,bct,mmin,smin,min,max) and (not specialchk or specialchk(sg,c,SUMMON_TYPE_RUNE|MATERIAL_RUNE,tp))
+					finish=Rune.CheckGoal(mct,sct,bct,mmin,smin,min,max) and (not matchk or matchk(sg,c,SUMMON_TYPE_RUNE|MATERIAL_RUNE,tp))
 					cancel=not og and Duel.IsSummonCancelable()
 					
 					--Select a Card
@@ -421,9 +431,9 @@ function Rune.Target(monf,mmin,mmax,stf,smin,smax,group,excondition,specialchk)
 				end
 				local sct=sg:FilterCount(aux.NOT(Rune.MonsterFilter),nil,monf,c,tp)
 				local mct=sg:FilterCount(aux.NOT(Rune.STFilter),nil,stf,c,tp)
-				if Rune.CheckGoal(mct,sct,#sg-mct-sct,mmin,smin,min,max) and (not specialchk or specialchk(sg,c,SUMMON_TYPE_RUNE|MATERIAL_RUNE,tp))then
+				if Rune.CheckGoal(mct,sct,#sg-mct-sct,mmin,smin,min,max) and (not matchk or matchk(sg,c,SUMMON_TYPE_RUNE|MATERIAL_RUNE,tp))then
 					local filters={}
-					Rune.CheckRecursive2(sg:GetFirst(),(mg+tg),Group.CreateGroup(),sg,0,0,0,monf,mmin,mmax,stf,smin,smax,min,max,c,tp,mg,emt,filters,specialchk)
+					Rune.CheckRecursive2(sg:GetFirst(),(mg+tg),Group.CreateGroup(),sg,0,0,0,monf,mmin,mmax,stf,smin,smax,min,max,c,tp,mg,emt,filters,matchk)
 					sg:KeepAlive()
 					e:SetLabelObject({sg,filters,emt})
 					if excondition then excondition(e,tp,1,sg) end
@@ -581,6 +591,11 @@ function Card.IsRuneCode(c,code,rc,sumtype,tp)
 		if not tcon or tcon(te,rc,sumtype,tp) then return true end
 	end
 	return false
+end
+--Checks the Rune Custom Check for Cards in cases where Monsters are not being Rune Summoned normally
+function Card.IsRuneCustomCheck(c,mg,tp)
+	if c.rune_custom_check then return c.rune_custom_check(mg,c,SUMMON_TYPE_RUNE,tp)
+	else return true end
 end
 --Only for use in the Operation Procedure when Rune Summoning using a special Group of Materials
 ---Filters out cards that would be sent to the graveyard upon resolution of Duel.RuneSummon Function

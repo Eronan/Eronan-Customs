@@ -35,7 +35,6 @@ function s.thop2(e,tp,eg,ep,ev,re,r,rp)
 		local rc=g:GetFirst()
 		if rc:IsRuneSummonable(nil,mg,4,99) then
 			Duel.RuneSummon(tp,rc,nil,mg,4,99)
-			
 			if Duel.GetFieldGroupCount(tp,0,LOCATION_MZONE)==0 then
 				--Cannot activate its effects
 				local e1=Effect.CreateEffect(e:GetHandler())
@@ -43,7 +42,7 @@ function s.thop2(e,tp,eg,ep,ev,re,r,rp)
 				e1:SetType(EFFECT_TYPE_SINGLE)
 				e1:SetCode(EFFECT_CANNOT_TRIGGER)
 				e1:SetProperty(EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_CLIENT_HINT)
-				e1:SetReset(RESET_EVENT+RESETS_STANDARD)
+				e1:SetReset(RESET_EVENT+RESETS_STANDARD-RESET_TOFIELD)
 				rc:RegisterEffect(e1)
 			end
 		end

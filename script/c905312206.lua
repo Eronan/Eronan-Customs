@@ -16,11 +16,11 @@ end
 s.listed_series={0xfe3}
 function s.filter1(c,e,tp)
 	return c:IsFaceup() and c:IsType(TYPE_RUNE)
-		and Duel.IsExistingMatchingCard(s.filter2,tp,LOCATION_DECK,0,1,nil,e,tp,c,c:GetLevel(),c:GetRace())
+		and Duel.IsExistingMatchingCard(s.filter2,tp,LOCATION_DECK,0,1,nil,e,tp,c)
 end
-function s.filter2(c,e,tp,mc,lv,rc)
-	return (c:GetLevel()>lv and c:GetLevel()<=lv+3) and c:IsType(TYPE_RUNE) and c:IsRace(rc) and c:IsSetCard(0xfe3)
-		and c:IsCanBeSpecialSummoned(e,SUMMON_TYPE_RUNE,tp,false,true)
+function s.filter2(c,e,tp,mc)
+	return (c:GetLevel()>mc:GetLevel() and c:GetLevel()<=mc:GetLevel()+3) and c:IsType(TYPE_RUNE) and c:IsRace(mc:GetRace()) and c:IsSetCard(0xfe3)
+		and c:IsCanBeSpecialSummoned(e,SUMMON_TYPE_RUNE,tp,false,true) and c:IsRuneCustomCheck(Group.FromCards(e:GetHandler(),mc),tp)
 end
 function s.target(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	if chkc then return chkc:IsControler(tp) and chkc:IsLocation(LOCATION_MZONE) and s.filter1(chkc,e,tp) end
@@ -35,14 +35,14 @@ function s.activate(e,tp,eg,ep,ev,re,r,rp)
 	local tc=Duel.GetFirstTarget()
 	if tc:IsFacedown() or not tc:IsRelateToEffect(e) or tc:IsImmuneToEffect(e) then return end
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_SPSUMMON)
-	local g=Duel.SelectMatchingCard(tp,s.filter2,tp,LOCATION_DECK,0,1,1,nil,e,tp,tc,tc:GetLevel(),tc:GetRace())
+	local g=Duel.SelectMatchingCard(tp,s.filter2,tp,LOCATION_DECK,0,1,1,nil,e,tp,tc)
 	local sc=g:GetFirst()
 	if sc then
 		local mg=Group.FromCards(tc,e:GetHandler())
 		sc:SetMaterial(mg)
 		Duel.SendtoGrave(mg,REASON_EFFECT+REASON_MATERIAL+REASON_RUNE)
 		Duel.BreakEffect()
-		if Duel.SpecialSummonStep(sc,SUMMON_TYPE_RUNE,tp,tp,false,true,POS_FACEUP) then
+		if c:IsRuneCustomCheck(Group.FromCards(e:GetHandler(),mc),tp) and Duel.SpecialSummonStep(sc,SUMMON_TYPE_RUNE,tp,tp,false,true,POS_FACEUP) then
 			--cannot be battle target
 			local e1=Effect.CreateEffect(e:GetHandler())
 			e1:SetType(EFFECT_TYPE_SINGLE)
