@@ -42,7 +42,7 @@ function Rune.AddProcedure(c,monf,mmin,mmax,stf,smin,smax,loc,group,condition,ex
 		local mt=c:GetMetatable()
 		--mt.rune_monster_filter=function(c) end
 		mt.rune_parameters={}
-		table.insert(mt.rune_parameters,{monf,mmin,mmax,stf,smin,smax,loc+LOCATION_HAND,group,condition,specialchk})
+		table.insert(mt.rune_parameters,{monf,mmin,mmax,stf,smin,smax,loc+LOCATION_HAND,group,condition,excondition,specialchk})
 	end
 	local e1=Effect.CreateEffect(c)
 	e1:SetType(EFFECT_TYPE_FIELD)
@@ -70,7 +70,7 @@ function Rune.AddProcedure(c,monf,mmin,mmax,stf,smin,smax,loc,group,condition,ex
 		c:RegisterEffect(e2)
 	end
 end
-function Rune.AddSecondProcedure(c,monf,mmin,mmax,stf,smin,smax,loc,group,condition,excondition)
+function Rune.AddSecondProcedure(c,monf,mmin,mmax,stf,smin,smax,loc,group,condition,excondition,specialchk)
 	--monf is the monster Filter, stf is the S/T Filter
 	--mmin, mmax are the minimums and maximums for the monsters
 	--smin, smax are the minimums and maximums for the Spell/Trap cards
@@ -82,10 +82,10 @@ function Rune.AddSecondProcedure(c,monf,mmin,mmax,stf,smin,smax,loc,group,condit
 		local mt=c:GetMetatable()
 		--mt.rune_monster_filter=function(c) end
 		mt.rune_parameters={}
-		table.insert(mt.rune_parameters,{monf,mmin,mmax,stf,smin,smax,loc,group,condition,specialchk})
+		table.insert(mt.rune_parameters,{monf,mmin,mmax,stf,smin,smax,loc,group,condition,excondition,specialchk})
 	else
 		local mt=c:GetMetatable()
-		table.insert(mt.rune_parameters,{monf,mmin,mmax,stf,smin,smax,loc,group,condition,specialchk})
+		table.insert(mt.rune_parameters,{monf,mmin,mmax,stf,smin,smax,loc,group,condition,excondition,specialchk})
 	end
 	local e1=Effect.CreateEffect(c)
 	e1:SetType(EFFECT_TYPE_FIELD)
@@ -330,8 +330,10 @@ function Rune.Condition(monf,mmin,mmax,stf,smin,smax,group,condition,excondition
 				end
 				--Get Material Check function
 				local matchk=specialchk
-				if c.rune_custom_check then
-					matchk=aux.AND(specialchk,c.rune_custom_check)
+				if specialchk and c.rune_custom_check then
+					matchk=aux.AND(c.rune_custom_check,specialchk)
+				elseif c.rune_custom_check then
+					matchk=c.rune_custom_check
 				end
 				--There is a bug in the IsProcedureSummonable Condition where nil becomes 0 for max if min has been set
 				--if max==0 and min>0 then max=nil end
@@ -377,8 +379,10 @@ function Rune.Target(monf,mmin,mmax,stf,smin,smax,group,excondition,specialchk)
 				end
 				--Get Material Check function
 				local matchk=specialchk
-				if c.rune_custom_check then
-					matchk=aux.AND(specialchk,c.rune_custom_check)
+				if specialchk and c.rune_custom_check then
+					matchk=aux.AND(c.rune_custom_check,specialchk)
+				elseif c.rune_custom_check then
+					matchk=c.rune_custom_check
 				end
 				--There is a bug in the IsProcedureSummonable Condition where nil becomes 0 for max if min has been set
 				--if max==0 and min>0 then max=nil end
