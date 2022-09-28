@@ -66,8 +66,9 @@ function s.retop(e,tp,eg,ep,ev,re,r,rp)
 	end
 end
 
-function s.thfilter(c,ctype)
+function s.thfilter(c,ctype,runc)
 	return c:IsAbleToHand() and c:IsType(ctype) and not c:IsType(TYPE_TOKEN)
+		and c:GetReasonCard()==runc
 end
 function s.thcon(e,tp,eg,ep,ev,re,r,rp)
 	return e:GetHandler():IsSummonType(SUMMON_TYPE_RUNE)
@@ -79,23 +80,23 @@ function s.thtg(e,tp,eg,ep,ev,re,r,rp,chk)
 	local ops={}
 	local opval={}
 	local off=1
-	if mg:IsExists(s.thfilter,1,nil,TYPE_MONSTER) then
+	if mg:IsExists(s.thfilter,1,nil,TYPE_MONSTER,c) then
 		ops[off]=aux.Stringid(id,4)
 		opval[off-1]=TYPE_MONSTER
 		off=off+1
 	end
-	if mg:IsExists(s.thfilter,1,nil,TYPE_SPELL) then
+	if mg:IsExists(s.thfilter,1,nil,TYPE_SPELL,c) then
 		ops[off]=aux.Stringid(id,5)
 		opval[off-1]=TYPE_SPELL
 		off=off+1
 	end
 	local op=Duel.SelectOption(tp,table.unpack(ops))
 	e:SetLabel(opval[op])
-	Duel.SetOperationInfo(0,CATEGORY_TOHAND,mg:Filter(s.thfilter,nil,opval[op]),1,0,0)
+	Duel.SetOperationInfo(0,CATEGORY_TOHAND,mg:Filter(s.thfilter,nil,opval[op],c),1,0,0)
 end
 function s.thop(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
-	local g=c:GetMaterial():Filter(s.thfilter,nil,e:GetLabel())
+	local g=c:GetMaterial():Filter(s.thfilter,nil,e:GetLabel(),c)
 	if Duel.SendtoHand(g,nil,REASON_EFFECT)>0 then
 		Duel.ConfirmCards(1-tp,g)
 	end
