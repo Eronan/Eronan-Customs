@@ -58,7 +58,7 @@ function s.rccheck(c,tp)
 	return c:IsType(TYPE_MONSTER) and c:IsControler(1-tp)
 end
 function s.rune_custom_check(g,rc,sumtype,tp)
-	return g:CheckSameProperty(Card.IsOnField) and g:FilterCount(s.rccheck,nil)==2
+	return not g:IsExists(aux.NOT(Card.IsOnField),1,nil) and g:FilterCount(s.rccheck,nil,tp)==1
 end
 --material check
 function s.matcheck(e,c)
