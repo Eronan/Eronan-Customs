@@ -58,13 +58,7 @@ function s.rccheck(c,tp)
 	return c:IsType(TYPE_MONSTER) and c:IsControler(1-tp)
 end
 function s.rune_custom_check(g,rc,sumtype,tp)
-	local rccheck=0
-	for mc in Group.Iter(g) do
-		if not mc:IsOnField() then return false end
-		if s.rccheck(mc,tp) then rccheck=rccheck+1 end
-		if rccheck>1 then return false end
-	end
-	return rccheck==1
+	return g:CheckSameProperty(Card.IsOnField) and g:FilterCount(s.rccheck,nil)==2
 end
 --material check
 function s.matcheck(e,c)
@@ -93,7 +87,6 @@ function s.rmtg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return true end
 	local g=Duel.GetMatchingGroup(Card.IsAbleToRemove,tp,LOCATION_ONFIELD,LOCATION_ONFIELD,e:GetHandler())
 	Duel.SetOperationInfo(0,CATEGORY_REMOVE,g,#g,0,0)
-	Debug.Message(e:GetHandler():IsSummonType(SUMMON_TYPE_RUNE))
 end
 function s.rmop(e,tp,eg,ep,ev,re,r,rp)
 	local g=Duel.GetMatchingGroup(Card.IsAbleToRemove,tp,LOCATION_ONFIELD,LOCATION_ONFIELD,e:GetHandler())

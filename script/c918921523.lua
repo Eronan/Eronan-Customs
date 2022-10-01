@@ -51,7 +51,7 @@ function s.cdop(e,tp,eg,ep,ev,re,r,rp)
 	end
 end
 function s.distg(e,tp,eg,ep,ev,re,r,rp,chk)
-	if chk==0 then return Duel.IsExistingMatchingCard(aux.disfilter1,tp,0,LOCATION_ONFIELD,1,e:GetHandler()) end
+	if chk==0 then return Duel.IsExistingMatchingCard(Card.IsNegatable,tp,0,LOCATION_ONFIELD,1,e:GetHandler()) end
 	if Duel.GetLP(1-tp)>2000 then
 		Duel.SetOperationInfo(0,CATEGORY_CONTROL,g,1,0,0)
 	end
@@ -65,7 +65,7 @@ function s.disop(e,tp,eg,ep,ev,re,r,rp)
 		end
 	end
 	local c=e:GetHandler()
-	local g=Duel.GetMatchingGroup(aux.disfilter1,tp,0,LOCATION_ONFIELD,c)
+	local g=Duel.GetMatchingGroup(Card.IsNegatable,tp,0,LOCATION_ONFIELD,c)
 	local tc=g:GetFirst()
 	while tc do
 		local e1=Effect.CreateEffect(c)

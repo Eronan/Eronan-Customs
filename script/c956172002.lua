@@ -30,11 +30,11 @@ function s.stfilter(c)
 	return c:IsSetCard(0xfd7) and c:IsType(TYPE_SPELL+TYPE_TRAP) and c:IsSSetable()
 end
 function s.thtg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
-	if chkc then return chkc:IsControler(tp) and chkc:IsOnField() and aux.disfilter3(chkc) and chkc~=e:GetHandler() end
-	if chk==0 then return Duel.IsExistingTarget(aux.disfilter3,tp,LOCATION_ONFIELD,0,1,e:GetHandler())
+	if chkc then return chkc:IsControler(tp) and chkc:IsOnField() and chkc.IsNegatable and chkc~=e:GetHandler() end
+	if chk==0 then return Duel.IsExistingTarget(Card.IsNegatable,tp,LOCATION_ONFIELD,0,1,e:GetHandler())
 		and Duel.IsExistingMatchingCard(s.stfilter,tp,LOCATION_DECK,0,1,nil) end
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_NEGATE)
-	local g=Duel.SelectTarget(tp,aux.disfilter3,tp,LOCATION_ONFIELD,0,1,1,e:GetHandler())
+	local g=Duel.SelectTarget(tp,Card.IsNegatable,tp,LOCATION_ONFIELD,0,1,1,e:GetHandler())
 	Duel.SetOperationInfo(0,CATEGORY_DISABLE,g,1,0,0)
 end
 function s.thop(e,tp,eg,ep,ev,re,r,rp)

@@ -26,7 +26,7 @@ function s.initial_effect(c)
 	c:RegisterEffect(e3)
 end
 function s.filter(c,col)
-	return col:IsContains(c) and aux.disfilter1(c)
+	return col:IsContains(c) and c:IsNegatable()
 end
 function s.negtg(e,tp,eg,ep,ev,re,r,rp,chk)
 	local col=e:GetHandler():GetColumnGroup()

@@ -31,7 +31,7 @@ function s.thfilter(c)
 	return c:IsSetCard(0xfd7) and c:IsAbleToHand()
 end
 function s.thtg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
-	if chk==0 then return aux.disfilter1(e:GetHandler():GetEquipTarget())
+	if chk==0 then return e:GetHandler():GetEquipTarget():IsNegatableMonster()
 		and Duel.IsExistingMatchingCard(s.thfilter,tp,LOCATION_DECK+LOCATION_GRAVE,0,1,nil) end
 	Duel.SetOperationInfo(0,CATEGORY_DISABLE,g,1,0,0)
 	Duel.SetOperationInfo(0,CATEGORY_TOHAND,nil,1,tp,LOCATION_DECK+LOCATION_GRAVE)

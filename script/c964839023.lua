@@ -52,7 +52,7 @@ function s.initial_effect(c)
 	e5:SetOperation(s.actop)
 	c:RegisterEffect(e5)
 end
-s.listed_names={964839023}
+s.listed_names={964839022}
 function s.MNMatFilter(c,rc,sumtype,tp)
 	return c:IsRace(RACE_FAIRY,rc,sumtype,tp) and not c:IsSummonableCard()
 end
@@ -68,7 +68,7 @@ end
 function s.matcheck(e,c)
 	local g=c:GetMaterial()
 	e:SetLabel(0)
-	if g:IsExists(Card.IsCode,1,nil,964839023) then
+	if g:IsExists(Card.IsCode,1,nil,964839022) then
 		e:SetLabel(1)
 		e:GetHandler():RegisterFlagEffect(id,RESET_EVENT+RESETS_STANDARD-RESET_TOFIELD,EFFECT_FLAG_CLIENT_HINT,1,0,aux.Stringid(id,0))
 	end

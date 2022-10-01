@@ -30,11 +30,11 @@ function s.spfilter(c,e,sp)
     return c:IsAttribute(ATTRIBUTE_LIGHT) and c:IsRace(RACE_FISH) and c:IsCanBeSpecialSummoned(e,0,sp,false,false)
 end
 function s.sumtg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
-	if chkc then return chkc:IsControler(tp) and chkc:IsOnField() and aux.disfilter3(chkc) and chkc~=e:GetHandler() end
-	if chk==0 then return Duel.IsExistingTarget(aux.disfilter3,tp,LOCATION_ONFIELD,0,1,e:GetHandler())
+	if chkc then return chkc:IsControler(tp) and chkc:IsOnField() and chkc.IsNegatable and chkc~=e:GetHandler() end
+	if chk==0 then return Duel.IsExistingTarget(Card.IsNegatable,tp,LOCATION_ONFIELD,0,1,e:GetHandler())
 		and Duel.IsExistingMatchingCard(s.spfilter,tp,LOCATION_DECK,0,1,nil,e,tp) and Duel.GetLocationCount(tp,LOCATION_MZONE)>0 end
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_NEGATE)
-	local g=Duel.SelectTarget(tp,aux.disfilter3,tp,LOCATION_ONFIELD,0,1,1,e:GetHandler())
+	local g=Duel.SelectTarget(tp,Card.IsNegatable,tp,LOCATION_ONFIELD,0,1,1,e:GetHandler())
 	Duel.SetOperationInfo(0,CATEGORY_DISABLE,g,1,0,0)
 	Duel.SetOperationInfo(0,CATEGORY_SPECIAL_SUMMON,nil,1,tp,LOCATION_DECK)
 end
