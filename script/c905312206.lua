@@ -40,20 +40,22 @@ function s.activate(e,tp,eg,ep,ev,re,r,rp)
 	if sc then
 		local mg=Group.FromCards(tc,e:GetHandler())
 		Duel.BreakEffect()
-		if sc:IsRuneCustomCheck(mg,tp) and Duel.SpecialSummonStep(sc,SUMMON_TYPE_RUNE,tp,tp,false,true,POS_FACEUP) then
+		if sc:IsRuneCustomCheck(mg,tp) then
 			sc:SetMaterial(mg)
 			Duel.SendtoGrave(mg,REASON_EFFECT+REASON_MATERIAL+REASON_RUNE)
-			--cannot be battle target
-			local e1=Effect.CreateEffect(e:GetHandler())
-			e1:SetType(EFFECT_TYPE_SINGLE)
-			e1:SetProperty(EFFECT_FLAG_SINGLE_RANGE)
-			e1:SetRange(LOCATION_MZONE)
-			e1:SetCode(EFFECT_CANNOT_BE_BATTLE_TARGET)
-			e1:SetReset(RESET_EVENT+RESETS_STANDARD)
-			e1:SetCondition(s.atkcon)
-			e1:SetValue(aux.imval1)
-			sc:RegisterEffect(e1)
-			Duel.SpecialSummonComplete()
+			if Duel.SpecialSummonStep(sc,SUMMON_TYPE_RUNE,tp,tp,false,true,POS_FACEUP) then
+				--cannot be battle target
+				local e1=Effect.CreateEffect(e:GetHandler())
+				e1:SetType(EFFECT_TYPE_SINGLE)
+				e1:SetProperty(EFFECT_FLAG_SINGLE_RANGE)
+				e1:SetRange(LOCATION_MZONE)
+				e1:SetCode(EFFECT_CANNOT_BE_BATTLE_TARGET)
+				e1:SetReset(RESET_EVENT+RESETS_STANDARD)
+				e1:SetCondition(s.atkcon)
+				e1:SetValue(aux.imval1)
+				sc:RegisterEffect(e1)
+				Duel.SpecialSummonComplete()
+			end
 		end
 		sc:CompleteProcedure()
 		mg:DeleteGroup()
