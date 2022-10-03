@@ -42,7 +42,7 @@ function s.activate(e,tp,eg,ep,ev,re,r,rp)
 		sc:SetMaterial(mg)
 		Duel.SendtoGrave(mg,REASON_EFFECT+REASON_MATERIAL+REASON_RUNE)
 		Duel.BreakEffect()
-		if c:IsRuneCustomCheck(Group.FromCards(e:GetHandler(),mc),tp) and Duel.SpecialSummonStep(sc,SUMMON_TYPE_RUNE,tp,tp,false,true,POS_FACEUP) then
+		if sc:IsRuneCustomCheck(Group.FromCards(e:GetHandler(),mc),tp) and Duel.SpecialSummonStep(sc,SUMMON_TYPE_RUNE,tp,tp,false,true,POS_FACEUP) then
 			--cannot be battle target
 			local e1=Effect.CreateEffect(e:GetHandler())
 			e1:SetType(EFFECT_TYPE_SINGLE)
