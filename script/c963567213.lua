@@ -106,7 +106,7 @@ end
 function s.runop(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
 	if c:IsRelateToEffect(e) and Duel.SendtoHand(c,nil,REASON_EFFECT) then
-		Duel.ConfirmCards(1-tp,tc)
+		Duel.ConfirmCards(1-tp,c)
 		if c:IsRuneSummonable() then
 			Duel.RuneSummon(tp,c)
 		end
