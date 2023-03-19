@@ -16,7 +16,7 @@ function s.initial_effect(c)
 	local e2=Effect.CreateEffect(c)
 	e2:SetType(EFFECT_TYPE_SINGLE)
 	e2:SetCode(EFFECT_SYNCHRO_LEVEL)
-	e2:SetCondition(aux.IsGeminiState)
+	e2:SetCondition(Gemini.EffectStatusCondition)
 	e2:SetValue(s.slevel)
 	c:RegisterEffect(e2)
 end
