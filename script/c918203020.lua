@@ -1,7 +1,7 @@
 --Ulano, Subshifter
 local s,id=GetID()
 function s.initial_effect(c)
-	aux.EnableGeminiAttribute(c)
+	Gemini.AddProcedure(c)
 	--special summon (itself)
 	local e1=Effect.CreateEffect(c)
 	e1:SetDescription(aux.Stringid(id,0))

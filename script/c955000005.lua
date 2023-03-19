@@ -3,7 +3,7 @@ if not Rune then Duel.LoadScript("proc_rune.lua") end
 local s,id=GetID()
 function s.initial_effect(c)
 	--Gemini
-	aux.EnableGeminiAttribute(c)
+	Gemini.AddProcedure(c)
 	--pendulum summon
     Pendulum.AddProcedure(c,false)
 	--Activate

@@ -28,7 +28,7 @@ function s.target(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_REMOVE)
 	local g=Duel.SelectTarget(tp,Card.IsAbleToRemove,tp,LOCATION_MZONE,LOCATION_MZONE,1,10,nil)
 	Duel.SetOperationInfo(0,CATEGORY_REMOVE,g,g:GetCount(),0,0)
-	if g:IsExists(Card.IsGeminiState,1,nil) then
+	if g:IsExists(Card.IsGeminiStatus,1,nil) then
 		e:SetCategory(CATEGORY_SPECIAL_SUMMON+CATEGORY_REMOVE+CATEGORY_DRAW)
 		Duel.SetOperationInfo(0,CATEGORY_DRAW,nil,0,tp,1)
 	end
@@ -36,7 +36,7 @@ end
 function s.activate(e,tp,eg,ep,ev,re,r,rp)
 	local g=Duel.GetChainInfo(0,CHAININFO_TARGET_CARDS)
 	local sg=g:Filter(Card.IsRelateToEffect,nil,e)
-	local draw=g:IsExists(Card.IsGeminiState,1,nil)
+	local draw=g:IsExists(Card.IsGeminiStatus,1,nil)
 	local tpg=sg:Filter(Card.IsControler,nil,tp)
 	local opg=sg:Filter(Card.IsControler,nil,1-tp)
 	if Duel.Remove(sg,POS_FACEUP,REASON_EFFECT) then
