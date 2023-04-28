@@ -40,7 +40,7 @@ function s.eqtg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	Duel.SetOperationInfo(0,CATEGORY_EQUIP,nil,1,tp,LOCATION_GRAVE+LOCATION_HAND)
 end
 function s.equipop(c,e,tp,tc)
-	if not aux.EquipByEffectAndLimitRegister(c,e,tp,tc,nil,true) then return false end
+	if not c:EquipByEffectAndLimitRegister(e,tp,tc,nil,true) then return false end
 	aux.SetUnionState(tc)
 	--atkup
 	local e1=Effect.CreateEffect(tc)
