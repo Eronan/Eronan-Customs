@@ -21,7 +21,7 @@ function s.initial_effect(c)
 	e2:SetValue(s.valcheck)
 	e2:SetLabelObject(e1)
 	c:RegisterEffect(e2)
-	--special summon
+	--tribute
     local e3=Effect.CreateEffect(c)
     e3:SetDescription(aux.Stringid(id,0))
     e3:SetCategory(CATEGORY_SPECIAL_SUMMON)

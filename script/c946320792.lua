@@ -36,6 +36,7 @@ function s.initial_effect(c)
 	e4:SetCode(EVENT_SPSUMMON_SUCCESS)
 	e4:SetCountLimit(1,id,EFFECT_COUNT_CODE_OATH)
 	e4:SetCondition(s.setcon)
+	e4:SetCost(s.setcost)
 	e4:SetTarget(s.settg)
 	e4:SetOperation(s.setop)
 	c:RegisterEffect(e4)
@@ -84,7 +85,11 @@ function s.efilter(e,re,rp)
 	return not g:IsContains(e:GetHandler())
 end
 function s.setcon(e,tp,eg,ep,ev,re,r,rp)
-	return e:GetHandler():IsSummonType(SUMMON_TYPE_RUNE)
+	return e:GetHandler():IsSummonType(SUMMON_TYPE_LINK)
+end
+function s.setcost(e,tp,eg,ep,ev,re,r,rp,chk)
+	if chk==0 then return Duel.IsExistingMatchingCard(Card.IsDiscardable,tp,LOCATION_HAND,0,1,nil) end
+	Duel.DiscardHand(tp,Card.IsDiscardable,1,1,REASON_COST+REASON_DISCARD)
 end
 function s.setfilter(c)
 	return (c:GetType()==TYPE_SPELL or c:GetType()==TYPE_TRAP) and c:IsSSetable()

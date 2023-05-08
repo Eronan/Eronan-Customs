@@ -53,7 +53,7 @@ function s.initial_effect(c)
 end
 s.listed_names={963567212}
 function s.MNMatFilter(c,rc,sumtype,tp)
-	return c:IsRace(RACE_ZOMBIE,rc,sumtype,tp) and not c:IsSummonableCard()
+	return c:IsRace(RACE_FISH,rc,sumtype,tp) and not c:IsSummonableCard()
 end
 function s.exgroup(tp,ex,c)
 	return Duel.GetMatchingGroup(aux.NOT(Card.IsType),tp,LOCATION_EXTRA,0,ex,TYPE_EFFECT)
@@ -106,7 +106,7 @@ end
 function s.runop(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
 	if c:IsRelateToEffect(e) and Duel.SendtoHand(c,nil,REASON_EFFECT) then
-		Duel.ConfirmCards(1-tp,c)
+		Duel.ConfirmCards(1-tp,tc)
 		if c:IsRuneSummonable() then
 			Duel.RuneSummon(tp,c)
 		end

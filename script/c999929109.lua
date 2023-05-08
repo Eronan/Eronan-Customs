@@ -1,5 +1,4 @@
 --Divinis, Crimson Runic Wings
---Deicid, Runic Devouring Chimera
 if not Rune then Duel.LoadScript("proc_rune.lua") end
 local s,id=GetID()
 function s.initial_effect(c)
@@ -54,9 +53,9 @@ function s.rune_custom_check(g,rc,sumtype,tp)
 	for mc in Group.Iter(g) do
 		if not mc:IsOnField() then return false end
 		if s.rccheck(mc,tp) then rccheck=rccheck+1 end
-		if rccheck>1 then return false end
+		--if rccheck>1 then return false end
 	end
-	return rccheck==1
+	return rccheck>1
 end
 function s.gycon(e,tp,eg,ep,ev,re,r,rp)
 	return e:GetHandler():IsSummonType(SUMMON_TYPE_RUNE)
