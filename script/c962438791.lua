@@ -107,35 +107,32 @@ function s.setop(e,tp,eg,ep,ev,re,r,rp)
         tc:RegisterEffect(e1)
 	end
 end
-function s.immfilter(c,tp)
-	return c:IsOnField() and c:IsControler(tp)
-end
 function s.chcon(e,tp,eg,ep,ev,re,r,rp)
     if rp==tp or e:GetHandler():IsStatus(STATUS_BATTLE_DESTROYED) then return false end
     if not re:IsHasProperty(EFFECT_FLAG_CARD_TARGET) then return false end
     local tg=Duel.GetChainInfo(ev,CHAININFO_TARGET_CARDS)
-    return tg and tg:IsExists(s.immfilter,1,nil,tp)
+    return tg and tg:IsExists(Card.IsOnField,1,nil,tp)
 end
 function s.chop(e,tp,eg,ep,ev,re,r,rp)
 	Duel.ChangeChainOperation(ev,s.repop)
 end
 function s.repop(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
-	local g=Duel.GetChainInfo(ev,CHAININFO_TARGET_CARDS):Filter(s.immfilter,nil,tp)
+	local g=Duel.GetChainInfo(ev,CHAININFO_TARGET_CARDS):Filter(Card.IsOnField,nil,tp)
 	local tc=g:GetFirst()
 	for tc in aux.Next(g) do
 		--Unaffected by opponent's card effects
-		local e4=Effect.CreateEffect(c)
-		e4:SetDescription(3110)
-		e4:SetProperty(EFFECT_FLAG_CLIENT_HINT)
-		e4:SetType(EFFECT_TYPE_SINGLE)
-		e4:SetCode(EFFECT_IMMUNE_EFFECT)
-		e4:SetValue(s.efilter)
-		e4:SetReset(RESET_EVENT+RESETS_STANDARD+RESET_PHASE+PHASE_END)
-		e4:SetOwnerPlayer(tp)
-		tc:RegisterEffect(e4)
+		local e1=Effect.CreateEffect(c)
+		e1:SetDescription(3110)
+		e1:SetProperty(EFFECT_FLAG_CLIENT_HINT)
+		e1:SetType(EFFECT_TYPE_SINGLE)
+		e1:SetCode(EFFECT_IMMUNE_EFFECT)
+		e1:SetValue(s.efilter2)
+		e1:SetReset(RESET_EVENT+RESETS_STANDARD+RESET_PHASE+PHASE_END)
+		e1:SetOwnerPlayer(tp)
+		tc:RegisterEffect(e1)
 	end
 end
-function s.efilter(e,re)
+function s.efilter2(e,re)
 	return e:GetOwnerPlayer()==re:GetOwnerPlayer()
 end
