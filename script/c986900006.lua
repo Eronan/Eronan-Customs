@@ -3,7 +3,7 @@ local s,id=GetID()
 function s.initial_effect(c)
 	--fusion material
     c:EnableReviveLimit()
-	Fusion.AddProcMixRep(c,true,true,aux.FilterBoolFunctionEx(Card.IsType,TYPE_NORMAL),2,99,aux.FilterBoolFunctionEx(aux.NOT(Card.IsSummonableCard)))
+	Fusion.AddProcMixRep(c,true,true,aux.FilterBoolFunctionEx(Card.IsType,TYPE_NORMAL),2,99,aux.FilterBoolFunctionEx(s.mtfilter))
 	Pendulum.AddProcedure(c,false)
 	--token
 	local e1=Effect.CreateEffect(c)
@@ -46,6 +46,11 @@ function s.initial_effect(c)
 end
 s.listed_series={0xfe5}
 s.listed_names={986900019}
+--Material Filter
+function s.mtfilter(c)
+	return not c:IsSummonableCard() and not c:IsType(TYPE_TOKEN)
+end
+--Summon Token
 function s.tktg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	if chk==0 then return Duel.GetLocationCount(tp,LOCATION_MZONE)>0
 		and Duel.IsPlayerCanSpecialSummonMonster(tp,986900019,0xfe5,TYPES_TOKEN,500,1850,3,RACE_FAIRY,ATTRIBUTE_FIRE) end
