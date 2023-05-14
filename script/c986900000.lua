@@ -80,8 +80,7 @@ function s.spop(e,tp,eg,ep,ev,re,r,rp)
 	end
 end
 function s.splimit(e,c,sump,sumtype,sumpos,targetp,se)
-	return ((sumtype==SUMMON_TYPE_SYNCHRO or sumtype==SUMMON_TYPE_XYZ or sumtype==SUMMON_TYPE_LINK) and e:GetLabelObject():GetFlagEffect(id)==0)
-		or (sumtype==SUMMON_TYPE_FUSION and e:GetLabelObject():GetFlagEffect(id)==0 and e:GetLabelObject():GetReasonEffect()~=se)
+	return (sumtype==SUMMON_TYPE_SYNCHRO or sumtype==SUMMON_TYPE_XYZ or sumtype==SUMMON_TYPE_LINK) and e:GetLabelObject():GetFlagEffect(id)==0
 end
 function s.imcon(e)
 	return Duel.IsExistingMatchingCard(aux.AND(Card.IsCode,Card.IsFaceup),e:GetHandlerPlayer(),LOCATION_MZONE,0,1,nil,986900019)
