@@ -120,13 +120,7 @@ function s.runop(e,tp,eg,ep,ev,re,r,rp)
 end
 function s.extracon(c,e,tp,sg,mg,rc,og,chk)
 	return rc~=c
-	--(not sg or sg:FilterCount(s.flagcheck,nil)<2) and
 end
---[[
-function s.flagcheck(c)
-	return c:GetFlagEffect(id)>0
-end
---]]
 function s.extraval(chk,summon_type,e,...)
 	local c=e:GetHandler()
 	if chk==0 then
@@ -144,11 +138,5 @@ function s.extraval(chk,summon_type,e,...)
 			Duel.Hint(HINT_CARD,tp,id)
 			c:RegisterFlagEffect(id,RESET_PHASE+PHASE_END,0,1)
 		end
-	elseif chk==2 then
-		--[[for _,eff in ipairs(s.flagmap[c]) do
-			eff:Reset()
-		end
-		s.flagmap[c]={}
-		--]]
 	end
 end
