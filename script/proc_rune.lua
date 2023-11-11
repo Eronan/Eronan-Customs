@@ -102,22 +102,22 @@ function Rune.AddSecondProcedure(c,monf,mmin,mmax,stf,smin,smax,loc,group,condit
 end
 function Rune.MonFunction(f,a,b,c)
 	return	function(target,scard,sumtype,tp)
-				return c:IsMonster() and (not f or f(target,a,b,c)) and c:IsCanBeRuneMaterial(rc,tp)
+				return c:IsMonster() and (not f or f(target,a,b,c)) and c:IsCanBeRuneMaterial(scard,tp)
 			end
 end
 function Rune.MonFunctionEx(f,val)
 	return	function(target,scard,sumtype,tp)
-				return c:IsMonster() and f(target,val,scard,sumtype,tp) and c:IsCanBeRuneMaterial(rc,tp)
+				return c:IsMonster() and f(target,val,scard,sumtype,tp) and c:IsCanBeRuneMaterial(scard,tp)
 			end
 end
 function Rune.STFunction(f,a,b,c)
 	return	function(target,scard,sumtype,tp)
-				return c:IsSpellTrap() and (not f or f(target,a,b,c)) and c:IsCanBeRuneMaterial(rc,tp)
+				return c:IsSpellTrap() and (not f or f(target,a,b,c)) and c:IsCanBeRuneMaterial(scard,tp)
 			end
 end
 function Rune.STFunctionEx(f,val)
 	return	function(target,scard,sumtype,tp)
-				if not c:IsSpellTrap() or not c:IsCanBeRuneMaterial(rc,tp) then return false end
+				if not c:IsSpellTrap() or not c:IsCanBeRuneMaterial(scard,tp) then return false end
 				--Pendulum Spell card workaround
 				if f==Card.IsType and val==TYPE_PENDULUM then return c:IsSpellTrap() and f(target,val)
 				else return f(target,val,scard,sumtype,tp) end
