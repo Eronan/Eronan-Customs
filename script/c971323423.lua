@@ -6,7 +6,7 @@ function s.initial_effect(c)
 	--pendulum summon
 	Pendulum.AddProcedure(c)
 	--Rune Summon
-	Rune.AddProcedure(c,aux.FilterBoolFunctionEx(aux.NOT(Card.IsType),TYPE_EFFECT),1,1,aux.FilterBoolFunctionEx(Card.IsType,TYPE_SPELL),1,1)
+	Rune.AddProcedure(c,Rune.MonFunctionEx(aux.NOT(Card.IsType),TYPE_EFFECT),1,1,Rune.STFunctionEx(Card.IsType,TYPE_SPELL),1,1)
 	--destroy and set
 	local e1=Effect.CreateEffect(c)
 	e1:SetDescription(aux.Stringid(id,0))

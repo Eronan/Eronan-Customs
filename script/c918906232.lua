@@ -6,7 +6,7 @@ function s.initial_effect(c)
 	Pendulum.AddProcedure(c)
 	--Rune Summon
 	c:EnableReviveLimit()
-	Rune.AddProcedure(c,aux.FilterBoolFunctionEx(Card.IsRace,RACE_SPELLCASTER),1,1,aux.FilterBoolFunctionEx(Card.IsSetCard,0xff0),1,1,LOCATION_EXTRA)
+	Rune.AddProcedure(c,Rune.MonFunctionEx(Card.IsRace,RACE_SPELLCASTER),1,1,Rune.STFunctionEx(Card.IsSetCard,0xff0),1,1,LOCATION_EXTRA)
 	--tohand
 	local e1=Effect.CreateEffect(c)
 	e1:SetDescription(aux.Stringid(id,0))

@@ -4,7 +4,7 @@ if not Rune then Duel.LoadScript("proc_rune.lua") end
 function s.initial_effect(c)
 	--Rune Summon
 	c:EnableReviveLimit()
-	Rune.AddProcedure(c,aux.FilterBoolFunction(Card.IsSetCard,0x1fe7),2,2,aux.FilterBoolFunction(Card.IsCode,912389041),1,nil,nil,s.getGroup)
+	Rune.AddProcedure(c,Rune.MonFunctionEx(Card.IsSetCard,0x1fe7),2,2,Rune.STFunctionEx(Card.IsCode,912389041),1,nil,nil,s.getGroup)
 	--disable zone
 	local e1=Effect.CreateEffect(c)
 	e1:SetDescription(aux.Stringid(id,1))

@@ -4,7 +4,7 @@ local s,id=GetID()
 function s.initial_effect(c)
 	--rune procedure
 	c:EnableReviveLimit()
-	Rune.AddProcedure(c,nil,1,1,aux.FilterBoolFunctionEx(Card.IsType,TYPE_TRAP),2,99,nil,s.altG)
+	Rune.AddProcedure(c,Rune.MonFunction(nil),1,1,Rune.STFunctionEx(Card.IsType,TYPE_TRAP),2,99,nil,s.altG)
 	--cannot special summon
 	local e1=Effect.CreateEffect(c)
 	e1:SetProperty(EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_UNCOPYABLE)

@@ -2,7 +2,7 @@
 local s,id=GetID()
 function s.initial_effect(c)
 	--synchro summon
-	Synchro.AddProcedure(c,nil,1,1,aux.FilterBoolFunctionEx(Card.IsRace,RACE_WINGEDBEAST),1,99)
+	Synchro.AddProcedure(c,Rune.MonFunction(nil),1,1,Rune.STFunctionEx(Card.IsRace,RACE_WINGEDBEAST),1,99)
 	c:EnableReviveLimit()
 	--search
 	local e1=Effect.CreateEffect(c)

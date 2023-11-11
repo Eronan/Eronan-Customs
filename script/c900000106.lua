@@ -4,7 +4,7 @@ local s,id=GetID()
 function s.initial_effect(c)
 	--Rune
 	c:EnableReviveLimit()
-	Rune.AddProcedure(c,aux.FilterBoolFunctionEx(Card.IsAttribute,ATTRIBUTE_FIRE),1,1,s.STMatFilter,1,1,LOCATION_SZONE,nil,nil,s.exruncon)
+	Rune.AddProcedure(c,Rune.MonFunctionEx(Card.IsAttribute,ATTRIBUTE_FIRE),1,1,Rune.STFunction(s.STMatFilter),1,1,LOCATION_SZONE,nil,nil,s.exruncon)
 	--Union
 	aux.AddUnionProcedure(c,nil)
 	--Atk up

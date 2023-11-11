@@ -4,7 +4,7 @@ local s,id=GetID()
 function s.initial_effect(c)
 	--Rune Summon
 	c:EnableReviveLimit()
-	Rune.AddProcedure(c,aux.FilterBoolFunctionEx(Card.IsSetCard,0x110),1,1,aux.FilterBoolFunctionEx(Card.IsType,TYPE_EQUIP),1,1,LOCATION_GRAVE)
+	Rune.AddProcedure(c,Rune.MonFunctionEx(Card.IsSetCard,0x110),1,1,Rune.STFunctionEx(Card.IsType,TYPE_EQUIP),1,1,LOCATION_GRAVE)
 	--equip
     local e1=Effect.CreateEffect(c)
     e1:SetDescription(aux.Stringid(id,0))

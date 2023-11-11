@@ -3,7 +3,7 @@ if not Rune then Duel.LoadScript("proc_rune.lua") end
 function s.initial_effect(c)
 	--Rune Summon
 	c:EnableReviveLimit()
-	Rune.AddProcedure(c,aux.FilterBoolFunctionEx(Card.IsSetCard,0x10ec),1,1,s.STMatFilter,1,1)
+	Rune.AddProcedure(c,Rune.MonFunctionEx(Card.IsSetCard,0x10ec),1,1,Rune.STFunction(s.STMatFilter),1,1)
 	--Destroy
 	local e1=Effect.CreateEffect(c)
 	e1:SetDescription(aux.Stringid(id,0))

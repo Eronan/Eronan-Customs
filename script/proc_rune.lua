@@ -28,6 +28,7 @@ end
 if not Rune then
 	Rune = aux.RuneProcedure
 end
+
 --Procedure Functions
 function Rune.AddProcedure(c,monf,mmin,mmax,stf,smin,smax,loc,group,condition,excondition,specialchk)
 	--monf is the monster Filter, stf is the S/T Filter
@@ -99,12 +100,34 @@ function Rune.AddSecondProcedure(c,monf,mmin,mmax,stf,smin,smax,loc,group,condit
 	e1:SetValue(SUMMON_TYPE_RUNE)
 	c:RegisterEffect(e1)
 end
+function Rune.MonFunction(f,a,b,c)
+	return	function(target,scard,sumtype,tp)
+				return c:IsMonster() and (not f or f(target,a,b,c))
+			end
+end
+function Rune.MonFunctionEx(f,val)
+	return	function(target,scard,sumtype,tp)
+				return c:IsMonster() and f(target,val,scard,sumtype,tp)
+			end
+end
+function Rune.STFunction(f,a,b,c)
+	return	function(target,scard,sumtype,tp)
+				return c:IsSpellTrap() and (not f or f(target,a,b,c))
+			end
+end
+function Rune.STFunctionEx(f,val)
+	return	function(target,scard,sumtype,tp)
+				--Pendulum Spell card workaround
+				if f==Card.IsType and val==TYPE_PENDULUM then return c:IsSpellTrap() and f(target,TYPE_PENDULUM)
+				else return c:IsSpellTrap() and f(target,val,scard,sumtype,tp) end
+			end
+end
 function Rune.MonsterFilter(c,f,rc,tp)
-	return c:IsMonster() and (not f or f(c,rc,SUMMON_TYPE_RUNE,tp))
+	return (not f or f(c,rc,SUMMON_TYPE_RUNE,tp))
 		and c:IsCanBeRuneMaterial(rc,tp) and c~=rc
 end
 function Rune.STFilter(c,f,rc,tp)
-	return c:IsSpellTrap() and (not f or f(c,rc,SUMMON_TYPE_RUNE,tp))
+	return (not f or f(c,rc,SUMMON_TYPE_RUNE,tp))
 		and c:IsCanBeRuneMaterial(rc,tp) and c~=rc
 end
 --Check if Usable as Material at all
@@ -595,6 +618,19 @@ function Card.IsRuneCode(c,code,rc,sumtype,tp)
 		if not tcon or tcon(te,rc,sumtype,tp) then return true end
 	end
 	return false
+end
+--Checks if a card is treated as a Type for the Rune Summon of a Card
+if not Rune.BaseCardIsType then
+	Rune.BaseCardIsType = Card.IsType
+	
+	function Card.IsType(c,ctype,scard,sumtype,playerid)
+		if sumtype ~= SUMMON_TYPE_RUNE then return Rune.BaseCardIsType(c,ctype,scard,sumtype,playerid) end
+		local rte = c:GetCardEffect(EFFECT_RUNE_TYPE)
+		local tg = rte:GetTarget()
+		if not tg or tg(scard) then
+			local val = rte:GetValue()
+		end
+	end
 end
 --Checks the Rune Custom Check for Cards in cases where Monsters are not being Rune Summoned normally
 function Card.IsRuneCustomCheck(c,mg,tp)

@@ -6,7 +6,7 @@ function s.initial_effect(c)
 	--pendulum summon
 	Pendulum.AddProcedure(c)
 	--rune summon
-	Rune.AddProcedure(c,nil,2,2,aux.FilterBoolFunction(Card.IsType,TYPE_SPELL),2,2,LOCATION_PZONE)
+	Rune.AddProcedure(c,Rune.MonFunction(nil),2,2,Rune.STFunctionEx(Card.IsType,TYPE_SPELL),2,2,LOCATION_PZONE)
 	--Back to Hand
 	local e2=Effect.CreateEffect(c)
 	e2:SetDescription(aux.Stringid(id,1))

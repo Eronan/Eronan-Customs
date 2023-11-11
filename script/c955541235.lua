@@ -4,7 +4,7 @@ local s,id=GetID()
 function s.initial_effect(c)
 	--Pendulum and Rune Summon
 	Pendulum.AddProcedure(c)
-	Rune.AddProcedure(c,nil,2,99,aux.FilterBoolFunctionEx(Card.IsType,TYPE_PENDULUM),1,1,LOCATION_PZONE)
+	Rune.AddProcedure(c,Rune.MonFunction(nil),2,99,Rune.STFunctionEx(Card.IsType,TYPE_PENDULUM),1,1,LOCATION_PZONE)
 	--Revive limit
 	c:EnableUnsummonable()
 	local e0=Effect.CreateEffect(c)

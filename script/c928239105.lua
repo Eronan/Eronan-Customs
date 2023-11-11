@@ -3,7 +3,7 @@ if not Rune then Duel.LoadScript("proc_rune.lua") end
 local s,id=GetID()
 function s.initial_effect(c)
 	--Rune and Spirit
-	Rune.AddProcedure(c,nil,1,1,nil,2,2)
+	Rune.AddProcedure(c,Rune.MonFunction(nil),1,1,Rune.STFunction(nil),2,2)
 	c:EnableReviveLimit()
 	local sme,soe=Spirit.AddProcedure(c,EVENT_SPSUMMON_SUCCESS)
 	--Mandatory return

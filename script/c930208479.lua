@@ -4,7 +4,7 @@ local s,id=GetID()
 function s.initial_effect(c)
 	--Rune Summon
 	c:EnableReviveLimit()
-	Rune.AddProcedure(c,aux.FilterBoolFunctionEx(Card.IsRace,RACE_SPELLCASTER),1,1,s.STFilter,1,1)
+	Rune.AddProcedure(c,Rune.MonFunctionEx(Card.IsRace,RACE_SPELLCASTER),1,1,Rune.STFunction(s.STFilter),1,1)
 	--Eye of Timaeus
 	local e1=Effect.CreateEffect(c)
 	e1:SetDescription(aux.Stringid(id,0))

@@ -4,7 +4,7 @@ local s,id=GetID()
 function s.initial_effect(c)
 	--Rune Summon
 	c:EnableReviveLimit()
-	Rune.AddProcedure(c,aux.AND(aux.FilterBoolFunctionEx(Card.IsRace,RACE_FISH),aux.FilterBoolFunctionEx(Card.IsAttribute,ATTRIBUTE_LIGHT)),1,1,nil,1,1)
+	Rune.AddProcedure(c,Rune.MonFunction(s.MonMatFilter),1,1,Rune.STFunction(nil),1,1)
 	--destroy replace
     local e1=Effect.CreateEffect(c)
     e1:SetType(EFFECT_TYPE_CONTINUOUS+EFFECT_TYPE_FIELD)
@@ -32,6 +32,9 @@ function s.initial_effect(c)
 	local e3=e2:Clone()
 	e3:SetCode(EVENT_CHAIN_DISABLED)
 	c:RegisterEffect(e3)
+end
+function s.MonMatFilter(c,rc,sumtyp,tp)
+	return c:IsRace(RACE_FISH,rc,sumtyp,tp) and c:IsAttribute(ATTRIBUTE_LIGHT,rc,sumtyp,tp)
 end
 function s.repfilter(c,tp)
     return c:IsControler(tp) and c:IsLocation(LOCATION_ONFIELD)

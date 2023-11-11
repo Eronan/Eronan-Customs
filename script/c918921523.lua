@@ -3,8 +3,8 @@ if not Rune then Duel.LoadScript("proc_rune.lua") end
 local s,id=GetID()
 function s.initial_effect(c)
 	--Rune Summon
-	Rune.AddProcedure(c,aux.FilterBoolFunction(Card.IsSetCard,0x1fe7),2,2,aux.FilterBoolFunction(Card.IsCode,912389041),2,2,nil,s.rungp)
-	Rune.AddSecondProcedure(c,aux.FilterBoolFunction(Card.IsCode,918920523),1,1,aux.FilterBoolFunction(Card.IsCode,912389041),2,2,LOCATION_DECK)
+	Rune.AddProcedure(c,Rune.MonFunctionEx(Card.IsSetCard,0x1fe7),2,2,Rune.STFunctionEx(Card.IsCode,912389041),2,2,nil,s.rungp)
+	Rune.AddSecondProcedure(c,Rune.MonFunctionEx(Card.IsCode,918920523),1,1,Rune.STFunctionEx(Card.IsCode,912389041),2,2,LOCATION_DECK)
 	c:EnableReviveLimit()
 	--Become "Contaminetwork"
 	local e1=Effect.CreateEffect(c)

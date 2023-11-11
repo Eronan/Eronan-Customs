@@ -4,6 +4,6 @@ local s,id=GetID()
 function s.initial_effect(c)
 	--Rune Summon
 	c:EnableReviveLimit()
-	Rune.AddProcedure(c,aux.FilterBoolFunctionEx(aux.NOT(Card.IsType),TYPE_EFFECT),1,1,nil,1,1,LOCATION_PZONE)
+	Rune.AddProcedure(c,Rune.MonFunctionEx(aux.NOT(Card.IsType),TYPE_EFFECT),1,1,Rune.STFunction(nil),1,1,LOCATION_PZONE)
 	Pendulum.AddProcedure(c)
 end
