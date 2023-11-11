@@ -125,7 +125,7 @@ function Rune.STFunctionEx(f,val)
 end
 --Check if Usable as Material at all
 function Rune.ConditionFilter(c,monf,stf,rc,tp)
-	return monf(c,sc,SUMMON_TYPE_RUNE,tp) or stf(c,sc,SUMMON_TYPE_RUNE,tp)
+	return monf(c,rc,SUMMON_TYPE_RUNE,tp) or stf(c,rc,SUMMON_TYPE_RUNE,tp)
 end
 --[[Parameters Details for Recursives
 g = All Usable Materials
