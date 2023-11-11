@@ -110,7 +110,7 @@ function Rune.MonFunctionEx(f,val)
 				return c:IsMonster() and f(target,val,scard,sumtype,tp)
 			end
 end
-function 	(f,a,b,c)
+function Rune.STFunction(f,a,b,c)
 	return	function(target,scard,sumtype,tp)
 				return c:IsSpellTrap() and (not f or f(target,a,b,c))
 			end
