@@ -1,5 +1,5 @@
 # Eronan-Customs
-Custom Cards for EDOPro
+Custom Cards for EDOPro. Adds a new mechanic 'Rune monsters' to the game which are Main Deck monsters that can be summoned using monsters and a Spell/Traps.
 
 ## Installation Instructions
 1. Open the "configs.json" file located in "ProjectIgnis/config" in Notepad or an alternative Text Editor (e.g. Notepad++).
