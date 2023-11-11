@@ -100,9 +100,9 @@ function Rune.AddSecondProcedure(c,monf,mmin,mmax,stf,smin,smax,loc,group,condit
 	e1:SetValue(SUMMON_TYPE_RUNE)
 	c:RegisterEffect(e1)
 end
-function Rune.MonFunction(f,a,b,c)
+function Rune.MonFunction(f)
 	return	function(target,scard,sumtype,tp)
-				return target:IsMonster() and (not f or f(target,a,b,c)) and Rune.IsCanBeMaterial(target,scard,tp)
+				return target:IsMonster() and (not f or f(target,scard,sumtype,tp)) and Rune.IsCanBeMaterial(target,scard,tp)
 			end
 end
 function Rune.MonFunctionEx(f,val)
@@ -110,9 +110,9 @@ function Rune.MonFunctionEx(f,val)
 				return target:IsMonster() and f(target,val,scard,sumtype,tp) and Rune.IsCanBeMaterial(target,scard,tp)
 			end
 end
-function Rune.STFunction(f,a,b,c)
+function Rune.STFunction(f)
 	return	function(target,scard,sumtype,tp)
-				return target:IsSpellTrap() and (not f or f(target,a,b,c)) and Rune.IsCanBeMaterial(target,scard,tp)
+				return target:IsSpellTrap() and (not f or f(target,scard,sumtype,tp)) and Rune.IsCanBeMaterial(target,scard,tp)
 			end
 end
 function Rune.STFunctionEx(f,val)
@@ -124,7 +124,7 @@ function Rune.STFunctionEx(f,val)
 			end
 end
 --Check if Usable as Material at all
-function Rune.ConditionFilter(c,monf,stf,rc,tp)
+function Rune.ConditionFilter(c,monf,stf,rc,tp)	
 	return monf(c,rc,SUMMON_TYPE_RUNE,tp) or stf(c,rc,SUMMON_TYPE_RUNE,tp)
 end
 function Rune.IsCanBeMaterial(c,runc,tp)
