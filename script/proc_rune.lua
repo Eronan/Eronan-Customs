@@ -625,6 +625,7 @@ if not Rune.BaseCardIsType then
 	
 	function Card.IsType(c,ctype,scard,sumtype,playerid)
 		if not sumtype then sumtype = 0 end
+		if not playerid then playerid = PLAYER_NONE end
 		if sumtype&SUMMON_TYPE_RUNE == 0 then return Rune.BaseCardIsType(c,ctype,scard,sumtype,playerid) end
 		local rte = c:GetCardEffect(EFFECT_RUNE_TYPE)
 		
