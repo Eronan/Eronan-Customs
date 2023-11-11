@@ -615,6 +615,7 @@ function Card.IsRuneCode(c,code,rc,sumtype,tp)
 	return false
 end
 --Checks if a card is treated as a Type for the Rune Summon of a Card
+--[[
 if not Rune.BaseCardIsType then
 	Rune.BaseCardIsType = Card.IsType
 	
@@ -639,6 +640,7 @@ if not Rune.BaseCardIsType then
 		return Rune.BaseCardIsType(c,ctype,scard,sumtype,playerid)
 	end
 end
+--]]
 --Checks the Rune Custom Check for Cards in cases where Monsters are not being Rune Summoned normally
 function Card.IsRuneCustomCheck(c,mg,tp)
 	if c.rune_custom_check then return c.rune_custom_check(mg,c,SUMMON_TYPE_RUNE,tp)
