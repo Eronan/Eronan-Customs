@@ -110,7 +110,7 @@ function Rune.MonFunctionEx(f,val)
 				return c:IsMonster() and f(target,val,scard,sumtype,tp)
 			end
 end
-function Rune.STFunction(f,a,b,c)
+function 	(f,a,b,c)
 	return	function(target,scard,sumtype,tp)
 				return c:IsSpellTrap() and (not f or f(target,a,b,c))
 			end
@@ -624,12 +624,23 @@ if not Rune.BaseCardIsType then
 	Rune.BaseCardIsType = Card.IsType
 	
 	function Card.IsType(c,ctype,scard,sumtype,playerid)
-		if sumtype ~= SUMMON_TYPE_RUNE then return Rune.BaseCardIsType(c,ctype,scard,sumtype,playerid) end
+		if not sumtype then sumtype = 0 end
+		if sumtype&SUMMON_TYPE_RUNE == 0 then return Rune.BaseCardIsType(c,ctype,scard,sumtype,playerid) end
 		local rte = c:GetCardEffect(EFFECT_RUNE_TYPE)
-		local tg = rte:GetTarget()
-		if not tg or tg(scard) then
-			local val = rte:GetValue()
+		
+		local effs = {c:GetCardEffect(EFFECT_RUNE_TYPE)}
+		for _,te in ipairs(effs) do
+			local etg = te:GetTarget()
+			local eval = te:GetValue()
+			if etg or not teg(scard) then
+				if (type(val)=='function' and val(rte,scard,sumtype,playerid)&ctype>0)
+					or (type(val) == 'int' and val&ctype>0) then
+					return true
+				end
+			end
 		end
+		
+		return Rune.BaseCardIsType(c,ctype,scard,sumtype,playerid)
 	end
 end
 --Checks the Rune Custom Check for Cards in cases where Monsters are not being Rune Summoned normally
