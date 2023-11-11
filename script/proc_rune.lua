@@ -102,22 +102,22 @@ function Rune.AddSecondProcedure(c,monf,mmin,mmax,stf,smin,smax,loc,group,condit
 end
 function Rune.MonFunction(f,a,b,c)
 	return	function(target,scard,sumtype,tp)
-				return target:IsMonster() and (not f or f(target,a,b,c)) and target:IsCanBeRuneMaterial(scard,tp)
+				return target:IsMonster() and (not f or f(target,a,b,c)) and Rune.IsCanBeMaterial(target,scard,tp)
 			end
 end
 function Rune.MonFunctionEx(f,val)
 	return	function(target,scard,sumtype,tp)
-				return target:IsMonster() and f(target,val,scard,sumtype,tp) and target:IsCanBeRuneMaterial(scard,tp)
+				return target:IsMonster() and f(target,val,scard,sumtype,tp) and Rune.IsCanBeMaterial(target,scard,tp)
 			end
 end
 function Rune.STFunction(f,a,b,c)
 	return	function(target,scard,sumtype,tp)
-				return target:IsSpellTrap() and (not f or f(target,a,b,c)) and target:IsCanBeRuneMaterial(scard,tp)
+				return target:IsSpellTrap() and (not f or f(target,a,b,c)) and Rune.IsCanBeMaterial(target,scard,tp)
 			end
 end
 function Rune.STFunctionEx(f,val)
 	return	function(target,scard,sumtype,tp)
-				if not target:IsSpellTrap() or not target:IsCanBeRuneMaterial(scard,tp) then return false end
+				if not target:IsSpellTrap() or not Rune.IsCanBeMaterial(target,scard,tp) then return false end
 				--Pendulum Spell card workaround
 				if f==Card.IsType and val==TYPE_PENDULUM then return target:IsSpellTrap() and f(target,val)
 				else return f(target,val,scard,sumtype,tp) end
@@ -126,6 +126,25 @@ end
 --Check if Usable as Material at all
 function Rune.ConditionFilter(c,monf,stf,rc,tp)
 	return monf(c,rc,SUMMON_TYPE_RUNE,tp) or stf(c,rc,SUMMON_TYPE_RUNE,tp)
+end
+function Rune.IsCanBeMaterial(c,runc,tp)
+	tp=tp or c:GetControler()
+	
+	if c==runc then return false end
+	
+	--Search Effects
+	local effs={c:GetCardEffect(EFFECT_CANNOT_BE_RUNE_MATERIAL)}
+	for _,te in ipairs(effs) do
+		if type(te:GetValue())=='function' and te:GetValue()(te,runc,tp) or te:GetValue() then return false end
+	end
+	
+	--Cannot be Material
+	effs={c:GetCardEffect(EFFECT_CANNOT_BE_MATERIAL)}
+	for _,te in ipairs(effs) do
+		if type(te:GetValue())=='function' and te:GetValue()(te,runc,SUMMON_TYPE_RUNE,tp) or te:GetValue() then return false end
+	end
+	
+	return true
 end
 --[[Parameters Details for Recursives
 g = All Usable Materials
@@ -528,22 +547,7 @@ function Rune.UsedExtraMaterials(mg,eg)
 end
 --Extension Functions
 function Card.IsCanBeRuneMaterial(c,runc,tp)
-	tp=tp or c:GetControler()
-	
-	if c==runc then return false end
-	
-	--Search Effects
-	local effs={c:GetCardEffect(EFFECT_CANNOT_BE_RUNE_MATERIAL)}
-	for _,te in ipairs(effs) do
-		if type(te:GetValue())=='function' and te:GetValue()(te,runc,tp) or te:GetValue() then return false end
-	end
-	
-	--Cannot be Material
-	effs={c:GetCardEffect(EFFECT_CANNOT_BE_MATERIAL)}
-	for _,te in ipairs(effs) do
-		if type(te:GetValue())=='function' and te:GetValue()(te,runc,SUMMON_TYPE_RUNE,tp) or te:GetValue() then return false end
-	end
-	
+	if not Rune.IsCanBeMaterial(c,runc,tp) then return false end
 	--Check if can be Material for Rune Monster
 	if not runc then
 		return true
