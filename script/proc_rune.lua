@@ -102,37 +102,30 @@ function Rune.AddSecondProcedure(c,monf,mmin,mmax,stf,smin,smax,loc,group,condit
 end
 function Rune.MonFunction(f,a,b,c)
 	return	function(target,scard,sumtype,tp)
-				return c:IsMonster() and (not f or f(target,a,b,c))
+				return c:IsMonster() and (not f or f(target,a,b,c)) and c:IsCanBeRuneMaterial(rc,tp)
 			end
 end
 function Rune.MonFunctionEx(f,val)
 	return	function(target,scard,sumtype,tp)
-				return c:IsMonster() and f(target,val,scard,sumtype,tp)
+				return c:IsMonster() and f(target,val,scard,sumtype,tp) and c:IsCanBeRuneMaterial(rc,tp)
 			end
 end
 function Rune.STFunction(f,a,b,c)
 	return	function(target,scard,sumtype,tp)
-				return c:IsSpellTrap() and (not f or f(target,a,b,c))
+				return c:IsSpellTrap() and (not f or f(target,a,b,c)) and c:IsCanBeRuneMaterial(rc,tp)
 			end
 end
 function Rune.STFunctionEx(f,val)
 	return	function(target,scard,sumtype,tp)
+				if not c:IsSpellTrap() or not c:IsCanBeRuneMaterial(rc,tp) then return false end
 				--Pendulum Spell card workaround
-				if f==Card.IsType and val==TYPE_PENDULUM then return c:IsSpellTrap() and f(target,TYPE_PENDULUM)
-				else return c:IsSpellTrap() and f(target,val,scard,sumtype,tp) end
+				if f==Card.IsType and val==TYPE_PENDULUM then return c:IsSpellTrap() and f(target,val)
+				else return f(target,val,scard,sumtype,tp) end
 			end
-end
-function Rune.MonsterFilter(c,f,rc,tp)
-	return (not f or f(c,rc,SUMMON_TYPE_RUNE,tp))
-		and c:IsCanBeRuneMaterial(rc,tp) and c~=rc
-end
-function Rune.STFilter(c,f,rc,tp)
-	return (not f or f(c,rc,SUMMON_TYPE_RUNE,tp))
-		and c:IsCanBeRuneMaterial(rc,tp) and c~=rc
 end
 --Check if Usable as Material at all
 function Rune.ConditionFilter(c,monf,stf,rc,tp)
-	return Rune.MonsterFilter(c,monf,rc,tp) or Rune.STFilter(c,stf,rc,tp)
+	return monf(c,sc,SUMMON_TYPE_RUNE,tp) or stf(c,sc,SUMMON_TYPE_RUNE,tp)
 end
 --[[Parameters Details for Recursives
 g = All Usable Materials
@@ -149,8 +142,8 @@ emt = Extra Material Table
 ]]
 function Rune.CheckRecursive(c,mg,sg,mct,sct,bct,monf,mmin,mmax,stf,smin,smax,tmin,tmax,rc,tp,og,emt,filt,runechk)
 	--Check Filters
-	local mon=Rune.MonsterFilter(c,monf,rc,tp)
-	local st=Rune.STFilter(c,stf,rc,tp)
+	local mon=monf(c,rc,SUMMON_TYPE_RUNE,tp)
+	local st=stf(c,rc,SUMMON_TYPE_RUNE,tp)
 
 	--Count Maximums
 	if #sg>=tmax then return false end --If the total count exceeds maximum
@@ -239,7 +232,7 @@ end
 --Function Sets up Filters
 function Rune.CheckRecursive2(c,mg,sg,csg,mct,sct,bct,monf,mmin,mmax,stf,smin,smax,tmin,tmax,rc,tp,og,emt,filt,runechk)
 	--Check Filters
-	local mon=Rune.MonsterFilter(c,monf,rc,tp)
+	local mon=monf(c,rc,SUMMON_TYPE_RUNE,tp)
 	local st=Rune.STFilter(c,stf,rc,tp)
 	
 	--Count Maximums
@@ -536,6 +529,8 @@ end
 --Extension Functions
 function Card.IsCanBeRuneMaterial(c,runc,tp)
 	tp=tp or c:GetControler()
+	
+	if c==runc then return false end
 	
 	--Search Effects
 	local effs={c:GetCardEffect(EFFECT_CANNOT_BE_RUNE_MATERIAL)}
