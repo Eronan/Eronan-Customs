@@ -252,7 +252,7 @@ end
 function Rune.CheckRecursive2(c,mg,sg,csg,mct,sct,bct,monf,mmin,mmax,stf,smin,smax,tmin,tmax,rc,tp,og,emt,filt,runechk)
 	--Check Filters
 	local mon=monf(c,rc,SUMMON_TYPE_RUNE,tp)
-	local st=Rune.STFilter(c,stf,rc,tp)
+	local st=stf(c,rc,SUMMON_TYPE_RUNE,tp)
 	
 	--Count Maximums
 	if #sg>=tmax then return Rune.CheckGoal(mct,sct,bct,mmin,smin,tmin,tmax) and (not runechk or runechk(sg,rc,SUMMON_TYPE_RUNE|MATERIAL_RUNE,tp)) end --If the total count exceeds maximum
@@ -438,8 +438,8 @@ function Rune.Target(monf,mmin,mmax,stf,smin,smax,group,excondition,specialchk)
 				local cancel=false
 				sg:Merge(mustg)
 				while #sg<max do
-					local sct=sg:FilterCount(aux.NOT(Rune.MonsterFilter),nil,monf,c,tp)
-					local mct=sg:FilterCount(aux.NOT(Rune.STFilter),nil,stf,c,tp)
+					local sct=sg:FilterCount(aux.NOT(monf),nil,c,SUMMON_TYPE_RUNE,tp)
+					local mct=sg:FilterCount(aux.NOT(stf),nil,c,SUMMON_TYPE_RUNE,tp)
 					local bct=#sg-mct-sct
 					--Filters
 					local filters={}
@@ -468,8 +468,8 @@ function Rune.Target(monf,mmin,mmax,stf,smin,smax,group,excondition,specialchk)
 						end
 					end
 				end
-				local sct=sg:FilterCount(aux.NOT(Rune.MonsterFilter),nil,monf,c,tp)
-				local mct=sg:FilterCount(aux.NOT(Rune.STFilter),nil,stf,c,tp)
+				local sct=sg:FilterCount(aux.NOT(monf),nil,c,SUMMON_TYPE_RUNE,tp)
+				local mct=sg:FilterCount(aux.NOT(stf),nil,c,SUMMON_TYPE_RUNE,tp)
 				if Rune.CheckGoal(mct,sct,#sg-mct-sct,mmin,smin,min,max) and (not matchk or matchk(sg,c,SUMMON_TYPE_RUNE|MATERIAL_RUNE,tp))then
 					local filters={}
 					Rune.CheckRecursive2(sg:GetFirst(),(mg+tg),Group.CreateGroup(),sg,0,0,0,monf,mmin,mmax,stf,smin,smax,min,max,c,tp,mg,emt,filters,matchk)
