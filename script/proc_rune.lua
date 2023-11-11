@@ -28,7 +28,6 @@ end
 if not Rune then
 	Rune = aux.RuneProcedure
 end
-
 --Procedure Functions
 function Rune.AddProcedure(c,monf,mmin,mmax,stf,smin,smax,loc,group,condition,excondition,specialchk)
 	--monf is the monster Filter, stf is the S/T Filter
@@ -45,29 +44,12 @@ function Rune.AddProcedure(c,monf,mmin,mmax,stf,smin,smax,loc,group,condition,ex
 		mt.rune_parameters={}
 		table.insert(mt.rune_parameters,{monf,mmin,mmax,stf,smin,smax,loc+LOCATION_HAND,group,condition,excondition,specialchk})
 	end
-	local e1=Effect.CreateEffect(c)
-	e1:SetType(EFFECT_TYPE_FIELD)
-	e1:SetDescription(1175)
-	e1:SetCode(EFFECT_SPSUMMON_PROC)
-	e1:SetProperty(EFFECT_FLAG_UNCOPYABLE+EFFECT_FLAG_IGNORE_IMMUNE+EFFECT_FLAG_CANNOT_DISABLE)
-	e1:SetRange(LOCATION_HAND)
-	e1:SetCondition(Rune.Condition(monf,mmin,mmax,stf,smin,smax,group,condition,nil,specialchk))
-	e1:SetTarget(Rune.Target(monf,mmin,mmax,stf,smin,smax,group,nil,specialchk))
-	e1:SetOperation(Rune.Operation(monf,mmin,mmax,stf,smin,smax,group))
-	e1:SetValue(SUMMON_TYPE_RUNE)
+	
+	local e1=Rune.CreateProcedure(c,monf,mmin,mmax,stf,smin,smax,loc,group,condition,specialchk)
 	c:RegisterEffect(e1)
 	
 	if loc then
-		local e2=Effect.CreateEffect(c)
-		e2:SetType(EFFECT_TYPE_FIELD)
-		e2:SetDescription(1175)
-		e2:SetCode(EFFECT_SPSUMMON_PROC)
-		e2:SetProperty(EFFECT_FLAG_UNCOPYABLE+EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_IGNORE_IMMUNE)
-		e2:SetRange(loc)
-		e2:SetCondition(Rune.Condition(monf,mmin,mmax,stf,smin,smax,group,condition,excondition,specialchk))
-		e2:SetTarget(Rune.Target(monf,mmin,mmax,stf,smin,smax,group,excondition,specialchk))
-		e2:SetOperation(Rune.Operation(monf,mmin,mmax,stf,smin,smax,group))
-		e2:SetValue(SUMMON_TYPE_RUNE)
+		local e2=Rune.CreateSecondProcedure(c,monf,mmin,mmax,stf,smin,smax,loc,group,condition,excondition,specialchk)
 		c:RegisterEffect(e2)
 	end
 end
@@ -88,6 +70,23 @@ function Rune.AddSecondProcedure(c,monf,mmin,mmax,stf,smin,smax,loc,group,condit
 		local mt=c:GetMetatable()
 		table.insert(mt.rune_parameters,{monf,mmin,mmax,stf,smin,smax,loc,group,condition,excondition,specialchk})
 	end
+	local e1=Rune.CreateSecondProcedure(c,monf,mmin,mmax,stf,smin,smax,loc,group,condition,excondition,specialchk)
+	c:RegisterEffect(e1)
+end
+function Rune.CreateProcedure(c,monf,mmin,mmax,stf,smin,smax,loc,group,condition,specialchk)
+	local e1=Effect.CreateEffect(c)
+	e1:SetType(EFFECT_TYPE_FIELD)
+	e1:SetDescription(1175)
+	e1:SetCode(EFFECT_SPSUMMON_PROC)
+	e1:SetProperty(EFFECT_FLAG_UNCOPYABLE+EFFECT_FLAG_IGNORE_IMMUNE+EFFECT_FLAG_CANNOT_DISABLE)
+	e1:SetRange(LOCATION_HAND)
+	e1:SetCondition(Rune.Condition(monf,mmin,mmax,stf,smin,smax,group,condition,nil,specialchk))
+	e1:SetTarget(Rune.Target(monf,mmin,mmax,stf,smin,smax,group,nil,specialchk))
+	e1:SetOperation(Rune.Operation(monf,mmin,mmax,stf,smin,smax,group))
+	e1:SetValue(SUMMON_TYPE_RUNE)
+	return e1
+end
+function Rune.CreateSecondProcedure(c,monf,mmin,mmax,stf,smin,smax,loc,group,condition,excondition,specialchk)
 	local e1=Effect.CreateEffect(c)
 	e1:SetType(EFFECT_TYPE_FIELD)
 	e1:SetDescription(1175)
@@ -98,8 +97,9 @@ function Rune.AddSecondProcedure(c,monf,mmin,mmax,stf,smin,smax,loc,group,condit
 	e1:SetTarget(Rune.Target(monf,mmin,mmax,stf,smin,smax,group,excondition,specialchk))
 	e1:SetOperation(Rune.Operation(monf,mmin,mmax,stf,smin,smax,group))
 	e1:SetValue(SUMMON_TYPE_RUNE)
-	c:RegisterEffect(e1)
+	return e1
 end
+--
 function Rune.MonFunction(f)
 	return	function(target,scard,sumtype,tp)
 				return target:IsMonster() and (not f or f(target,scard,sumtype,tp)) and Rune.IsCanBeMaterial(target,scard,tp)
@@ -128,8 +128,6 @@ function Rune.ConditionFilter(c,monf,stf,rc,tp)
 	return monf(c,rc,SUMMON_TYPE_RUNE,tp) or stf(c,rc,SUMMON_TYPE_RUNE,tp)
 end
 function Rune.IsCanBeMaterial(c,runc,tp)
-	tp=tp or c:GetControler()
-	
 	if c==runc then return false end
 	
 	--Search Effects
@@ -547,6 +545,7 @@ function Rune.UsedExtraMaterials(mg,eg)
 end
 --Extension Functions
 function Card.IsCanBeRuneMaterial(c,runc,tp)
+	tp=tp or c:GetControler()
 	if not Rune.IsCanBeMaterial(c,runc,tp) then return false end
 	--Check if can be Material for Rune Monster
 	if not runc then
