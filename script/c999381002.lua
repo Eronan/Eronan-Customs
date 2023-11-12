@@ -45,9 +45,9 @@ function s.runop(e,tp,eg,ep,ev,re,r,rp)
 	if not c:IsRuneSummonable() then return false end
 	Duel.RuneSummon(tp,c)
 end
-function s.efilter(e,te)
+function s.efilter(e,re)
 	if e:GetOwnerPlayer()==re:GetOwnerPlayer() then return false end
-	if not te:IsHasProperty(EFFECT_FLAG_CARD_TARGET) then return true end
+	if not re:IsHasProperty(EFFECT_FLAG_CARD_TARGET) then return true end
 	local g=Duel.GetChainInfo(0,CHAININFO_TARGET_CARDS)
 	return #g==0
 end
