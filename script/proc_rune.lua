@@ -9,7 +9,7 @@ local s,id=GetID()
 function s.initial_effect(c)
 	--Rune Summon
 	c:EnableReviveLimit()
-	Rune.AddProcedure(c,monf,mmin,mmax,stf,smin,smax,loc,group,condition,excondition,specialchk)
+	Rune.AddProcedure(c,monf,mmin,mmax,stf,smin,smax,loc,group,condition,excondition,specialchk,customoperation,stage2)
 end
 --]]
 --Constants
@@ -29,7 +29,7 @@ if not Rune then
 	Rune = aux.RuneProcedure
 end
 --Procedure Functions
-function Rune.AddProcedure(c,monf,mmin,mmax,stf,smin,smax,loc,group,condition,excondition,specialchk)
+function Rune.AddProcedure(c,monf,mmin,mmax,stf,smin,smax,loc,group,condition,excondition,specialchk,customoperation,stage2)
 	--monf is the monster Filter, stf is the S/T Filter
 	--mmin, mmax are the minimums and maximums for the monsters
 	--smin, smax are the minimums and maximums for the Spell/Trap cards
@@ -42,18 +42,18 @@ function Rune.AddProcedure(c,monf,mmin,mmax,stf,smin,smax,loc,group,condition,ex
 		local mt=c:GetMetatable()
 		--mt.rune_monster_filter=function(c) end
 		mt.rune_parameters={}
-		table.insert(mt.rune_parameters,{monf,mmin,mmax,stf,smin,smax,loc+LOCATION_HAND,group,condition,excondition,specialchk})
+		table.insert(mt.rune_parameters,{monf,mmin,mmax,stf,smin,smax,loc+LOCATION_HAND,group,condition,excondition,specialchk,customoperation,stage2})
 	end
 	
-	local e1=Rune.CreateProcedure(c,monf,mmin,mmax,stf,smin,smax,loc,group,condition,specialchk)
+	local e1=Rune.CreateProcedure(c,monf,mmin,mmax,stf,smin,smax,loc,group,condition,specialchk,customoperation,stage2)
 	c:RegisterEffect(e1)
 	
 	if loc then
-		local e2=Rune.CreateSecondProcedure(c,monf,mmin,mmax,stf,smin,smax,loc,group,condition,excondition,specialchk)
+		local e2=Rune.CreateSecondProcedure(c,monf,mmin,mmax,stf,smin,smax,loc,group,condition,excondition,specialchk,customoperation,stage2)
 		c:RegisterEffect(e2)
 	end
 end
-function Rune.AddSecondProcedure(c,monf,mmin,mmax,stf,smin,smax,loc,group,condition,excondition,specialchk)
+function Rune.AddSecondProcedure(c,monf,mmin,mmax,stf,smin,smax,loc,group,condition,excondition,specialchk,customoperation,stage2)
 	--monf is the monster Filter, stf is the S/T Filter
 	--mmin, mmax are the minimums and maximums for the monsters
 	--smin, smax are the minimums and maximums for the Spell/Trap cards
@@ -65,15 +65,15 @@ function Rune.AddSecondProcedure(c,monf,mmin,mmax,stf,smin,smax,loc,group,condit
 		local mt=c:GetMetatable()
 		--mt.rune_monster_filter=function(c) end
 		mt.rune_parameters={}
-		table.insert(mt.rune_parameters,{monf,mmin,mmax,stf,smin,smax,loc,group,condition,excondition,specialchk})
+		table.insert(mt.rune_parameters,{monf,mmin,mmax,stf,smin,smax,loc,group,condition,excondition,specialchk,customoperation,stage2})
 	else
 		local mt=c:GetMetatable()
-		table.insert(mt.rune_parameters,{monf,mmin,mmax,stf,smin,smax,loc,group,condition,excondition,specialchk})
+		table.insert(mt.rune_parameters,{monf,mmin,mmax,stf,smin,smax,loc,group,condition,excondition,specialchk,customoperation,stage2})
 	end
-	local e1=Rune.CreateSecondProcedure(c,monf,mmin,mmax,stf,smin,smax,loc,group,condition,excondition,specialchk)
+	local e1=Rune.CreateSecondProcedure(c,monf,mmin,mmax,stf,smin,smax,loc,group,condition,excondition,specialchk,customoperation,stage2)
 	c:RegisterEffect(e1)
 end
-function Rune.CreateProcedure(c,monf,mmin,mmax,stf,smin,smax,loc,group,condition,specialchk)
+function Rune.CreateProcedure(c,monf,mmin,mmax,stf,smin,smax,loc,group,condition,specialchk,customoperation,stage2)
 	local e1=Effect.CreateEffect(c)
 	e1:SetType(EFFECT_TYPE_FIELD)
 	e1:SetDescription(1175)
@@ -82,11 +82,11 @@ function Rune.CreateProcedure(c,monf,mmin,mmax,stf,smin,smax,loc,group,condition
 	e1:SetRange(LOCATION_HAND)
 	e1:SetCondition(Rune.Condition(monf,mmin,mmax,stf,smin,smax,group,condition,nil,specialchk))
 	e1:SetTarget(Rune.Target(monf,mmin,mmax,stf,smin,smax,group,nil,specialchk))
-	e1:SetOperation(Rune.Operation(monf,mmin,mmax,stf,smin,smax,group))
+	e1:SetOperation(Rune.Operation(monf,mmin,mmax,stf,smin,smax,group,customoperation,stage2))
 	e1:SetValue(SUMMON_TYPE_RUNE)
 	return e1
 end
-function Rune.CreateSecondProcedure(c,monf,mmin,mmax,stf,smin,smax,loc,group,condition,excondition,specialchk)
+function Rune.CreateSecondProcedure(c,monf,mmin,mmax,stf,smin,smax,loc,group,condition,excondition,specialchk,customoperation,stage2)
 	local e1=Effect.CreateEffect(c)
 	e1:SetType(EFFECT_TYPE_FIELD)
 	e1:SetDescription(1175)
@@ -95,7 +95,7 @@ function Rune.CreateSecondProcedure(c,monf,mmin,mmax,stf,smin,smax,loc,group,con
 	e1:SetRange(loc)
 	e1:SetCondition(Rune.Condition(monf,mmin,mmax,stf,smin,smax,group,condition,excondition,specialchk))
 	e1:SetTarget(Rune.Target(monf,mmin,mmax,stf,smin,smax,group,excondition,specialchk))
-	e1:SetOperation(Rune.Operation(monf,mmin,mmax,stf,smin,smax,group))
+	e1:SetOperation(Rune.Operation(monf,mmin,mmax,stf,smin,smax,group,customoperation,stage2))
 	e1:SetValue(SUMMON_TYPE_RUNE)
 	return e1
 end
@@ -481,7 +481,7 @@ function Rune.Target(monf,mmin,mmax,stf,smin,smax,group,excondition,specialchk)
 				end
 			end
 end
-function Rune.Operation(monf,mmin,mmax,stf,smin,smax,group)
+function Rune.Operation(monf,mmin,mmax,stf,smin,smax,group,customoperation,stage2)
 	return 	function(e,tp,eg,ep,ev,re,r,rp,c,must,g,min,max)
 				local g,filt,emt=table.unpack(e:GetLabelObject())
 				for _,ex in ipairs(filt) do
@@ -527,14 +527,15 @@ function Rune.Operation(monf,mmin,mmax,stf,smin,smax,group)
 					g:Sub(thgroup)
 					Duel.SendtoHand(thgroup,nil,REASON_MATERIAL+REASON_RUNE)
 				end
-				--[[
-				local gycards=g:Filter(Card.IsLocation,nil,LOCATION_GRAVE)
-				if gycards:GetCount()>0 then
-					g:Sub(gycards)
-					Duel.Remove(gycards,POS_FACEUP,REASON_MATERIAL+REASON_RUNE)
+				if not customoperation then
+					Duel.SendtoGrave(g,REASON_MATERIAL+REASON_RUNE)
+					
+					if stage2 then
+						stage2(g,e,tp,eg,ep,ev,re,r,rp,tc)
+					end
+				else
+					customoperation(g:Clone(),e,tp,eg,ep,ev,re,r,rp,tc)
 				end
-				--]]
-				Duel.SendtoGrave(g,REASON_MATERIAL+REASON_RUNE)
 				g:DeleteGroup()
 				e:GetLabelObject(nil)
 				aux.DeleteExtraMaterialGroups(emt)
