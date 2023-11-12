@@ -45,7 +45,7 @@ function s.runcon(e,tp,eg,ep,ev,re,r,rp)
 	local tc=g:GetFirst()
 	local c=e:GetHandler()
 	
-	local mg=Rune.DefaultGroup(c,tp)
+	local mg=Duel.GetMatchingGroup(Card.IsFaceup,tp,LOCATION_ONFIELD,0,nil)
 	mg:AddCard(tc)
 	return tc:IsFaceup() and tc:IsLocation(LOCATION_ONFIELD) and tc:IsType(TYPE_SPELL+TYPE_TRAP) and c:IsRuneSummonable(tc,mg)
 end
