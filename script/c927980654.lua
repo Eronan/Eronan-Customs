@@ -52,7 +52,7 @@ function s.initial_effect(c)
 end
 s.listed_names={964839022}
 function s.STMatFilter(c,rc,sumtyp,tp)
-	return (c:GetType()&TYPE_SPELL+TYPE_CONTINUOUS)==TYPE_SPELL+TYPE_CONTINUOUS
+	return (c:GetType(rc,sumtyp,tp)&TYPE_SPELL+TYPE_CONTINUOUS)==TYPE_SPELL+TYPE_CONTINUOUS
 end
 function s.aclimit1(e,tp,eg,ep,ev,re,r,rp)
 	if ep==tp then return end

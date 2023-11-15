@@ -46,7 +46,7 @@ function s.setcon(e,tp,eg,ep,ev,re,r,rp)
 	return not eg:IsContains(e:GetHandler()) and eg:IsExists(s.cfilter,1,nil,tp)
 end
 function s.setfilter(c)
-	return c:GetType()==TYPE_TRAP+TYPE_CONTINUOUS and c:IsSSetable()
+	return c:IsContinuousTrap() and c:IsSSetable()
 end
 function s.settg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.IsExistingMatchingCard(aux.NecroValleyFilter(s.setfilter),tp,LOCATION_HAND+LOCATION_GRAVE,0,1,nil) end

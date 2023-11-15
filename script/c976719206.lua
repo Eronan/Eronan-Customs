@@ -34,7 +34,7 @@ function s.sumlimit(e,c)
 	return not c:IsControler(e:GetHandlerPlayer())
 end
 function s.relfilter(c)
-	return c:IsFaceup() and (c:GetType()&TYPE_TRAP+TYPE_CONTINUOUS)==TYPE_TRAP+TYPE_CONTINUOUS
+	return c:IsFaceup() and c:IsContinuousTrap()
 end
 function s.relval(e,c)
 	return c:IsFaceup() and c:IsSetCard(0xfd9)

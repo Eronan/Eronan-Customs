@@ -23,7 +23,7 @@ function s.initial_effect(c)
 	e2:SetRange(LOCATION_MZONE)
 	e2:SetTargetRange(LOCATION_HAND,0)
 	e2:SetCondition(s.actcon)
-	e2:SetTarget(s.acttg)
+	e2:SetTarget(aux.TargetBoolFunction(Card.IsContinuousTrap))
 	c:RegisterEffect(e2)
 end
 function s.STMatFilter(c,rc,sumtyp,tp)
@@ -64,7 +64,3 @@ end
 function s.actcon(e)
 	return Duel.GetCurrentPhase()==PHASE_MAIN1 or Duel.GetCurrentPhase()==PHASE_MAIN2 or Duel.GetCurrentPhase()==PHASE_BATTLE
 end
-function s.acttg(e,c)
-	return bit.band(c:GetType(),TYPE_TRAP+TYPE_CONTINUOUS)==TYPE_TRAP+TYPE_CONTINUOUS
-end
-

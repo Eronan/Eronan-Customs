@@ -57,7 +57,7 @@ function s.MNMatFilter(c,rc,sumtype,tp)
 	return c:IsRace(RACE_FAIRY,rc,sumtype,tp) and not c:IsSummonableCard()
 end
 function s.STMatFilter(c,rc,sumtyp,tp)
-	return (c:GetType()&TYPE_TRAP+TYPE_CONTINUOUS)==TYPE_TRAP+TYPE_CONTINUOUS
+	return (c:GetType(rc,sumtyp,tp)&TYPE_TRAP+TYPE_CONTINUOUS)==TYPE_TRAP+TYPE_CONTINUOUS
 end
 function s.exgroup(tp,ex,c)
 	return Duel.GetMatchingGroup(aux.NOT(Card.IsType),tp,LOCATION_EXTRA,0,ex,TYPE_EFFECT)
@@ -86,7 +86,7 @@ function s.tfcon(e,tp,eg,ep,ev,re,r,rp)
 	return e:GetHandler():IsSummonType(SUMMON_TYPE_RUNE)
 end
 function s.tffilter(c,tp)
-	return c:IsType(TYPE_SPELL) and c:IsType(TYPE_CONTINUOUS) and not c:IsForbidden()
+	return c:IsContinuousSpell() and not c:IsForbidden()
 end
 function s.tftg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.GetLocationCount(tp,LOCATION_SZONE)>0
@@ -99,9 +99,6 @@ function s.tfop(e,tp,eg,ep,ev,re,r,rp)
 	if tc then
 		Duel.MoveToField(tc,tp,tp,LOCATION_SZONE,POS_FACEUP,true)
 	end
-end
-function s.STMatFilter(c,rc,sumtyp,tp)
-	return (c:GetType()&TYPE_SPELL+TYPE_CONTINUOUS)==TYPE_SPELL+TYPE_CONTINUOUS
 end
 function s.actcon(e,tp,eg,ep,ev,re,r,rp)
 	return rp==1-tp and re:GetActivateLocation()==LOCATION_HAND

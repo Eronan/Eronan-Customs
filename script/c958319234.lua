@@ -16,7 +16,7 @@ function s.initial_effect(c)
 	e2:SetRange(LOCATION_SZONE)
 	e2:SetTargetRange(LOCATION_HAND,0)
 	e2:SetCountLimit(1,id,EFFECT_COUNT_CODE_OATH)
-	e2:SetTarget(s.acttg)
+	e2:SetTarget(aux.TargetBoolFunction(Card.IsContinuousTrap))
 	c:RegisterEffect(e2)
 end
 function s.target(e,tp,eg,ep,ev,re,r,rp,chk)
@@ -34,7 +34,4 @@ function s.activate(e,tp,eg,ep,ev,re,r,rp)
 		c:AddMonsterAttributeComplete()
 		Duel.SpecialSummonComplete()
 	end
-end
-function s.acttg(e,c)
-	return bit.band(c:GetType(),TYPE_TRAP+TYPE_CONTINUOUS)==TYPE_TRAP+TYPE_CONTINUOUS
 end

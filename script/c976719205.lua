@@ -71,13 +71,13 @@ function s.efilter2(e,re)
     return re:GetOwnerPlayer()~=e:GetHandlerPlayer()
 end
 function s.cfilter(c)
-	return c:IsFaceup() and (c:GetType()&TYPE_TRAP+TYPE_CONTINUOUS)==TYPE_TRAP+TYPE_CONTINUOUS
+	return c:IsFaceup() and c:IsContinuousTrap()
 end
 function s.immcon(e)
 	return e:GetHandler():GetColumnGroup():IsExists(s.cfilter,1,nil)
 end
 function s.etarget(e,c)
-	return (c:GetType()&TYPE_TRAP+TYPE_CONTINUOUS)==TYPE_TRAP+TYPE_CONTINUOUS and not e:GetHandler():GetColumnGroup():IsContains(c)
+	return c:IsContinuousTrap() and not e:GetHandler():GetColumnGroup():IsContains(c)
 end
 function s.efilter(e,te)
 	if te:GetOwnerPlayer()==e:GetHandlerPlayer() then return false end

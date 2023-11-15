@@ -44,7 +44,7 @@ function s.initial_effect(c)
 	c:RegisterEffect(e2)
 end
 function s.STRunFilter(c,rc,sumtype,tp)
-	return (c:GetType()&(TYPE_CONTINUOUS+TYPE_TRAP))==TYPE_CONTINUOUS+TYPE_TRAP
+	return (c:GetType(rc,summon,tp)&(TYPE_CONTINUOUS+TYPE_TRAP))==TYPE_CONTINUOUS+TYPE_TRAP
 end
 function s.cfilter(c,tp)
 	return c:IsPreviousLocation(LOCATION_HAND) and c:GetPreviousControler()~=Duel.GetTurnPlayer()

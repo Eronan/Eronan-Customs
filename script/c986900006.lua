@@ -109,7 +109,7 @@ function s.desop(e,tp,eg,ep,ev,re,r,rp)
 	Duel.Destroy(e:GetLabelObject(),REASON_EFFECT)
 end
 function s.cfilter(c)
-	return c:IsSetCard(0xfe5) and c:IsType(TYPE_SPELL) and c:IsType(TYPE_CONTINUOUS)
+	return c:IsSetCard(0xfe5) and c:IsContinuousSpell()
 end
 function s.immcon(e,tp,eg,ep,ev,re,r,rp)
 	return Duel.IsExistingMatchingCard(s.cfilter,e:GetHandlerPlayer(),LOCATION_ONFIELD,0,1,nil)

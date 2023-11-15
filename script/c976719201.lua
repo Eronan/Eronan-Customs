@@ -87,7 +87,7 @@ function s.stpcost(e,tp,eg,ep,ev,re,r,rp,chk)
 	Duel.SendtoGrave(e:GetHandler(),REASON_COST)
 end
 function s.stpfilter(c,e,sp)
-    return c:IsFaceup() and (c:GetType()&TYPE_TRAP+TYPE_CONTINUOUS)==TYPE_TRAP+TYPE_CONTINUOUS
+    return c:IsFaceup() and c:IsContinuousTrap()
 		and c:IsOriginalType(TYPE_MONSTER) and c:IsCanBeSpecialSummoned(e,0,sp,true,false)
 end
 function s.stptg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)

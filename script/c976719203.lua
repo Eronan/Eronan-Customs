@@ -68,7 +68,7 @@ function s.efilter(e,re)
     return re:GetOwnerPlayer()~=e:GetHandlerPlayer()
 end
 function s.cfilter(c)
-	return c:IsFaceup() and (c:GetType()&TYPE_TRAP+TYPE_CONTINUOUS)==TYPE_TRAP+TYPE_CONTINUOUS
+	return c:IsFaceup() and c:IsContinuousTrap()
 end
 function s.atkcon(e)
 	return e:GetHandler():GetColumnGroup():IsExists(s.cfilter,1,nil)

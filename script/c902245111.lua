@@ -4,7 +4,7 @@ local s,id=GetID()
 function s.initial_effect(c)
 	--Rune Summon
 	c:EnableReviveLimit()
-	Rune.AddProcedure(c,Rune.MonFunctionEx(Card.IsRuneCode,902245100),1,1,Rune.STFunction(s.STMatFilter),1,1)
+	Rune.AddProcedure(c,Rune.MonFunctionEx(Card.IsRuneCode,902245100),1,1,Rune.STFunctionEx(s.STMatFilter),1,1)
 	--cannot special summon
 	local e1=Effect.CreateEffect(c)
 	e1:SetProperty(EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_UNCOPYABLE)
@@ -39,7 +39,7 @@ function s.initial_effect(c)
 end
 s.listed_names={902245100}
 function s.STMatFilter(c,rc,sumtyp,tp)
-	return (c:GetType()&TYPE_SPELL+TYPE_CONTINUOUS)==TYPE_SPELL+TYPE_CONTINUOUS
+	return (c:GetType(rc,sumtyp,tp)&TYPE_SPELL+TYPE_CONTINUOUS)==TYPE_SPELL+TYPE_CONTINUOUS
 end
 function s.actcon(e,tp,eg,ep,ev,re,r,rp)
 	return rp==1-tp and re:GetActivateLocation()==LOCATION_HAND

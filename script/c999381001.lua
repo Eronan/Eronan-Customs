@@ -27,7 +27,7 @@ function s.tfcost(e,tp,eg,ep,ev,re,r,rp,chk)
     Duel.ShuffleHand(tp)
 end
 function s.tffilter(c,rc,tp)
-	return (c:GetType()&TYPE_CONTINUOUS+TYPE_TRAP)==TYPE_CONTINUOUS+TYPE_TRAP and not c:IsForbidden()
+	return c:IsContinuousTrap() and not c:IsForbidden()
 		and c:IsCanBeRuneMaterial(rc,tp)
 end
 function s.tfop(e,tp,eg,ep,ev,re,r,rp)
