@@ -46,8 +46,9 @@ function s.activate(e,tp,eg,ep,ev,re,r,rp)
 			if Duel.SpecialSummonStep(sc,SUMMON_TYPE_RUNE,tp,tp,false,true,POS_FACEUP) then
 				--cannot be battle target
 				local e1=Effect.CreateEffect(e:GetHandler())
+				e1:SetDescription(aux.Stringid(id,1))
 				e1:SetType(EFFECT_TYPE_SINGLE)
-				e1:SetProperty(EFFECT_FLAG_SINGLE_RANGE)
+				e1:SetProperty(EFFECT_FLAG_SINGLE_RANGE+EFFECT_FLAG_CLIENT_HINT)
 				e1:SetRange(LOCATION_MZONE)
 				e1:SetCode(EFFECT_CANNOT_BE_BATTLE_TARGET)
 				e1:SetReset(RESET_EVENT+RESETS_STANDARD)
