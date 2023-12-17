@@ -54,7 +54,7 @@ function s.repcon(e,tp,eg,ep,ev,re,r,rp)
 end
 function s.repop(e,tp,eg,ep,ev,re,r,rp)
 	local g=e:GetLabelObject()
-	tc=g:GetFirst()
+	local tc=g:GetFirst()
 	for tc in aux.Next(g) do
 		--Unaffected by opponent's card effects
 		local e1=Effect.CreateEffect(e:GetHandler())

@@ -59,8 +59,8 @@ function Rune.AddSecondProcedure(c,monf,mmin,mmax,stf,smin,smax,loc,group,condit
 	--smin, smax are the minimums and maximums for the Spell/Trap cards
 	--loc adds an additional location
 	--group changes the 
-	if not max1 then max1=min1 end
-	if not max2 then max2=min2 end
+	if not mmax then mmax=mmin end
+	if not smax then smax=smin end
 	if c.rune_parameters==nil then
 		local mt=c:GetMetatable()
 		--mt.rune_monster_filter=function(c) end
@@ -212,7 +212,7 @@ function Rune.CheckRecursive(c,mg,sg,mct,sct,bct,monf,mmin,mmax,stf,smin,smax,tm
 		end
 	end
 	if not og:IsContains(c) then
-		res=aux.CheckValidExtra(c,tp,sg,mg,rc,emt,filt)
+		local res=aux.CheckValidExtra(c,tp,sg,mg,rc,emt,filt)
 		if not res then
 			sg:RemoveCard(c)
 			filt={table.unpack(oldfilt)}
@@ -302,7 +302,7 @@ function Rune.CheckRecursive2(c,mg,sg,csg,mct,sct,bct,monf,mmin,mmax,stf,smin,sm
 		end
 	end
 	if not og:IsContains(c) then
-		res=aux.CheckValidExtra(c,tp,sg,mg,rc,emt,filt)
+		local res=aux.CheckValidExtra(c,tp,sg,mg,rc,emt,filt)
 		if not res then
 			sg:RemoveCard(c)
 			filt={table.unpack(oldfilt)}
