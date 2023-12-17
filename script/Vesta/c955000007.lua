@@ -1,4 +1,7 @@
 --Binate Sentinel of Vesta
-function c955000007.initial_effect(c)
-	
+local s,id=GetID()
+function s.initial_effect(c)
+	--pendulum summon
+    Pendulum.AddProcedure(c)
+	Gemini.AddProcedure(c)
 end
