@@ -40,7 +40,7 @@ function s.cost(e,tp,eg,ep,ev,re,r,rp,chk)
 	Duel.RegisterFlagEffect(tp,id,RESET_PHASE+PHASE_END,0,1)
 end
 function s.target(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
-	if chkc then return s.runtg(e,tp,eg,ep,ev,re,r,rp,chk,chkc) end
+	if chkc then return s.runtg(e,tp,eg,ep,ev,re,r,rp,chk) end
 	if chk==0 then return true end
 	local b1=s.cost(e,tp,eg,ep,ev,re,r,rp,0)
 		and s.runtg(e,tp,eg,ep,ev,re,r,rp,0)

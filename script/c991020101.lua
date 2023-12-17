@@ -41,6 +41,7 @@ function s.initial_effect(c)
 	c:RegisterEffect(e4)
 end
 function s.altG(tp,ex,c)
+	local g
 	if Duel.IsPlayerAffectedByEffect(tp,54828837) then
 		g=Duel.GetMatchingGroup(aux.TRUE,tp,LOCATION_ONFIELD,0,nil)
 	else

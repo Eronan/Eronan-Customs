@@ -86,7 +86,7 @@ function s.runop(e,tp,eg,ep,ev,re,r,rp,chk,c,must,og,min,max)
 	local mt=c:GetMetatable()
 	local rune_table = mt.rune_parameters[1]
 	local operation=Rune.Operation(rune_table[1],rune_table[2],rune_table[3],rune_table[4],rune_table[5],rune_table[6],rune_table[8])
-	operation(e,tp,eg,ep,ev,re,r,rp,chk,c,must,og,min,max)
+	operation(e,tp,eg,ep,ev,re,r,rp,c,must,og,min,max)
 	Duel.RegisterFlagEffect(tp,id,RESET_PHASE+PHASE_END,0,1)
 end
 function s.sumtg(e,c)
