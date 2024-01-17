@@ -24,6 +24,7 @@ function s.initial_effect(c)
 	e3:SetType(EFFECT_TYPE_FIELD)
 	e3:SetRange(LOCATION_MZONE)
 	e3:SetTargetRange(LOCATION_MZONE,0)
+	e3:SetCondition(s.immcon)
 	e3:SetValue(1)
 	c:RegisterEffect(e3)
 	local e4=e3:Clone()
@@ -57,7 +58,7 @@ s.listed_names={902381003}
 function s.monfilter(c,rc,sumtyp,tp)
     return c:IsAttribute(ATTRIBUTE_WIND,rc,sumtyp,tp) and c:IsType(TYPE_RUNE,rc,sumtyp,tp)
 end
---Cannot be destroyed by battle or card effects
+--prevent battle and effect destruction
 function s.matcheck(e,c)
 	local g=c:GetMaterial()
 	e:SetLabel(0)
@@ -65,6 +66,9 @@ function s.matcheck(e,c)
 		e:SetLabel(1)
 		e:GetHandler():RegisterFlagEffect(id,RESET_EVENT+RESETS_STANDARD-RESET_TOFIELD,EFFECT_FLAG_CLIENT_HINT,1,0,aux.Stringid(id,0))
 	end
+end
+function s.immcon(e,tp,eg,ep,ev,re,r,rp)
+	return e:GetLabelObject():GetLabel()==1
 end
 --change effect
 function s.chcon(e,tp,eg,ep,ev,re,r,rp)
