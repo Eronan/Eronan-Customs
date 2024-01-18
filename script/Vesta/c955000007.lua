@@ -38,9 +38,13 @@ function s.initial_effect(c)
 	c:RegisterEffect(e3)
 end
 s.listed_card_types={TYPE_GEMINI}
+s.listed_names={928190100}
 --special summon
+function s.spcfilter(c)
+	return c:IsSetCard(0x1066) or c:IsCode(928190100)
+end
 function s.spcon(e,tp,eg,ep,ev,re,r,rp)
-	return re:IsActiveType(TYPE_MONSTER) and re:GetHandler():IsSetCard(0x1066)
+	return eg:IsExists(s.spcfilter,1,nil)
 end
 function s.sptg(e,tp,eg,ep,ev,re,r,rp,chk)
 	local c=e:GetHandler()
@@ -50,8 +54,9 @@ function s.sptg(e,tp,eg,ep,ev,re,r,rp,chk)
 end
 function s.spop(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
-	if c:IsRelateToEffect(e) then
-		Duel.SpecialSummon(c,0,tp,tp,false,false,POS_FACEUP)
+	if c:IsRelateToEffect(e) and Duel.SpecialSummonStep(c,0,tp,tp,false,false,POS_FACEUP) then
+		c:EnableGeminiStatus()
+		Duel.SpecialSummonComplete()
 	end
 end
 --Xyz Level

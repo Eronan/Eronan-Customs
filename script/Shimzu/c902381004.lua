@@ -29,6 +29,7 @@ function s.initial_effect(c)
 	c:RegisterEffect(e2)
 end
 s.listed_series={0xff1}
+--special summon
 function s.spfilter(c,e,tp)
 	return c:IsSetCard(0xff1) and c:IsCanBeSpecialSummoned(e,0,tp,false,false)
 end
@@ -49,6 +50,7 @@ function s.spop(e,tp,eg,ep,ev,re,r,rp)
 		Duel.SpecialSummon(tc,0,tp,tp,false,false,POS_FACEUP)
 	end
 end
+--immune
 function s.etarget(e,c)
 	return (e:GetHandler():GetColumnGroup():IsContains(c) or c==e:GetHandler()) and c:IsSetCard(0xff1)
 end
