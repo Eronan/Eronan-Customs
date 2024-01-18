@@ -55,6 +55,7 @@ function s.activate(e,tp,eg,ep,ev,re,r,rp)
 			Duel.SendtoGrave(mg,REASON_EFFECT+REASON_MATERIAL+REASON_RUNE)
 			if Duel.SpecialSummonStep(sc,SUMMON_TYPE_RUNE,tp,tp,false,true,POS_FACEUP) then
 				--register flag effect
+				sc:RegisterFlagEffect(id,RESETS_STANDARD-RESET_TOFIELD,0,0)
 				Duel.SpecialSummonComplete()
 			end
 		end
