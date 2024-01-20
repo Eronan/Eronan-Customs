@@ -1,4 +1,4 @@
---Gleaming of the Runic Nights
+--Gleaming Fang of the Runic Nights
 if not Rune then Duel.LoadScript("proc_rune.lua") end
 local s,id=GetID()
 function s.initial_effect(c)
