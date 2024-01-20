@@ -36,7 +36,7 @@ function s.initial_effect(c)
 end
 s.listed_series={0xfd5}
 function s.actcon(e)
-	return not Duel.IsExistingMatchingCard(aux.FaceupFilter(Card.IsType,TYPE_SPELL+TYPE_TRAP),e:GetHandlerPlayer(),LOCATION_ONFIELD,0,1,nil)
+	return not Duel.IsExistingMatchingCard(aux.FaceupFilter(Card.IsSpellTrap),e:GetHandlerPlayer(),LOCATION_ONFIELD,0,1,nil)
 end
 function s.immfilter(c,tp)
 	return c:IsFaceup() and c:IsSetCard(0xfd5) and c:IsControler(tp)
