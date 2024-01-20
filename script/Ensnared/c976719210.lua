@@ -122,3 +122,12 @@ function s.runtg(e,tp,eg,ep,ev,re,r,rp,chk)
 	local g=Duel.SelectTarget(tp,Card.IsFaceup,tp,0,LOCATION_MZONE,1,1,nil)
     Duel.SetOperationInfo(0,CATEGORY_SPECIAL_SUMMON,e:GetHandler(),1,0,0)
 end
+function s.runop(e,tp,eg,ep,ev,re,r,rp)
+    local tc=Duel.GetFirstTarget()
+    local c=e:GetHandler()
+    if tc:IsRelateToEffect(e) and c:IsRelateToEffect(e) and c:IsRuneSummonable(tc) then
+        Duel.RuneSummon(tp,c,tc)
+    else
+        Duel.SendToGrave(c,REASON_RULE)
+    end
+end
