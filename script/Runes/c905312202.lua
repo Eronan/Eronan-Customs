@@ -80,7 +80,7 @@ end
 function s.ctop(e,tp,eg,ep,ev,re,r,rp)
     local tc=e:GetLabelObject()
     if tc and tc:IsControler(1-tp) and tc:IsControlerCanBeChanged() then
-        Duel.GetControl(tc,tp,PHASE_END,1)
+        Duel.GetControl(tc,tp,0,1)
     end
     e:SetLabelObject(nil)
 end

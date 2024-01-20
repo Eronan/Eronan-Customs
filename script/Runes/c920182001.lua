@@ -18,46 +18,30 @@ function s.initial_effect(c)
 	e2:SetCode(EFFECT_MATERIAL_CHECK)
 	e2:SetValue(s.matcheck)
 	c:RegisterEffect(e2)
-    --grant effects
-    local te1=Effect.CreateEffect(c)
-    te1:SetDescription(aux.Stringid(id,1))
-    te1:SetType(EFFECT_TYPE_FIELD)
-    te1:SetRange(LOCATION_SZONE)
-    te1:SetCode(EFFECT_DISABLE_FIELD)
-    te1:SetProperty(EFFECT_FLAG_REPEAT)
-    te1:SetOperation(s.disop)
-    local e3=Effect.CreateEffect(c)
-    e3:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_GRANT)
-    e3:SetRange(LOCATION_MZONE)
-    e3:SetTargetRange(0,LOCATION_SZONE)
-    e3:SetCondition(s.efcon)
-    e3:SetTarget(s.eftg)
-    e3:SetLabelObject(te1)
-    c:RegisterEffect(e3)
-    e2:SetLabelObject(e3)
     --Special Summon 1 monster that is treated as a Continuous Spell
-	local e2=Effect.CreateEffect(c)
-	e2:SetDescription(aux.Stringid(id,2))
-	e2:SetCategory(CATEGORY_SPECIAL_SUMMON)
-	e2:SetType(EFFECT_TYPE_QUICK_O)
-	e2:SetProperty(EFFECT_FLAG_CARD_TARGET)
-	e2:SetCode(EVENT_FREE_CHAIN)
-	e2:SetRange(LOCATION_MZONE)
-	e2:SetHintTiming(0,TIMINGS_CHECK_MONSTER_E)
-	e2:SetCountLimit(1,id,EFFECT_COUNT_CODE_OATH)
-	e2:SetTarget(s.sptg)
-	e2:SetOperation(s.spop)
-	c:RegisterEffect(e2)
+	local e3=Effect.CreateEffect(c)
+	e3:SetDescription(aux.Stringid(id,2))
+	e3:SetCategory(CATEGORY_SPECIAL_SUMMON)
+	e3:SetType(EFFECT_TYPE_QUICK_O)
+	e3:SetProperty(EFFECT_FLAG_CARD_TARGET)
+	e3:SetCode(EVENT_FREE_CHAIN)
+	e3:SetRange(LOCATION_MZONE)
+	e3:SetHintTiming(0,TIMINGS_CHECK_MONSTER_E)
+	e3:SetCountLimit(1,id,EFFECT_COUNT_CODE_OATH)
+	e3:SetTarget(s.sptg)
+	e3:SetOperation(s.spop)
+	c:RegisterEffect(e3)
     --Place 2 monsters in the Spell/Trap Zone as a Continuous Spells
-	local e5=Effect.CreateEffect(c)
-	e5:SetDescription(aux.Stringid(id,3))
-	e5:SetProperty(EFFECT_FLAG_CARD_TARGET)
-	e5:SetType(EFFECT_TYPE_IGNITION)
-	e5:SetRange(LOCATION_MZONE)
-	e5:SetCountLimit(1,{id,1},EFFECT_COUNT_CODE_OATH)
-	e5:SetTarget(s.pltg)
-	e5:SetOperation(s.plop)
-	c:RegisterEffect(e5)
+	local e4=Effect.CreateEffect(c)
+	e4:SetDescription(aux.Stringid(id,3))
+	e4:SetProperty(EFFECT_FLAG_CARD_TARGET)
+	e4:SetType(EFFECT_TYPE_IGNITION)
+	e4:SetRange(LOCATION_MZONE)
+	e4:SetCountLimit(1,{id,1},EFFECT_COUNT_CODE_OATH)
+	e4:SetLabelObject(e2)
+	e4:SetTarget(s.pltg)
+	e4:SetOperation(s.plop)
+	c:RegisterEffect(e4)
 end
 s.listed_names={920182000}
 function s.mfilter(c,rc,sumtyp,tp)
@@ -66,27 +50,11 @@ end
 --material check
 function s.matcheck(e,c)
 	local g=c:GetMaterial()
-    local te=e:GetLabelObject()
-	te:SetLabel(0)
+	e:SetLabel(0)
 	if g:IsExists(Card.IsCode,1,nil,920182000) then
-		te:SetLabel(1)
+		e:SetLabel(1)
 		e:GetHandler():RegisterFlagEffect(id,RESET_EVENT+RESETS_STANDARD-RESET_TOFIELD,EFFECT_FLAG_CLIENT_HINT,1,0,aux.Stringid(id,0))
 	end
-end
---grant effects
-function s.disop(e,tp)
-	local c=e:GetHandler()
-	local seq=c:GetSequence()
-	if Duel.CheckLocation(c:GetControler(),LOCATION_MZONE,seq) then
-		return 0x1<<seq
-	end
-	return 0
-end
-function s.efcon(e,tp,eg,ep,ev,re,r,rp)
-	return e:GetLabel()==1
-end
-function s.eftg(e,c)
-    return c:IsContinuousSpell()
 end
 --special summon
 function s.spfilter(c,e,tp)
@@ -138,6 +106,28 @@ function s.plop(e,tp,eg,ep,ev,re,r,rp)
             e1:SetValue(TYPE_SPELL|TYPE_CONTINUOUS)
             e1:SetReset(RESET_EVENT|(RESETS_STANDARD&~RESET_TURN_SET))
             tc:RegisterEffect(e1)
+
+			--grant effects
+			if e:GetLabelObject():GetLabel()==1 and tc:IsControler(1-tp) then
+				Duel.BreakEffect()
+				local e2=Effect.CreateEffect(e:GetHandler())
+				e2:SetDescription(aux.Stringid(id,1))
+				e2:SetType(EFFECT_TYPE_FIELD)
+				e2:SetRange(LOCATION_SZONE)
+				e2:SetCode(EFFECT_DISABLE_FIELD)
+				e2:SetProperty(EFFECT_FLAG_REPEAT+EFFECT_FLAG_CLIENT_HINT)
+				e2:SetReset(RESET_EVENT|(RESETS_STANDARD&~RESET_TURN_SET))
+				e2:SetOperation(s.disop)
+				tc:RegisterEffect(e2)
+			end
         end
     end
+end
+function s.disop(e,tp)
+	local c=e:GetHandler()
+	local seq=c:GetSequence()
+	if Duel.CheckLocation(c:GetControler(),LOCATION_MZONE,seq) then
+		return 0x1<<seq
+	end
+	return 0
 end
