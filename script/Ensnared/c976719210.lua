@@ -111,15 +111,15 @@ function s.immfilter(e,re)
 end
 --Rune Summon
 function s.runcon(e,tp,eg,ep,ev,re,r,rp)
-	return Duel.GetTurnPlayer()~=tp and (Duel.GetCurrentPhase()==PHASE_MAIN1 or Duel.GetCurrentPhase()==PHASE_MAIN2)
+	return Duel.GetCurrentPhase()==PHASE_MAIN1 or Duel.GetCurrentPhase()==PHASE_MAIN2
 end
 function s.runfilter(c,rc)
-    return rc:IsRuneSummonable(c) and c:IsCode(976719204)
+    return c:IsCode(976719204) and rc:IsRuneSummonable(c)
 end
 function s.runtg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.IsExistingTarget(s.runfilter,tp,LOCATION_MZONE,0,1,nil,e:GetHandler()) end
     Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_RMATERIAL)
-	local g=Duel.SelectTarget(tp,Card.IsFaceup,tp,0,LOCATION_MZONE,1,1,nil)
+	local g=Duel.SelectTarget(tp,s.runfilter,tp,LOCATION_MZONE,0,1,1,nil,e:GetHandler())
     Duel.SetOperationInfo(0,CATEGORY_SPECIAL_SUMMON,e:GetHandler(),1,0,0)
 end
 function s.runop(e,tp,eg,ep,ev,re,r,rp)
