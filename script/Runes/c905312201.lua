@@ -49,7 +49,7 @@ function s.efcon(e,c)
 end
 function s.eftg(e,c)
     local ec=e:GetHandler():GetEquipTarget()
-	return c:IsType(TYPE_RUNE) and c:ListsCode(ec:GetCode())
+	return c:IsType(TYPE_RUNE) and c:ListsCode(ec:GetCode()) and c:GetLevel()>ec:GetLevel()
 end
 --re-equip
 function s.eqcon(e,tp,eg,ep,ev,re,r,rp)

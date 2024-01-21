@@ -13,10 +13,11 @@ function s.initial_effect(c)
 end
 --]]
 --Constants
-TYPE_RUNE			= 0x80000000
+TYPE_RUNE			= 0x82000000
 MATERIAL_RUNE		= 0x20<<32
 REASON_RUNE			= 0x80000000
 SUMMON_TYPE_RUNE	= 0x42000001
+HINTMSG_RMATERIAL	= 600
 EFFECT_RUNE_MAT_RESTRICTION		=73941492+TYPE_RUNE
 EFFECT_CANNOT_BE_RUNE_MATERIAL	=500
 EFFECT_RUNE_SUBSTITUTE	= 900001031
@@ -455,6 +456,7 @@ function Rune.Target(monf,mmin,mmax,stf,smin,smax,group,excondition,specialchk)
 					
 					--Select a Card
 					--Debug.Message("Cards to Select: "..tostring(#cg)..", Selected: "..tostring(#sg))--..", Selected Card: "..tostring(tc))
+					Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_RMATERIAL)
 					local tc=Group.SelectUnselect(cg,sg,tp,finish,cancel)
 					if not tc then break end
 					--Execute Selection
