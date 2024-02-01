@@ -58,6 +58,11 @@ function s.activate(e,tp,eg,ep,ev,re,r,rp)
         local e4=e1:Clone()
         e4:SetCode(EFFECT_IGNORE_BATTLE_TARGET)
         tc:RegisterEffect(e4)
+        --Immune
+        local e5=e1:Clone()
+        e5:SetCode(EFFECT_IMMUNE_EFFECT)
+        e5:SetValue(1)
+        tc:RegisterEffect(e5)
     end
 end
 function s.tccon(e,tp,eg,ep,ev,re,r,rp)
