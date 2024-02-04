@@ -90,11 +90,10 @@ function s.repfilter(c,e)
 end
 function s.desreptg(e,tp,eg,ep,ev,re,r,rp,chk)
 	local c=e:GetHandler()
-	if chk==0 then return not c:IsReason(REASON_REPLACE)
-		and Duel.IsExistingMatchingCard(s.repfilter,tp,LOCATION_MZONE,0,1,c,e) end
+	if chk==0 then return not c:IsReason(REASON_REPLACE) and Duel.IsExistingMatchingCard(s.repfilter,tp,LOCATION_ONFIELD,0,1,c,e) end
 	if Duel.SelectEffectYesNo(tp,c,96) then
 		Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_DESREPLACE)
-		local g=Duel.SelectMatchingCard(tp,s.repfilter,tp,LOCATION_MZONE,0,1,1,c,e)
+		local g=Duel.SelectMatchingCard(tp,s.repfilter,tp,LOCATION_ONFIELD,0,1,1,c,e)
 		e:SetLabelObject(g:GetFirst())
 		g:GetFirst():SetStatus(STATUS_DESTROY_CONFIRMED,true)
 		return true

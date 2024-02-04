@@ -35,6 +35,22 @@ function s.activate(e,tp,eg,ep,ev,re,r,rp)
 	local g=Duel.SelectMatchingCard(tp,s.setfilter,tp,LOCATION_DECK,0,1,1,nil,rc)
 	if #g>0 then
 		Duel.SSet(tp,g)
+        local tc=g:GetFirst()
+        if tc:IsQuickPlaySpell() then
+			local te1=Effect.CreateEffect(c)
+			te1:SetType(EFFECT_TYPE_SINGLE)
+			te1:SetProperty(EFFECT_FLAG_SET_AVAILABLE)
+			te1:SetCode(EFFECT_QP_ACT_IN_SET_TURN)
+			te1:SetReset(RESET_EVENT|RESETS_STANDARD)
+			tc:RegisterEffect(te1)
+        elseif tc:IsTrap() then
+            local te1=Effect.CreateEffect(c)
+			te1:SetType(EFFECT_TYPE_SINGLE)
+			te1:SetProperty(EFFECT_FLAG_SET_AVAILABLE)
+			te1:SetCode(EFFECT_TRAP_ACT_IN_SET_TURN)
+			te1:SetReset(RESET_EVENT|RESETS_STANDARD)
+			tc:RegisterEffect(te1)
+		end
 	end
     local e1=Effect.CreateEffect(c)
     e1:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
