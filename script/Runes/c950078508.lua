@@ -32,8 +32,8 @@ s.listed_names={50078509}
 function s.exfilter(c,tp)
     return c:IsControler(1-tp) and c:IsType(TYPE_MONSTER)
 end
-function s.getGroup(tp,ex,c)
-    local fg=Duel.GetMatchingGroup(Card.IsCode,tp,0,LOCATION_ONFIELD,ex,50078509)
+function s.exgroup(tp,ex,c)
+    local fg=Duel.GetMatchingGroup(Card.IsCode,tp,LOCATION_ONFIELD,LOCATION_ONFIELD,ex,50078509)
     local mg=Group.CreateGroup()
     for tc in aux.Next(fg) do
         mg:AddCard(tc:GetCardTarget())
