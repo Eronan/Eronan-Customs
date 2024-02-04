@@ -3,7 +3,7 @@ local s,id=GetID()
 function s.initial_effect(c)
     --fusion material
     c:EnableReviveLimit()
-    Fusion.AddProcMixN(c,true,true,aux.FilterBoolFunctionEx(Caux.NOT(ard.IsType),TYPE_EFFECT),2)
+    Fusion.AddProcMixN(c,true,true,aux.FilterBoolFunctionEx(aux.NOT(Card.IsType),TYPE_EFFECT),2)
     --pendulum attributes
     Pendulum.AddProcedure(c,false)
     --place in pendulum zone
@@ -40,7 +40,8 @@ function s.pctg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	Duel.SetTargetCard(g)
 end
 function s.pcop(e,tp,eg,ep,ev,re,r,rp)
-	if not e:GetHandler():IsRelateToEffect(e) or not Duel.CheckPendulumZones(tp) then return end
+    local c=e:GetHandler()
+	if not Duel.CheckPendulumZones(tp) then return end
 	local tc=Duel.GetFirstTarget()
 	if tc:IsRelateToEffect(e) and tc:IsFaceup() then
 		Duel.MoveToField(tc,tp,tp,LOCATION_PZONE,POS_FACEUP,true)
