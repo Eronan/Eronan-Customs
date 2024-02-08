@@ -26,7 +26,6 @@ function s.initial_effect(c)
 	e2:SetCode(EVENT_PHASE+PHASE_END)
 	e2:SetRange(LOCATION_PZONE)
 	e2:SetCountLimit(1)
-	e2:SetCondition(s.dhcon)
 	e2:SetTarget(s.dhtg)
 	e2:SetOperation(s.dhop)
 	c:RegisterEffect(e2)
@@ -52,12 +51,9 @@ function s.penop(e,tp,eg,ep,ev,re,r,rp)
 	end
 end
 --destroy or to hand
-function s.dhcon(e,tp,eg,ep,ev,re,r,rp)
-	return Duel.GetTurnPlayer()==tp
-end
 function s.dhtg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	local pg=Duel.GetFieldGroup(tp,LOCATION_PZONE,0)
-	local pc=(pg-c):GetFirst()
+	local pc=(pg-e:GetHandler()):GetFirst()
 	if chk==0 then return pc end
 end
 function s.dhop(e,tp,eg,ep,ev,re,r,rp)

@@ -93,7 +93,5 @@ function s.efilter(e,te)
 end
 --Fusion Summon
 function s.fextra(e,tp,mg)
-    if Duel.GetFieldGroupCount(tp,LOCATION_PZONE,0)==2 then
-        return Duel.GetMatchingGroup(Card.IsAbleToGrave,tp,LOCATION_PZONE,0,nil)
-    end
+    return Duel.GetMatchingGroup(Card.IsAbleToGrave,e:GetHandlerPlayer(),LOCATION_PZONE,0,nil)
 end

@@ -18,7 +18,7 @@ function s.initial_effect(c)
 	e1:SetCategory(CATEGORY_TOHAND)
 	e1:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_TRIGGER_F)
 	e1:SetCode(EVENT_PHASE+PHASE_END)
-	e1:SetRange(LOCATION_MZONE)
+	e1:SetRange(LOCATION_SZONE)
 	e1:SetTarget(s.thtg)
 	e1:SetOperation(s.thop)
 	c:RegisterEffect(e1)
@@ -27,7 +27,7 @@ function s.condition(e,tp,eg,ep,ev,re,r,rp)
 	return Duel.GetFieldCard(tp,LOCATION_PZONE,0) and Duel.GetFieldCard(tp,LOCATION_PZONE,1)
 end
 function s.filter(c,e,tp,lsc,rsc)
-	if not c:IsFaceup() or not c:IsSetCard(0xee) or not c:IsCanBeSpecialSummoned(e,0,tp,false,false)
+	if not c:IsFaceup() or not c:IsCanBeSpecialSummoned(e,0,tp,false,false)
         or Duel.GetLocationCountFromEx(tp,tp,nil,c) then return false end
     local lr=c:GetLevel() or c:GetRank() or c:GetLink()
     return lr~=0 and lv>lsc and lv<rsc
