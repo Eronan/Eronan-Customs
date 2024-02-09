@@ -27,9 +27,11 @@ function s.condition(e,tp,eg,ep,ev,re,r,rp)
 end
 function s.filter(c,e,tp,lsc,rsc)
 	if not c:IsFaceup() or not c:IsCanBeSpecialSummoned(e,0,tp,false,false)
-        or Duel.GetLocationCountFromEx(tp,tp,nil,c) then return false end
-    local lr=c:GetLevel() or c:GetRank() or c:GetLink()
-    return lr~=0 and lv>lsc and lv<rsc
+        or Duel.GetLocationCountFromEx(tp,tp,nil,c)==0 then return false end
+	local lr=c:GetLevel()
+	if not lr or lr==0 then lr=c:GetRank() end
+	if not lr or lr==0 then lr=c:GetLink() end
+    return lr and lr>lsc and lr<rsc
 end
 function s.target(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
     local lsc=Duel.GetFieldCard(tp,LOCATION_PZONE,0):GetLeftScale()
