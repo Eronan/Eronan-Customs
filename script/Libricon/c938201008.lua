@@ -27,10 +27,10 @@ function s.initial_effect(c)
 	e2:SetValue(s.efilter)
 	c:RegisterEffect(e2)
     	--Fusion Summon
-	local params={nil,aux.FilterBoolFunction(aux.NOT(Card.IsOriginalType),TYPE_EFFECT),nil,s.fextra}
+	local params={nil,aux.FilterBoolFunction(aux.NOT(Card.IsType),TYPE_EFFECT),s.fextra}
 	local e3=Effect.CreateEffect(c)
 	e3:SetDescription(aux.Stringid(id,0))
-	e3:SetCategory(CATEGORY_SPECIAL_SUMMON+CATEGORY_FUSION_SUMMON)
+	e3:SetCategory(CATEGORY_SPECIAL_SUMMON|CATEGORY_FUSION_SUMMON)
 	e3:SetType(EFFECT_TYPE_IGNITION)
 	e3:SetRange(LOCATION_FZONE)
 	e3:SetCountLimit(1,id)

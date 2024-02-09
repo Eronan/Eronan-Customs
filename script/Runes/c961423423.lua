@@ -46,7 +46,7 @@ function s.mgfilter(c)
 end
 function s.settg(e,tp,eg,ep,ev,re,r,rp,chk)
 	local mg=e:GetHandler():GetMaterial()
-	if chk==0 then return Duel.GetLocationCount(tp,LOCATION_SZONE)>0 and mg:FilterCount(s.mgfilter,nil,e,tp,tc)>0 end
+	if chk==0 then return Duel.GetLocationCount(tp,LOCATION_SZONE)>0 and mg:FilterCount(s.mgfilter,nil,e,tp,pc)>0 end
 end
 function s.setop(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()

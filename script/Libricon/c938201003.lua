@@ -66,9 +66,9 @@ function s.dhop(e,tp,eg,ep,ev,re,r,rp)
 		{b1,aux.Stringid(id,2)},
 		{true,aux.Stringid(id,3)})
     if op==1 then
-        Duel.SendtoHand(tc,nil,REASON_EFFECT)
-        Duel.ConfirmCards(1-tp,tc)
+        Duel.SendtoHand(pc,nil,REASON_EFFECT)
+        Duel.ConfirmCards(1-tp,pc)
     else
-        Duel.Destroy(tc,REASON_EFFECT)
+        Duel.Destroy(pc,REASON_EFFECT)
     end
 end

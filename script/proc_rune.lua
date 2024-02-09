@@ -533,10 +533,10 @@ function Rune.Operation(monf,mmin,mmax,stf,smin,smax,group,customoperation,stage
 					Duel.SendtoGrave(g,REASON_MATERIAL+REASON_RUNE)
 					
 					if stage2 then
-						stage2(g,e,tp,eg,ep,ev,re,r,rp,tc)
+						stage2(g,e,tp,eg,ep,ev,re,r,rp,pc)
 					end
 				else
-					customoperation(g:Clone(),e,tp,eg,ep,ev,re,r,rp,tc)
+					customoperation(g:Clone(),e,tp,eg,ep,ev,re,r,rp,pc)
 				end
 				g:DeleteGroup()
 				e:GetLabelObject(nil)
