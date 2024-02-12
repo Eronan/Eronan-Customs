@@ -40,7 +40,7 @@ function s.initial_effect(c)
 	local e6=Effect.CreateEffect(c)
 	e6:SetType(EFFECT_TYPE_CONTINUOUS+EFFECT_TYPE_FIELD)
 	e6:SetCode(EVENT_CHAINING)
-	e6:SetRange(LOCATION_PZONE)
+	e6:SetRange(LOCATION_MZONE)
 	e6:SetOperation(s.aclimit)
 	c:RegisterEffect(e6)
 	local e7=Effect.CreateEffect(c)
@@ -48,7 +48,7 @@ function s.initial_effect(c)
 	e7:SetType(EFFECT_TYPE_FIELD)
 	e7:SetCode(EFFECT_CANNOT_ACTIVATE)
 	e7:SetProperty(EFFECT_FLAG_PLAYER_TARGET)
-	e7:SetRange(LOCATION_PZONE)
+	e7:SetRange(LOCATION_MZONE)
 	e7:SetTargetRange(1,1)
 	e7:SetValue(s.elimit)
 	c:RegisterEffect(e7)
@@ -100,8 +100,7 @@ function s.tgcon(e)
 end
 --activate limit
 function s.aclimit(e,tp,eg,ep,ev,re,r,rp)
-    if re:GetHandlerPlayer()~=tp or not re:IsHasType(EFFECT_TYPE_ACTIVATE)
-        or not re:GetActiveType()==TYPE_SPELL or not re:GetActiveType()==TYPE_TRAP then return end
+    if re:GetHandlerPlayer()==tp or not re:IsHasType(EFFECT_TYPE_ACTIVATE) then return end
 	s.divine_magus_table[re:GetHandler():GetCode()]=true
 end
 function s.elimit(e,te,tp)
