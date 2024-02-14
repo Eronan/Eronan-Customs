@@ -44,7 +44,7 @@ end
 s.listed_series={0xfcc}
 --place in pendulum zone
 function s.pcfilter(c,e,tp)
-    return c:IsReason(REASON_BATTLE+REASON_EFFECT) and c:IsType(TYPE_EFFECT) and c:IsType(TYPE_PENDULUM)
+    return c:IsReason(REASON_BATTLE+REASON_EFFECT) and not c:IsType(TYPE_EFFECT) and c:IsType(TYPE_PENDULUM)
         and c:IsPreviousPosition(POS_FACEUP) and c:IsPreviousControler(tp)
         and c:IsPreviousLocation(LOCATION_MZONE) and not c:IsForbidden()
 end
