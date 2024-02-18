@@ -41,7 +41,7 @@ s.listed_card_types={TYPE_GEMINI}
 s.listed_names={928190100}
 --special summon
 function s.spcfilter(c)
-	return c:IsSetCard(0x1066) or c:IsCode(928190100)
+	return c:IsSetCard(0xfff) or c:IsCode(928190100)
 end
 function s.spcon(e,tp,eg,ep,ev,re,r,rp)
 	return eg:IsExists(s.spcfilter,1,nil)

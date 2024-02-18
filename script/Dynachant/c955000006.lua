@@ -3,6 +3,7 @@ local s,id=GetID()
 function s.initial_effect(c)
     --pendulum summon
     Pendulum.AddProcedure(c)
+	Gemini.AddProcedure(c)
     --spsummon
     local params = {nil,Fusion.OnFieldMat,s.fextra}
     local e1=Effect.CreateEffect(c)
@@ -29,6 +30,7 @@ function s.initial_effect(c)
 	e3:SetProperty(EFFECT_FLAG_DELAY)
 	e3:SetCode(EVENT_SUMMON_SUCCESS)
 	e3:SetCountLimit(1,{id,1})
+	e3:SetCondition(Gemini.EffectStatusCondition)
 	e3:SetTarget(s.settg)
 	e3:SetOperation(s.setop)
 	c:RegisterEffect(e3)
