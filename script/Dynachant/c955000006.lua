@@ -43,9 +43,7 @@ function s.exfilter(c)
     return c:IsAbleToGrave() and (c:IsSetCard(0xfe5) or c:IsSetCard(0xfff))
 end
 function s.fextra(e,tp,mg)
-    if Duel.GetFieldGroupCount(tp,LOCATION_PZONE,0)==2 then
-        return Duel.GetMatchingGroup(Card.IsAbleToGrave,tp,LOCATION_PZONE,0,nil)
-    end
+	return Duel.GetMatchingGroup(Card.IsAbleToGrave,tp,LOCATION_PZONE,0,nil)
 end
 function s.spfilter(c)
     return c:IsFaceup() and c:IsType(TYPE_NORMAL)
