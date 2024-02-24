@@ -52,7 +52,7 @@ function s.rmtg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
     if chkc then return chkc:IsLocation(LOCATION_ONFIELD) and chkc:IsControler(1-tp) and s.rmfilter(chkc) end
     if chk==0 then return Duel.IsExistingTarget(s.rmfilter,tp,0,LOCATION_ONFIELD,1,nil) end
     Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_REMOVE)
-    local tc=Duel.SelectTarget(tp,sr.rmfilter,tp,0,LOCATION_ONFIELD,1,1,nil)
+    local tc=Duel.SelectTarget(tp,s.rmfilter,tp,0,LOCATION_ONFIELD,1,1,nil)
     Duel.SetOperationInfo(0,CATEGORY_REMOVE,nil,1,1-tp,LOCATION_ONFIELD)
 end
 function s.rmop(e,tp,eg,ep,ev,re,r,rp)

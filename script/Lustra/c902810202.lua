@@ -95,7 +95,7 @@ function s.eqtg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	if chkc then return eg:IsContains(chkc) and s.eqfilter(ckhc,e,tp) end
 	if chk==0 then return eg:IsExists(s.eqfilter,1,nil,e,tp) end
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_EQUIP)
-	local g=eg:FilterSelect(tp,	s.eqfilter,1,1,nil,e,tp)
+	local g=eg:FilterSelect(tp,s.eqfilter,1,1,nil,e,tp)
     Duel.SetTargetCard(g)
 	Duel.SetOperationInfo(0,CATEGORY_EQUIP,e:GetHandler(),1,0,0)
     Duel.SetPossibleOperationInfo(0,CATEGORY_SPECIAL_SUMMON,nil,1,tp,0x3ff~LOCATION_MZONE)
@@ -103,7 +103,7 @@ end
 function s.eqop(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
 	local tc=Duel.GetFirstTarget()
-	if c:IsRelateToEffect(e) and tc:IsRelateToEffect(e) and tc:IsFaceup() and tc:IsControler(1-tp) then
+	if tc and c:IsRelateToEffect(e) and tc:IsRelateToEffect(e) and tc:IsFaceup() and tc:IsControler(1-tp) then
 		Duel.Equip(tp,c,tc)
         local g=Duel.GetMatchingGroup(s.runfilter,tp,0x3ff~LOCATION_MZONE,0,nil)
         if #g>0 and Duel.SelectYesNo(tp,aux.Stringid(id,3)) then

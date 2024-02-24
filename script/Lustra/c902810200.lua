@@ -3,7 +3,7 @@ if not Rune then Duel.LoadScript("proc_rune.lua") end
 local s,id=GetID()
 function s.initial_effect(c)
     --Rune Summon
-    Rune.AddProcedure(c,Rune.MonFunctionEx(aux.NOT(Card.IsSummonableCard)),1,1,Rune.STFunction(Card.IsOnField),1,1,LOCATION_DECK,nil,nil,s.excon)
+    Rune.AddProcedure(c,Rune.MonFunctionEx(aux.NOT(Card.IsSummonableCard)),1,1,Rune.STFunction(Card.IsOnField),1,1,LOCATION_DECK,nil,nil,s.runchk)
     c:EnableReviveLimit()
     local sme,soe=Spirit.AddProcedure(c,EVENT_SPSUMMON_SUCCESS)
 	--Mandatory return
@@ -119,9 +119,10 @@ function s.trmtg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 end
 function s.trmop(e,tp,eg,ep,ev,re,r,rp)
     local c=e:GetHandler()
-    local tg=Duel.GetChainInfo(0,CHAININFO_TARGET_CARDS):AddCard(c):Filter(Card.IsRelateToEffect,nil,e)
-    if #tg>0 and Duel.Remove(tg,0,REASON_EFFECT+REASON_TEMPORARY)~=0 then
-        for tc in aux.Next(tg) do
+    local tg=Duel.GetChainInfo(0,CHAININFO_TARGET_CARDS)
+	local g=Grouop.FromCards(c):Merge(tg):Filter(Card.IsRelateToEffect,nil,e)
+    if #g>0 and Duel.Remove(g,0,REASON_EFFECT+REASON_TEMPORARY)~=0 then
+        for tc in aux.Next(g) do
             tc:RegisterFlagEffect(id,RESET_EVENT+RESETS_STANDARD+RESET_PHASE+PHASE_END,0,1)
             local e1=Effect.CreateEffect(c)
             e1:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
