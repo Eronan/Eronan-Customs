@@ -54,22 +54,16 @@ function s.initial_effect(c)
 	e6:SetOperation(s.extracon)
 	e6:SetValue(s.extraval)
 	c:RegisterEffect(e6)
-	--[[
-	if s.flagmap==nil then
-		s.flagmap={}
-	end
-	if s.flagmap[c]==nil then
-		s.flagmap[c] = {}
-	end
-	--]]
 end
 s.listed_series={0xfeb}
+--Rune Summon
 function s.checkfilter(c,rc,sumtype,tp)
 	return c:IsType(TYPE_RUNE) and c:IsLocation(LOCATION_MZONE)
 end
 function s.rune_custom_check(g,rc,sumtype,tp)
 	return g:IsExists(s.checkfilter,1,nil,rc,sumtype,tp)
 end
+--Used as materials
 function s.matcon(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
 	local rc=c:GetReasonCard()
@@ -94,10 +88,12 @@ end
 function s.sumlimit(e,c,sump,sumtype,sumpos,targetp,se)
 	return c:IsLocation(LOCATION_EXTRA)
 end
+--Banish
 function s.rmtg(e,c)
 	return c:GetOwner()~=e:GetHandlerPlayer() and Duel.IsPlayerCanRemove(e:GetHandlerPlayer(),c)
 		and c:IsType(TYPE_MONSTER)
 end
+--Rune Summon
 function s.runcon(e,tp,eg,ep,ev,re,r,rp)
 	return Duel.IsMainPhase() and Duel.GetTurnPlayer()~=tp
 end
@@ -105,19 +101,21 @@ function s.runfilter(c,mg)
 	return c:IsOriginalType(TYPE_RUNE) and c:IsRuneSummonable(nil,mg)
 end
 function s.runop(e,tp,eg,ep,ev,re,r,rp)
-	local exg=Duel.GetMatchingGroup(s.eqfilter,tp,0,LOCATION_EXTRA,nil,tp)
-	if #exg>0 then Duel.ConfirmCards(tp,Duel.GetFieldGroup(tp,0,LOCATION_EXTRA)) end
-	local c=e:GetHandler()
+	local exg=Duel.GetFieldGroup(tp,0,LOCATION_EXTRA)
+	if #exg>0 then Duel.ConfirmCards(tp,exg) end
 	local mg=Duel.GetMatchingGroup(Card.IsFaceup,tp,LOCATION_ONFIELD,0,nil):Merge(exg)
 	if #mg>=0 then
-		Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_SPSUMMON)
-		local g=Duel.SelectMatchingCard(tp,s.runfilter,tp,LOCATION_HAND,0,1,1,nil,mg)
-		local sc=g:GetFirst()
-		if sc then
-			Duel.RuneSummon(tp,sc,nil,mg)
-		end
+		Duel.Hint(HINT_SELECTMSG,tp,1175)
+		local g=Duel.GetMatchingGroup(tp,s.runfilter,tp,LOCATION_HAND,0,1,1,nil,mg)
+        if #g>0 then
+            local sc=g:Select(tp,1,1,nil):GetFirst()
+            if sc then
+                Duel.RuneSummon(tp,sc,nil,mg)
+            end
+        end
 	end
 end
+--Extra Material
 function s.extracon(c,e,tp,sg,mg,rc,og,chk)
 	return rc~=c
 end
