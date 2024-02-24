@@ -15,7 +15,7 @@ function s.initial_effect(c)
 	e2:SetType(EFFECT_TYPE_QUICK_O)
 	e2:SetCode(EVENT_FREE_CHAIN)
 	e2:SetHintTiming(TIMING_MAIN_END)
-	e2:SetRange(LOCATION_MZONE)
+	e2:SetRange(LOCATION_SZONE)
 	e2:SetCountLimit(1,id,EFFECT_COUNT_CODE_OATH)
 	e2:SetCondition(s.runcon)
     e2:SetTarget(s.runtg)
@@ -61,7 +61,7 @@ function s.runop(e,tp,eg,ep,ev,re,r,rp)
 	local mg=Duel.GetMatchingGroup(Card.IsFaceup,tp,LOCATION_ONFIELD,0,nil):Merge(exg)
 	if #mg>=0 then
 		Duel.Hint(HINT_SELECTMSG,tp,1175)
-		local g=Duel.GetMatchingGroup(tp,s.runfilter,tp,0x3ff~LOCATION_MZONE,0,1,1,nil,mg)
+		local g=Duel.GetMatchingGroup(s.runfilter,tp,0x3ff~LOCATION_MZONE,0,1,1,nil,mg)
         if #g>0 then
             local sc=g:Select(tp,1,1,nil):GetFirst()
             if sc then
@@ -83,7 +83,7 @@ function s.tfcon(e,tp,eg,ep,ev,re,r,rp)
 	return Duel.GetTurnCount()==e:GetHandler():GetTurnID()+1
 end
 function s.tftg(e,tp,eg,ep,ev,re,r,rp,chk)
-	if chk==0 then return Duel.GetLocationCount(tp,LOCATION_SZONE)>0 and c:CheckUniqueOnField(tp) end
+	if chk==0 then return Duel.GetLocationCount(tp,LOCATION_SZONE)>0 and e:GetHandler():CheckUniqueOnField(tp) end
 end
 function s.tfop(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()

@@ -50,7 +50,7 @@ end
 s.listed_series={0xfcf}
 --equip
 function s.eqfilter(c,e,tp)
-	return c:IsFaceup() and c:IsHandler(1-tp)
+	return c:IsFaceup() and c:IsControler(1-tp)
 end
 function s.eqlimit(e,c)
     return e:GetHandlerPlayer()~=c:GetControler() or e:GetHandler():GetEquipTarget()==c

@@ -45,7 +45,7 @@ s.listed_names={902810200}
 --Cannot activate in response
 function s.chainop(e,tp,eg,ep,ev,re,r,rp)
     local rc=re:GetHandler()
-	if rc:ListsCode(902810200) and rc:IsOnField() and rc:IsHandler(tp) then
+	if rc:ListsCode(902810200) and rc:IsOnField() and rc:IsControler(tp) then
 		Duel.SetChainLimit(s.chainlm)
 	end
 end
@@ -73,10 +73,10 @@ function s.spop(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
 	local lg=Duel.GetFieldGroup(tp,0,LOCATION_EXTRA)
 	Duel.ConfirmCards(tp,lg)
-    local spg=Duel.GetMatchingGroup(s.spfilter,tp,LOCATION_EXTRA,0,nil,e,tp)
+    local spg=Duel.GetMatchingGroup(s.spfilter,tp,LOCATION_EXTRA,0,nil,e,tp,lg)
 	if #spg>0 and Duel.SelectYesNo(tp,aux.Stringid(id,1)) then
 		Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_SPSUMMON)
-		local sg=lg:Select(tp,1,1,nil)
+		local sg=spg:Select(tp,1,1,nil)
 		Duel.SpecialSummon(sg,0,tp,tp,false,false,POS_FACEUP)
 	end
 	Duel.ShuffleExtra(1-tp)
@@ -86,7 +86,7 @@ function s.tfcon(e,tp,eg,ep,ev,re,r,rp)
 	return Duel.GetTurnCount()==e:GetHandler():GetTurnID()+1
 end
 function s.tftg(e,tp,eg,ep,ev,re,r,rp,chk)
-	if chk==0 then return Duel.GetLocationCount(tp,LOCATION_SZONE)>0 and c:CheckUniqueOnField(tp) end
+	if chk==0 then return Duel.GetLocationCount(tp,LOCATION_SZONE)>0 and e:GetHandler():CheckUniqueOnField(tp) end
 end
 function s.tfop(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
