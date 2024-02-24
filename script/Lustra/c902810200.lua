@@ -3,7 +3,7 @@ if not Rune then Duel.LoadScript("proc_rune.lua") end
 local s,id=GetID()
 function s.initial_effect(c)
     --Rune Summon
-    Rune.AddProcedure(c,Rune.MonFunctionEx(aux.NOT(Card.IsSummonableCard)),1,1,Rune.STFunction(nil),1,1,LOCATION_DECK,nil,nil,s.excon)
+    Rune.AddProcedure(c,Rune.MonFunctionEx(aux.NOT(Card.IsSummonableCard)),1,1,Rune.STFunction(Card.IsOnField),1,1,LOCATION_DECK,nil,nil,s.excon)
     c:EnableReviveLimit()
     local sme,soe=Spirit.AddProcedure(c,EVENT_SPSUMMON_SUCCESS)
 	--Mandatory return
@@ -98,9 +98,9 @@ function s.rmop(e,tp,eg,ep,ev,re,r,rp)
 	local hg=Duel.GetMatchingGroup(s.disfilter,tp,LOCATION_HAND,0,nil,tp)
 	if #hg==0 then return end
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_DISCARD)
-    local tc=hg:Select(tp,1,1,nil)
-    if Duel.SendToGrave(tc,REASON_EFFECT|REASON_DISCARD)==0 then return end
-	local g=Duel.GetMatchingGroup(s.rmfilter,tp,LOCATION_GRAVE,0,nil,tc:GetType())
+    local tc=hg:Select(tp,1,1,nil):GetFirst()
+    if Duel.SendtoGrave(tc,REASON_EFFECT|REASON_DISCARD)==0 then return end
+	local g=Duel.GetMatchingGroup(s.rmfilter,tp,LOCATION_DECK,0,nil,tc:GetType())
 	if #g>0 then
 		Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_REMOVE)
 		local rmc=g:Select(tp,1,1,nil)

@@ -95,7 +95,7 @@ function s.eqtg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	if chkc then return eg:IsContains(chkc) and s.eqfilter(ckhc,e,tp) end
 	if chk==0 then return eg:IsExists(s.eqfilter,1,nil,e,tp) end
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_EQUIP)
-	local g=eg:FilterSelect(s.eqfilter,1,1,nil,e,tp)
+	local g=eg:FilterSelect(tp,	s.eqfilter,1,1,nil,e,tp)
     Duel.SetTargetCard(g)
 	Duel.SetOperationInfo(0,CATEGORY_EQUIP,e:GetHandler(),1,0,0)
     Duel.SetPossibleOperationInfo(0,CATEGORY_SPECIAL_SUMMON,nil,1,tp,0x3ff~LOCATION_MZONE)
