@@ -17,7 +17,7 @@ function s.initial_effect(c)
 	e2:SetHintTiming(TIMING_MAIN_END)
 	e2:SetRange(LOCATION_SZONE)
 	e2:SetCountLimit(1,id,EFFECT_COUNT_CODE_OATH)
-	e2:SetCondition(s.runcon)
+	e2:SetCondition(function (_) return Duel.IsMainPhase() end)
     e2:SetTarget(s.runtg)
 	e2:SetOperation(s.runop)
 	c:RegisterEffect(e2)
@@ -45,9 +45,6 @@ function s.initial_effect(c)
 end
 s.listed_names={902810200}
 --Rune Summon
-function s.runcon(e,tp,eg,ep,ev,re,r,rp)
-	return Duel.IsMainPhase() and Duel.GetTurnPlayer()~=tp
-end
 function s.runfilter(c,mg)
 	return c:IsCode(902810200) and c:IsRuneSummonable(nil,mg)
 end
