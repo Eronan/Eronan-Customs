@@ -103,18 +103,18 @@ function s.rmfilter(c)
 end
 function s.rmtg(e,tp,eg,ep,ev,re,r,rp,chk)
     local fromfield=e:GetHandler():IsPreviousLocation(LOCATION_ONFIELD)
-    if chk==0 then return Duel.IsExistingMatchingCard(s.rmfilter,tp,LOCATION_DECK,0,1,nil)
+    if chk==0 then return Duel.IsExistingMatchingCard(s.rmfilter,tp,LOCATION_DECK|LOCATION_GRAVE,0,1,nil)
         and (not fromfield or Duel.IsExistingMatchingCard(s.spfilter,tp,LOCATION_EXTRA,0,1,nil,e,tp)) end
     Duel.SetOperationInfo(0,CATEGORY_REMOVE,nil,1,tp,LOCATION_DECK)
     if fromfield then
-        e:GetLabel(1)
         Duel.SetOperationInfo(0,CATEGORY_SPECIAL_SUMMON,nil,1,tp,LOCATION_EXTRA)
+		e:SetLabel(1)
     else
         e:SetLabel(0)
     end
 end
 function s.rmop(e,tp,eg,ep,ev,re,r,rp)
-    local g=Duel.GetMatchingGroup(s.rmfilter,tp,LOCATION_GRAVE,0,nil)
+    local g=Duel.GetMatchingGroup(s.rmfilter,tp,LOCATION_DECK|LOCATION_GRAVE,0,nil)
     Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_REMOVE)
     local rmc=g:Select(tp,1,1,nil)
     if Duel.Remove(rmc,POS_FACEUP,REASON_EFFECT) and e:GetLabel()==1 then

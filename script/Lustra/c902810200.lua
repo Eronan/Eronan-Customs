@@ -62,13 +62,13 @@ function s.filter(c)
 end
 function s.retop(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
-	if c:IsRelateToEffect(e) and Duel.SendtoHand(c,nil,REASON_EFFECT)>0
-		and c:IsLocation(LOCATION_HAND) then
-        local g=Duel.GetMatchingGroup(s.filter,tp,LOCATION_GRAVE,0,nil)
-		if #g>0 then
-            local tc=g:Select(tp,1,1,nil)
-            Duel.Remove(tc,POS_FACEUP,REASON_EFFECT)
-        end
+	if c:IsRelateToEffect(e) then
+		Duel.SendtoHand(c,nil,REASON_EFFECT)
+	end
+	local g=Duel.GetMatchingGroup(s.filter,tp,LOCATION_GRAVE,0,nil)
+	if #g>0 then
+		local tc=g:Select(tp,1,1,nil)
+		Duel.Remove(tc,POS_FACEUP,REASON_EFFECT)
 	end
 end
 --Lake of the Radiant One
