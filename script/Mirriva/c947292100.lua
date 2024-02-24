@@ -65,12 +65,10 @@ end
 function s.spfilter(c,e,tp)
 	return c:IsCanBeSpecialSummoned(e,0,tp,false,false,POS_FACEUP) and Duel.GetLocationCountFromEx(tp,tp,nil,c)>0
 end
-	--Send 1 monster from your extra deck to GY
 function s.spop(e,tp,eg,ep,ev,re,r,rp)
-	local c=e:GetHandler()
 	local g=Duel.GetFieldGroup(tp,0,LOCATION_EXTRA)
 	Duel.ConfirmCards(tp,g)
-	local spg=Duel.GetMatchingGroup(s.spfilter,tp,0,LOCATION_EXTRA,nil,e,tp)
+	local spg=g:Filter(s.spfilter,nil,e,tp)
 	if #spg>0 and Duel.SelectYesNo(tp,aux.Stringid(id,1)) then
 		Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_SPSUMMON)
 		local sg=spg:Select(tp,1,1,nil)
