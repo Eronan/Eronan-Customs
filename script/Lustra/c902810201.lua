@@ -22,6 +22,7 @@ function s.initial_effect(c)
 	e3:SetCategory(CATEGORY_SPECIAL_SUMMON)
 	e3:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_TRIGGER_O)
 	e3:SetRange(LOCATION_SZONE)
+	e3:SetProperty(EFFECT_FLAG_DELAY)
 	e3:SetCode(EVENT_BE_MATERIAL)
 	e3:SetCountLimit(1,id,EFFECT_COUNT_CODE_OATH)
 	e3:SetCondition(s.spcon)
@@ -30,8 +31,7 @@ function s.initial_effect(c)
 	c:RegisterEffect(e3)
     --Place this card in your Spell & Trap Zones
 	local e4=Effect.CreateEffect(c)
-	e4:SetDescription(aux.Stringid(id,0))
-	e4:SetCategory(CATEGORY_SPECIAL_SUMMON)
+	e4:SetDescription(aux.Stringid(id,2))
 	e4:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_TRIGGER_O)
 	e4:SetCode(EVENT_PHASE+PHASE_STANDBY)
 	e4:SetCountLimit(1)
@@ -45,7 +45,7 @@ s.listed_names={902810200}
 --Cannot activate in response
 function s.chainop(e,tp,eg,ep,ev,re,r,rp)
     local rc=re:GetHandler()
-	if rc:ListsCode(902810200) and rc:IsOnField() and rc:IsControler(tp) then
+	if rc:ListsCode(902810200) and re:GetHandlerPlayer(tp) then
 		Duel.SetChainLimit(s.chainlm)
 	end
 end

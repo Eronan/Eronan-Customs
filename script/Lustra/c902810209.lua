@@ -18,14 +18,16 @@ function s.initial_effect(c)
 	e2:SetCode(EFFECT_MATERIAL_CHECK)
 	e2:SetValue(s.matcheck)
 	c:RegisterEffect(e2)
-	--cannot be target
+	--cannot activate cards or effects
 	local e3=Effect.CreateEffect(c)
-	e3:SetType(EFFECT_TYPE_SINGLE)
-	e3:SetCode(EFFECT_CANNOT_BE_EFFECT_TARGET)
-	e3:SetProperty(EFFECT_FLAG_SINGLE_RANGE)
+	e3:SetType(EFFECT_TYPE_FIELD)
+	e3:SetProperty(EFFECT_FLAG_PLAYER_TARGET)
+	e3:SetCode(EFFECT_CANNOT_ACTIVATE)
+	e3:SetTargetRange(0,1)
 	e3:SetRange(LOCATION_MZONE)
-	e3:SetCondition(s.tgcon)
-	e3:SetValue(aux.tgoval)
+	e3:SetDescription(aux.Stringid(id,3))
+	e3:SetCondition(s.accon)
+	e3:SetValue(s.aclimit)
 	e3:SetLabelObject(e2)
 	c:RegisterEffect(e3)
     --Special Summon from opponent's Extra Deck
@@ -67,9 +69,12 @@ function s.matcheck(e,c)
 		e:GetHandler():RegisterFlagEffect(id,RESET_EVENT+RESETS_STANDARD-RESET_TOFIELD,EFFECT_FLAG_CLIENT_HINT,1,0,aux.Stringid(id,0))
 	end
 end
---Cannot be targeted
-function s.tgcon(e,tp,eg,ep,ev,re,r,rp)
+--Cannot activate cards
+function s.accon(e,tp,eg,ep,ev,re,r,rp)
 	return e:GetLabelObject():GetLabel()==1
+end
+function s.aclimit(e,re,tp)
+	return re:IsHasCategory(CATEGORY_DISABLE) or re:IsHasCategory(CATEGORY_NEGATE)
 end
 --Special Summon 1 monster from your opponent's Exra Deck
 function s.spcon(e,tp,eg,ep,ev,re,r,rp)
@@ -119,7 +124,7 @@ function s.rmop(e,tp,eg,ep,ev,re,r,rp)
     local rmc=g:Select(tp,1,1,nil)
     if Duel.Remove(rmc,POS_FACEUP,REASON_EFFECT) and e:GetLabel()==1 then
         local spg=Duel.GetMatchingGroup(s.spfilter,tp,LOCATION_EXTRA,0,nil,e,tp)
-        if spg>0 then
+        if #spg>0 then
             Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_SPSUMMON)
             local sg=spg:Select(tp,1,1,nil)
             Duel.SpecialSummon(sg,0,tp,tp,false,false,POS_FACEUP)

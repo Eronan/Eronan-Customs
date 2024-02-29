@@ -33,7 +33,6 @@ function s.initial_effect(c)
     --Place this card in your Spell & Trap Zones
 	local e4=Effect.CreateEffect(c)
 	e4:SetDescription(aux.Stringid(id,0))
-	e4:SetCategory(CATEGORY_SPECIAL_SUMMON)
 	e4:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_TRIGGER_O)
 	e4:SetCode(EVENT_PHASE+PHASE_STANDBY)
 	e4:SetCountLimit(1)
@@ -56,15 +55,13 @@ function s.runop(e,tp,eg,ep,ev,re,r,rp)
 	local exg=Duel.GetFieldGroup(tp,0,LOCATION_EXTRA)
 	if #exg>0 then Duel.ConfirmCards(tp,exg) end
 	local mg=Duel.GetMatchingGroup(Card.IsFaceup,tp,LOCATION_ONFIELD,0,nil):Merge(exg)
-	if #mg>=0 then
-		Duel.Hint(HINT_SELECTMSG,tp,1175)
-		local g=Duel.GetMatchingGroup(s.runfilter,tp,0x3ff~LOCATION_MZONE,0,1,1,nil,mg)
-        if #g>0 then
-            local sc=g:Select(tp,1,1,nil):GetFirst()
-            if sc then
-                Duel.RuneSummon(tp,sc,nil,mg)
-            end
-        end
+	Duel.Hint(HINT_SELECTMSG,tp,1175)
+	local g=Duel.GetMatchingGroup(s.runfilter,tp,0x3ff~LOCATION_MZONE,0,nil,mg)
+	if #g>0 then
+		local sc=g:Select(tp,1,1,nil):GetFirst()
+		if sc then
+			Duel.RuneSummon(tp,sc,nil,mg)
+		end
 	end
 end
 --immune

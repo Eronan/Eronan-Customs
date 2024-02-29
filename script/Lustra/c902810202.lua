@@ -88,6 +88,7 @@ end
 --equip to summoned monster
 function s.eqfilter(c,e,tp)
     return c:IsControler(1-tp) and c:IsCanBeEffectTarget(e)
+		and not c:IsSummonableCard()
 end
 function s.runfilter(c)
     return c:IsAttribute(ATTRIBUTE_LIGHT) and c:IsRace(RACE_REPTILE) and c:IsRuneSummonable()
