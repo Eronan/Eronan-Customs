@@ -4,7 +4,7 @@ local s,id=GetID()
 function s.initial_effect(c)
 	c:SetUniqueOnField(1,0,id)
 	--Rune Summon
-	Rune.AddProcedure(c,Rune.MonFunction(s.monfilter),1,Rune.STFunction(nil),1,1)
+	Rune.AddProcedure(c,Rune.MonFunction(s.monfilter),1,1,Rune.STFunction(nil),1,1)
 	c:EnableReviveLimit()
 	--spsummon
 	local e1=Effect.CreateEffect(c)

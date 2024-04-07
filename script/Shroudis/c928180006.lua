@@ -84,7 +84,7 @@ function s.extrafilter(c,tp)
 end
 function s.extracon(c,e,tp,sg,mg,sc,og,chk)
     if sg then
-        return (sg+mg):IsExists(s.extrafilter,nil,e:GetHandlerPlayer()) and sg:FilterCount(s.flagcheck,nil)<2
+        return (sg+mg):IsExists(s.extrafilter,1,nil,e:GetHandlerPlayer()) and sg:FilterCount(s.flagcheck,nil)<2
     else
         return mg:IsExists(s.extrafilter,nil,e:GetHandlerPlayer())
     end

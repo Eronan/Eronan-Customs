@@ -378,6 +378,8 @@ function Rune.Condition(monf,mmin,mmax,stf,smin,smax,group,condition,excondition
 				if max and max < mmin+smin then return false end
 				--Get Higher or Lower Value
 				if not min or min < mmin+smin then min=mmin+smin end
+				Debug.Message(c:GetCode())
+				Debug.Message(mmax)
 				if not max or max > mmax+smax then max=mmax+smax end
 				--]]
 				local mg=g:Filter(Rune.ConditionFilter,nil,monf,stf,c,tp)
