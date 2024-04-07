@@ -34,7 +34,7 @@ function s.initial_effect(c)
 	e2:SetOperation(s.plop)
 	c:RegisterEffect(e2)
 end
-s.listed_series={0xfec}
+s.listed_series={0xfd1}
 --Extra Material
 function s.extrafilter(c,tp)
 	return c:IsLocation(LOCATION_MZONE) and c:IsControler(tp) and c:IsFaceup()
@@ -54,7 +54,7 @@ function s.extraval(chk,summon_type,e,...)
 	if chk==0 then
 		local tp,sc=...
         local sumtyp=summon_type&(SUMMON_TYPE_RUNE|SUMMON_TYPE_LINK)
-		if (sumtyp~=SUMMON_TYPE_RUNE and sumtyp~=SUMMON_TYPE_LINK) or not sc:IsSetCard(0xfec) or Duel.GetFlagEffect(tp,id)>0 then
+		if (sumtyp~=SUMMON_TYPE_RUNE and sumtyp~=SUMMON_TYPE_LINK) or not sc:IsSetCard(0xfd1) or Duel.GetFlagEffect(tp,id)>0 then
 			return Group.CreateGroup()
 		else
 			table.insert(s.flagmap[c],c:RegisterFlagEffect(id,0,0,1))

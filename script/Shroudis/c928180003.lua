@@ -24,7 +24,7 @@ function s.initial_effect(c)
 	e3:SetOperation(s.thop)
 	c:RegisterEffect(e3)
 end
-s.listed_series={0xfec}
+s.listed_series={0xfd1}
 --Monsters it points to are immune to non-targeting effects
 function s.immcon(e,tp,eg,ep,ev,re,r,rp)
     return c:IsLocation(LOCATION_MZONE) or c:IsLinkSpell()
@@ -37,7 +37,7 @@ function s.efilter(e,te)
 end
 --Add to hand
 function s.thfilter(c)
-	return c:IsAbleToHand() and c:IsSetCard(0xfec)
+	return c:IsAbleToHand() and c:IsSetCard(0xfd1)
 end
 function s.thtg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.IsExistingMatchingCard(s.thfilter,tp,LOCATION_DECK,0,1,nil) end

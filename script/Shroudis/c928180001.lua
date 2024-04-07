@@ -28,10 +28,10 @@ function s.initial_effect(c)
 	e2:SetOperation(s.plop)
 	c:RegisterEffect(e2)
 end
-s.listed_series={0xfec}
+s.listed_series={0xfd1}
 --Link Summon
 function s.lcheck(g,lc,sumtype,tp)
-	return g:IsExists(aux.NOT(Card.IsSetCard),1,nil,0xfec,lc,sumtype,tp)
+	return g:IsExists(aux.NOT(Card.IsSetCard),1,nil,0xfd1,lc,sumtype,tp)
 end
 --Search Shroudis card
 function s.thcfilter(c,tp,lg)
@@ -44,7 +44,7 @@ function s.thcon(e,tp,eg,ep,ev,re,r,rp)
 	return eg:IsExists(s.thcfilter,1,nil,tp,lg)
 end
 function s.thfilter(c)
-	return c:IsAbleToHand() and c:IsSetCard(0xfec)
+	return c:IsAbleToHand() and c:IsSetCard(0xfd1)
 end
 function s.thtg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.IsExistingMatchingCard(s.thfilter,tp,LOCATION_DECK,0,1,nil) end

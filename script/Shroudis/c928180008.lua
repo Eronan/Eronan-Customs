@@ -26,10 +26,10 @@ function s.initial_effect(c)
 	e2:SetOperation(s.thop)
 	c:RegisterEffect(e2)
 end
-s.listed_series={0xfec}
+s.listed_series={0xfd1}
 --Rune Summon a 'Shroudis' monster from deck
 function s.runfilter(c,mg)
-	return c:IsSetCard(0xfec) and c:IsRuneSummonable(nil,mg,nil,nil,LOCATION_HAND)
+	return c:IsSetCard(0xfd1) and c:IsRuneSummonable(nil,mg,nil,nil,LOCATION_HAND)
 end
 function s.runtg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then
@@ -57,7 +57,7 @@ function s.runop(e,tp,eg,ep,ev,re,r,rp)
 end
 --Search for a 'Shroudis' Rune monster
 function s.thfilter(c)
-	return c:IsFaceup() and c:IsSetCard(0xfec) and c:IsType(TYPE_RUNE) and c:IsAbleToHand()
+	return c:IsFaceup() and c:IsSetCard(0xfd1) and c:IsType(TYPE_RUNE) and c:IsAbleToHand()
 end
 function s.thtg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	if chkc then return chkc:IsControler(tp) and chkc:IsLocation(LOCATION_REMOVED) and s.thfilter(chkc) end

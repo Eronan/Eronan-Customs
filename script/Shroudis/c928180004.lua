@@ -18,7 +18,7 @@ function s.initial_effect(c)
 	e2:SetOperation(s.plop)
 	c:RegisterEffect(e2)
 end
-s.listed_series={0xfec}
+s.listed_series={0xfd1}
 --Rune Summon
 function s.runchk(e,tp,chk,mg)
 	if chk==0 then return Duel.GetFlagEffect(tp,id)==0 end
@@ -31,7 +31,7 @@ function s.plcost(e,tp,eg,ep,ev,re,r,rp,chk)
 	Duel.SendtoGrave(e:GetHandler(),REASON_COST+REASON_DISCARD)
 end
 function s.plfilter(c,tp)
-	return c:IsSetCard(0xfec) and c:IsLinkMonster()
+	return c:IsSetCard(0xfd1) and c:IsLinkMonster()
 		and c:CheckUniqueOnField(tp,LOCATION_SZONE) and not c:IsForbidden()
 end
 function s.pltg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)

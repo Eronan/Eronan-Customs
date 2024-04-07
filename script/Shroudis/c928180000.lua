@@ -4,7 +4,7 @@ local s,id=GetID()
 function s.initial_effect(c)
     --Link Summon
 	c:EnableReviveLimit()
-    Link.AddProcedure(c,aux.FilterBoolFunctionEx(Card.IsSetCard,0xfec),1)
+    Link.AddProcedure(c,aux.FilterBoolFunctionEx(Card.IsSetCard,0xfd1),1)
     --Cannot be Tributed
     local e1=Effect.CreateEffect(c)
     e1:SetType(EFFECT_TYPE_FIELD)
@@ -34,7 +34,7 @@ function s.initial_effect(c)
 	e3:SetOperation(s.thop)
 	c:RegisterEffect(e3)
 end
-s.listed_series={0xfec}
+s.listed_series={0xfd1}
 --Cannot release
 function s.valcheck(e,c)
 	if c:GetMaterial():IsExists(Card.IsType,1,nil,TYPE_RUNE,c,SUMMON_TYPE_LINK,e:GetHandlerPlayer()) then
@@ -47,7 +47,7 @@ function s.thcon(e,tp,eg,ep,ev,re,r,rp)
 	return e:GetHandler():IsPreviousLocation(LOCATION_ONFIELD|LOCATION_EXTRA)
 end
 function s.thfilter(c)
-	return c:IsAbleToHand() and c:IsSetCard(0xfec)
+	return c:IsAbleToHand() and c:IsSetCard(0xfd1)
 end
 function s.thtg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.IsExistingMatchingCard(s.thfilter,tp,LOCATION_DECK,0,1,nil) end
