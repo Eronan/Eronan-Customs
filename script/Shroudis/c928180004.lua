@@ -6,17 +6,15 @@ function s.initial_effect(c)
 	c:EnableReviveLimit()
 	Rune.AddProcedure(c,Rune.MonFunction(nil),1,1,Rune.STFunction(nil),1,1,LOCATION_GRAVE,nil,nil,s.runchk)
     --Place "Shroudis" Link monster as Link Spell
-	local e2=Effect.CreateEffect(c)
-	e2:SetDescription(aux.Stringid(id,0))
-	e2:SetCategory(CATEGORY_TOHAND+CATEGORY_SEARCH)
-	e2:SetType(EFFECT_TYPE_IGNITION)
-	e2:SetRange(LOCATION_HAND)
-	e2:SetProperty(EFFECT_FLAG_PLAYER_TARGET)
-	e2:SetCountLimit(1,id,EFFECT_COUNT_CODE_OATH)
-	e2:SetCost(s.plcost)
-	e2:SetTarget(s.pltg)
-	e2:SetOperation(s.plop)
-	c:RegisterEffect(e2)
+	local e1=Effect.CreateEffect(c)
+	e1:SetDescription(aux.Stringid(id,0))
+	e1:SetType(EFFECT_TYPE_IGNITION)
+	e1:SetRange(LOCATION_HAND)
+	e1:SetCountLimit(1,id,EFFECT_COUNT_CODE_OATH)
+	e1:SetCost(s.plcost)
+	e1:SetTarget(s.pltg)
+	e1:SetOperation(s.plop)
+	c:RegisterEffect(e1)
 end
 s.listed_series={0xfd1}
 --Rune Summon
@@ -35,7 +33,7 @@ function s.plfilter(c,tp)
 		and c:CheckUniqueOnField(tp,LOCATION_SZONE) and not c:IsForbidden()
 end
 function s.pltg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
-	if chk==0 then return Duel.GetLocationCount(tp,LOCATION_SZONE)>0 and Duel.IsExistingTarget(s.plfilter,tp,LOCATION_EXTRA,0,1,nil,tp) end
+	if chk==0 then return Duel.GetLocationCount(tp,LOCATION_SZONE)>0 and Duel.IsExistingMatchingCard(s.plfilter,tp,LOCATION_EXTRA,0,1,nil,tp) end
 end
 function s.plop(e,tp,eg,ep,ev,re,r,rp)
     local g=Duel.SelectMatchingCard(tp,s.plfilter,tp,LOCATION_EXTRA,0,1,1,nil,tp)

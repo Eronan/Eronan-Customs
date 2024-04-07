@@ -4,16 +4,16 @@ function s.initial_effect(c)
     --Link Summon
 	c:EnableReviveLimit()
     Link.AddProcedure(c,aux.NOT(aux.FilterBoolFunctionEx(Card.IsType,TYPE_TOKEN)),2)
-    --Cards this points to cannot be targeted
+    --Monsters it points to are immune to non-targeting effects
 	local e1=Effect.CreateEffect(c)
 	e1:SetType(EFFECT_TYPE_FIELD)
-	e1:SetCode(EFFECT_CANNOT_BE_EFFECT_TARGET)
-	e1:SetProperty(EFFECT_FLAG_IGNORE_IMMUNE)
-	e1:SetTargetRange(LOCATION_MZONE,LOCATION_MZONE)
+	e1:SetCode(EFFECT_IMMUNE_EFFECT)
+	e1:SetProperty(EFFECT_FLAG_SINGLE_RANGE)
 	e1:SetRange(LOCATION_MZONE|LOCATION_SZONE)
-    e1:SetCondition(s.tgcon)
-	e1:SetTarget(function(e,tc) return e:GetHandler():GetLinkedGroup():IsContains(tc) end)
-	e1:SetValue(aux.tgoval)
+	e1:SetTargetRange(LOCATION_MZONE,0)
+    e1:SetCondition(s.immcon)
+	e1:SetTarget(aux.TargetBoolFunction(Card.IsLinked))
+	e1:SetValue(s.efilter)
 	c:RegisterEffect(e1)
     --Place as Link Spell
 	local e2=Effect.CreateEffect(c)
@@ -26,9 +26,16 @@ function s.initial_effect(c)
 	e2:SetOperation(s.plop)
 	c:RegisterEffect(e2)
 end
---Cannot be targeted
-function s.tgcon(e,tp,eg,ep,ev,re,r,rp)
+--Monsters it points to are immune to non-targeting effects
+function s.immcon(e,tp,eg,ep,ev,re,r,rp)
+	local c=e:GetHandler()
     return c:IsLocation(LOCATION_MZONE) or c:IsLinkSpell()
+end
+function s.efilter(e,te)
+	if e:GetOwnerPlayer()==te:GetOwnerPlayer() then return false end
+	if not te:IsHasProperty(EFFECT_FLAG_CARD_TARGET) then return true end
+	local g=Duel.GetChainInfo(0,CHAININFO_TARGET_CARDS)
+	return not g:IsContains(e:GetHandler())
 end
 --Place as Link Spell
 function s.plfilter(c,tp)

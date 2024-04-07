@@ -37,14 +37,13 @@ end
 s.listed_series={0xfd1}
 --Extra Material
 function s.extrafilter(c,tp)
-	Debug.Message()
 	return c:IsLocation(LOCATION_MZONE) and c:IsControler(tp) and c:IsFaceup()
 end
 function s.extracon(c,e,tp,sg,mg,sc,og,chk)
     if sg then
         return (sg+mg):IsExists(s.extrafilter,1,nil,e:GetHandlerPlayer()) and sg:FilterCount(s.flagcheck,nil)<2
     else
-        return mg:IsExists(s.extrafilter,nil,e:GetHandlerPlayer())
+        return not mg or mg:IsExists(s.extrafilter,nil,e:GetHandlerPlayer())
     end
 end
 function s.flagcheck(c)
