@@ -35,7 +35,7 @@ function s.efilter(e,te)
 	if e:GetOwnerPlayer()==te:GetOwnerPlayer() then return false end
 	if not te:IsHasProperty(EFFECT_FLAG_CARD_TARGET) then return true end
 	local g=Duel.GetChainInfo(0,CHAININFO_TARGET_CARDS)
-	return not g:IsContains(e:GetHandler())
+	return #g==0
 end
 --Place as Link Spell
 function s.plfilter(c,tp)
