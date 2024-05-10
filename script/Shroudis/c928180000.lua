@@ -5,16 +5,16 @@ function s.initial_effect(c)
     --Link Summon
 	c:EnableReviveLimit()
     Link.AddProcedure(c,aux.FilterBoolFunctionEx(Card.IsSetCard,0xfd1),1)
-    --Cannot be Tributed
-    local e1=Effect.CreateEffect(c)
-    e1:SetType(EFFECT_TYPE_FIELD)
-    e1:SetRange(LOCATION_MZONE)
-    e1:SetCode(EFFECT_CANNOT_RELEASE)
-    e1:SetProperty(EFFECT_FLAG_PLAYER_TARGET)
+	--special summon limit
+	local e1=Effect.CreateEffect(c)
+	e1:SetType(EFFECT_TYPE_FIELD)
+	e1:SetCode(EFFECT_CANNOT_SPECIAL_SUMMON)
+	e1:SetProperty(EFFECT_FLAG_PLAYER_TARGET)
+	e1:SetRange(LOCATION_MZONE)
+	e1:SetTargetRange(0,1)
     e1:SetCondition(function(e) return e:GetLabel()==1 and e:GetHandler():IsExtraLinked() end)
-    e1:SetTarget(aux.TargetBoolFunction(Card.IsLinked))
-    e1:SetTargetRange(1,1)
-    c:RegisterEffect(e1)
+	e1:SetTarget(s.splimit)
+	c:RegisterEffect(e1)
     local e2=Effect.CreateEffect(c)
 	e2:SetType(EFFECT_TYPE_SINGLE)
 	e2:SetCode(EFFECT_MATERIAL_CHECK)
@@ -35,11 +35,19 @@ function s.initial_effect(c)
 	c:RegisterEffect(e3)
 end
 s.listed_series={0xfd1}
---Cannot release
+--Special Summon limit
 function s.valcheck(e,c)
 	if c:GetMaterial():IsExists(Card.IsType,1,nil,TYPE_RUNE,c,SUMMON_TYPE_LINK,e:GetHandlerPlayer()) then
 		e:GetLabelObject():SetLabel(1)
         e:GetHandler():RegisterFlagEffect(id,RESET_EVENT+RESETS_STANDARD-RESET_TOFIELD,EFFECT_FLAG_CLIENT_HINT,1,0,aux.Stringid(id,0))
+	end
+end
+function s.splimit(e,c,tp,sumtp,sumpos)
+    if not c:IsLocation(LOCATION_EXTRA) then return false end
+	if c:IsMonster() then
+		return not c:IsType(TYPE_LINK)
+	else
+		return not c:IsOriginalType(TYPE_LINK)
 	end
 end
 --Add to hand

@@ -5,16 +5,16 @@ function s.initial_effect(c)
     --Rune Summon
 	c:EnableReviveLimit()
 	Rune.AddProcedure(c,Rune.MonFunctionEx(Card.IsType,TYPE_LINK),1,1,Rune.STFunction(Card.IsLinkSpell),1,1)
-	--special summon limit
-	local e1=Effect.CreateEffect(c)
-	e1:SetType(EFFECT_TYPE_FIELD)
-	e1:SetCode(EFFECT_CANNOT_SPECIAL_SUMMON)
-	e1:SetProperty(EFFECT_FLAG_PLAYER_TARGET)
-	e1:SetRange(LOCATION_MZONE)
-	e1:SetTargetRange(0,1)
+	--Cannot be Tributed
+    local e1=Effect.CreateEffect(c)
+    e1:SetType(EFFECT_TYPE_FIELD)
+    e1:SetRange(LOCATION_MZONE)
+    e1:SetCode(EFFECT_CANNOT_RELEASE)
+    e1:SetProperty(EFFECT_FLAG_PLAYER_TARGET)
     e1:SetCondition(function(e) return e:GetHandler():IsLinked() end)
-	e1:SetTarget(s.splimit)
-	c:RegisterEffect(e1)
+    e1:SetTarget(aux.TargetBoolFunction(Card.IsLinked))
+    e1:SetTargetRange(1,1)
+    c:RegisterEffect(e1)
     --spsummon link & place link spell
 	local e2=Effect.CreateEffect(c)
 	e2:SetDescription(aux.Stringid(id,0))
@@ -79,15 +79,6 @@ function s.spop(e,tp,eg,ep,ev,re,r,rp)
     local sc=g2:GetFirst()
 	if not sc:IsRelateToEffect(e) then return end
     Duel.SpecialSummon(sc,0,tp,tp,false,false,POS_FACEUP)
-end
---Special Summon limit
-function s.splimit(e,c,tp,sumtp,sumpos)
-    if not c:IsLocation(LOCATION_EXTRA) then return false end
-	if c:IsMonster() then
-		return not c:IsType(TYPE_LINK)
-	else
-		return not c:IsOriginalType(TYPE_LINK)
-	end
 end
 --Special Summon or Place as a Link Spell
 function s.spcon(e,tp,eg,ep,ev,re,r,rp)
