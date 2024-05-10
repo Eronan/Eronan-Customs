@@ -134,13 +134,15 @@ function Rune.IsCanBeMaterial(c,runc,tp)
 	--Search Effects
 	local effs={c:GetCardEffect(EFFECT_CANNOT_BE_RUNE_MATERIAL)}
 	for _,te in ipairs(effs) do
-		if type(te:GetValue())=='function' and te:GetValue()(te,runc,tp) or te:GetValue() then return false end
+		local val=te:GetValue()
+		if (type(val)=='function' and val(te,runc,tp)) or (type(val)=='int' and val) then return false end
 	end
 	
 	--Cannot be Material
 	effs={c:GetCardEffect(EFFECT_CANNOT_BE_MATERIAL)}
 	for _,te in ipairs(effs) do
-		if type(te:GetValue())=='function' and te:GetValue()(te,runc,SUMMON_TYPE_RUNE,tp) or te:GetValue() then return false end
+		local val=te:GetValue()
+		if (type(val)=='function' and val(te,runc,SUMMON_TYPE_RUNE,tp)) or (type(val)=='int' and val) then return false end
 	end
 	
 	return true

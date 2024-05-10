@@ -48,7 +48,6 @@ function s.runtg(e,tp,eg,ep,ev,re,r,rp,chk)
 		return Duel.IsExistingMatchingCard(s.runfilter,tp,LOCATION_HAND,0,1,nil,mg)
 	end
 	Duel.SetOperationInfo(0,CATEGORY_SPECIAL_SUMMON,nil,1,tp,LOCATION_HAND)
-	Duel.SetPossibleOperationInfo(0,CATEGORY_TOGRAVE,nil,0,tp,LOCATION_DECK)
 end
 function s.runop(e,tp,eg,ep,ev,re,r,rp)
 	local mg=Duel.GetMatchingGroup(Card.IsSetCard,tp,LOCATION_DECK,0,nil,0xfeb)

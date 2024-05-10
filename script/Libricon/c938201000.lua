@@ -49,5 +49,6 @@ function s.pcop(e,tp,eg,ep,ev,re,r,rp)
 end
 --cannot activate monster effects on the field
 function s.aclimit(e,re,tp)
-    return re:IsActiveType(TYPE_MONSTER) and re:GetActivateLocation()==LOCATION_ONFIELD
+    local rc=re:GetHandler()
+    return rc:IsMonster() and rc:IsOnField()
 end

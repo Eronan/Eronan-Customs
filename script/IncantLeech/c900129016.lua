@@ -25,6 +25,7 @@ end
 function s.target(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return true end
 	Duel.SetOperationInfo(0,CATEGORY_DISABLE,eg,1,0,0)
+	Duel.SetPossibleOperationInfo(0,CATEGORY_SPECIAL_SUMMON,nil,1,tp,LOCATION_HAND)
 end
 function s.runfilter(c,tc,mg)
 	return c:IsType(TYPE_RUNE) and c:IsSetCard(0xfda) and c:IsRuneSummonable(tc,mg)

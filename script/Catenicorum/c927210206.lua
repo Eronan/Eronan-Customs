@@ -2,7 +2,7 @@
 if not Rune then Duel.LoadScript("proc_rune.lua") end
 local s,id=GetID()
 function s.initial_effect(c)
-	aux.AddEquipProcedure(c,1,aux.CheckStealEquip,s.eqlimit,nil,s.target)
+	aux.AddEquipProcedure(c,1,s.eqfilter,s.eqlimit,nil,s.target)
 	--Atk,def
     local e1=Effect.CreateEffect(c)
     e1:SetType(EFFECT_TYPE_EQUIP)
@@ -49,6 +49,9 @@ function s.initial_effect(c)
 end
 s.listed_series={0xfcf}
 --equip
+function s.eqfilter(c,e,tp)
+	return c:IsFaceup() and c:IsControler(1-tp)
+end
 function s.eqlimit(e,c)
     return e:GetHandlerPlayer()~=c:GetControler() or e:GetHandler():GetEquipTarget()==c
 end

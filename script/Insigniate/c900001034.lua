@@ -14,9 +14,9 @@ function s.initial_effect(c)
 	e2:SetType(EFFECT_TYPE_FIELD)
 	e2:SetCode(EFFECT_IMMUNE_EFFECT)
 	e2:SetProperty(EFFECT_FLAG_SINGLE_RANGE)
-	e2:SetRange(LOCATION_MZONE)
+	e2:SetRange(LOCATION_FZONE)
 	e2:SetTargetRange(LOCATION_ONFIELD,0)
-	--e2:SetTarget(aux.TargetBoolFunction(Card.IsType,TYPE_SPELL+TYPE_TRAP))
+	e2:SetCondition(s.immcon)
 	e2:SetValue(s.efilter)
 	c:RegisterEffect(e2)
 	--Extra Material
@@ -37,6 +37,7 @@ function s.initial_effect(c)
 		s.flagmap[c] = {}
 	end
 end
+--Add to hand
 function s.filter(c)
     return c:IsSetCard(0xffe) and c:IsType(TYPE_MONSTER) and c:IsAbleToHand()
 end
@@ -52,7 +53,8 @@ function s.activate(e,tp,eg,ep,ev,re,r,rp)
 		--Add Restriction
 		local e1=Effect.CreateEffect(e:GetHandler())
 		e1:SetType(EFFECT_TYPE_FIELD)
-		e1:SetProperty(EFFECT_FLAG_PLAYER_TARGET)
+		e1:SetDescription(aux.Stringid(id,1))
+		e1:SetProperty(EFFECT_FLAG_PLAYER_TARGET|EFFECT_FLAG_CLIENT_HINT)
 		e1:SetCode(EFFECT_CANNOT_SPECIAL_SUMMON)
 		e1:SetTargetRange(1,0)
 		e1:SetTarget(s.splimit)
@@ -63,12 +65,17 @@ end
 function s.splimit(e,c,sump,sumtype,sumpos,targetp,se)
 	return c:IsLocation(LOCATION_EXTRA)
 end
+--Immune Effect
+function s.immcon(e,tp,eg,ep,ev,re,r,rp)
+	return Duel.IsExistingMatchingCard(Card.IsType,e:GetHandlerPlayer(),LOCATION_MZONE,0,1,nil,TYPE_RUNE)
+end
 function s.efilter(e,te)
+	if te:IsActiveType(TYPE_RUNE) then return false end
 	if not te:IsHasProperty(EFFECT_FLAG_CARD_TARGET) then return true end
 	local g=Duel.GetChainInfo(0,CHAININFO_TARGET_CARDS)
 	return not g:IsExists(Card.IsType,1,nil,TYPE_RUNE)
 end
---
+--Extra Material
 function s.extracon(c,e,tp,sg,mg,lc,og,chk)
 	return not sg or sg:FilterCount(s.flagcheck,nil)<2
 end

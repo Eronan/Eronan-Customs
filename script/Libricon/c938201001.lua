@@ -1,4 +1,4 @@
---Creator Libricon Serpent
+--Digital Libricon Malware
 if not Rune then Duel.LoadScript("proc_rune.lua") end
 local s,id=GetID()
 function s.initial_effect(c)
@@ -29,11 +29,14 @@ function s.initial_effect(c)
 	c:RegisterEffect(e2)
 end
 --no material
+function s.nmfilter(c)
+	return c:IsFaceup() and c:IsType(TYPE_EFFECT)
+end
 function s.nmtg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
-	if chkc then return chkc:IsLocation(LOCATION_MZONE) and chkc:IsControler(1-tp) and chkc:IsFaceup() end
-	if chk==0 then return Duel.IsExistingTarget(Card.IsFaceup,tp,0,LOCATION_MZONE,1,nil) end
+	if chkc then return chkc:IsLocation(LOCATION_MZONE) and chkc:IsControler(1-tp) and s.nmfilter(chkc) end
+	if chk==0 then return Duel.IsExistingTarget(s.nmfilter,tp,0,LOCATION_MZONE,1,nil) end
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_TARGET)
-	Duel.SelectTarget(tp,Card.IsFaceup,tp,0,LOCATION_MZONE,1,1,nil)
+	Duel.SelectTarget(tp,s.nmfilter,tp,0,LOCATION_MZONE,1,1,nil)
 end
 function s.nmop(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
