@@ -25,7 +25,7 @@ s.counter_place_list={0x10fc}
 --Special Summon as Effect monster
 function s.sptg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.GetLocationCount(tp,LOCATION_MZONE)>0
-		and Duel.IsPlayerCanSpecialSummonMonster(tp,id,0,TYPE_MONSTER|TYPE_EFFECT,1500,600,4,RACE_ILLUSION,ATTRIBUTE_DARK,POS_FACEUP,tp,1) end
+		and Duel.IsPlayerCanSpecialSummonMonster(tp,id,0,TYPE_MONSTER|TYPE_EFFECT,0,2500,8,RACE_AQUA,ATTRIBUTE_EARTH,POS_FACEUP,tp,1) end
 	Duel.SetOperationInfo(0,CATEGORY_SPECIAL_SUMMON,e:GetHandler(),1,tp,0)
 end
 function s.spop(e,tp,eg,ep,ev,re,r,rp)
@@ -106,7 +106,7 @@ function s.discon(e,tp,eg,ep,ev,re,r,rp)
 	return re:GetHandler():GetCounter(0x10fc)>0
 end
 function s.disop(e,tp,eg,ep,ev,re,r,rp)
-	if Duel.NegateEffect(ev) and not Duel.IsPlayerAffectedByEffect(tp,928302003) then
+	if Duel.NegateEffect(ev) then
 		Duel.BreakEffect()
 		e:GetHandler():RemoveCounter(tp,0x10fc,1,REASON_EFFECT)
 	end

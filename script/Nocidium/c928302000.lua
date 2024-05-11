@@ -133,7 +133,7 @@ function s.discon(e,tp,eg,ep,ev,re,r,rp)
 	return re:GetHandler():GetCounter(0x10fc)>0
 end
 function s.disop(e,tp,eg,ep,ev,re,r,rp)
-	if Duel.NegateEffect(ev) and not Duel.IsPlayerAffectedByEffect(tp,928302003) then
+	if Duel.NegateEffect(ev) then
 		Duel.BreakEffect()
 		e:GetHandler():RemoveCounter(tp,0x10fc,1,REASON_EFFECT)
 	end

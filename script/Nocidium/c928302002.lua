@@ -13,12 +13,12 @@ function s.initial_effect(c)
 	e1:SetValue(aux.runlimit)
 	c:RegisterEffect(e1)
     --Cannot negate activated effects
-	local e3=Effect.CreateEffect(c)
-	e3:SetType(EFFECT_TYPE_FIELD)
-	e3:SetCode(EFFECT_CANNOT_DISEFFECT)
-	e3:SetRange(LOCATION_MZONE)
-	e3:SetValue(s.effval)
-	c:RegisterEffect(e3)
+	local e2=Effect.CreateEffect(c)
+	e2:SetType(EFFECT_TYPE_FIELD)
+	e2:SetCode(EFFECT_CANNOT_DISEFFECT)
+	e2:SetRange(LOCATION_MZONE)
+	e2:SetValue(s.effval)
+	c:RegisterEffect(e2)
     --Place 1 Nocidium Counter on a monster you control
 	local e3=Effect.CreateEffect(c)
 	e3:SetDescription(aux.Stringid(id,0))
@@ -117,7 +117,7 @@ function s.discon(e,tp,eg,ep,ev,re,r,rp)
 	return re:GetHandler():GetCounter(0x10fc)>0
 end
 function s.disop(e,tp,eg,ep,ev,re,r,rp)
-	if Duel.NegateEffect(ev) and not Duel.IsPlayerAffectedByEffect(tp,928302003) then
+	if Duel.NegateEffect(ev) then
 		Duel.BreakEffect()
 		e:GetHandler():RemoveCounter(tp,0x10fc,1,REASON_EFFECT)
 	end

@@ -19,6 +19,7 @@ function s.initial_effect(c)
 	e2:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
 	e2:SetRange(LOCATION_MZONE)
 	e2:SetCode(EVENT_SPSUMMON_SUCCESS)
+    e2:SetCondition(s.ctcon)
 	e2:SetOperation(s.ctop)
 	c:RegisterEffect(e2)
     local e3=e2:Clone()
@@ -59,6 +60,9 @@ function s.thop(e,tp,eg,ep,ev,re,r,rp)
 	end
 end
 --Place Nocidium Counters
+function s.ctcon(e,tp,eg,ep,ev,re,r,rp)
+    return rp==1-tp
+end
 function s.ctop(e,tp,eg,ep,ev,re,r,rp)
     --Count summons this turn
     local c=e:GetHandler()
@@ -110,7 +114,7 @@ function s.discon(e,tp,eg,ep,ev,re,r,rp)
 	return re:GetHandler():GetCounter(0x10fc)>0
 end
 function s.disop(e,tp,eg,ep,ev,re,r,rp)
-	if Duel.NegateEffect(ev) and not Duel.IsPlayerAffectedByEffect(tp,928302003) then
+	if Duel.NegateEffect(ev) then
 		Duel.BreakEffect()
 		e:GetHandler():RemoveCounter(tp,0x10fc,1,REASON_EFFECT)
 	end

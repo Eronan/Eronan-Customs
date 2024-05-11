@@ -15,6 +15,7 @@ function s.initial_effect(c)
 	e4:SetCode(EVENT_REMOVE)
 	e4:SetProperty(EFFECT_FLAG_CARD_TARGET+EFFECT_FLAG_DELAY)
 	e4:SetCountLimit(1,id,EFFECT_COUNT_CODE_OATH)
+    e4:SetCondition(s.thcon)
 	e4:SetTarget(s.thtg)
 	e4:SetOperation(s.thop)
 	c:RegisterEffect(e4)
@@ -32,7 +33,7 @@ end
 --Add 1 of your banished Ritual or Rune monsters
 function s.thcon(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
-	return c:IsPreviousLocation(LOCATION_GRAVE)
+	return c:IsPreviousLocation(LOCATION_GRAVE) or c:IsPreviousLocation(LOCATION_ONFIELD)
 end
 function s.thfilter(c)
     return c:IsMonster() and (c:IsType(TYPE_RUNE) or c:IsType(TYPE_RITUAL)) and c:IsAbleToHand()
