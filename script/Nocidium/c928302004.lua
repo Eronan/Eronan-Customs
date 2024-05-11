@@ -28,7 +28,8 @@ function s.ritualfil(c)
 end
 function s.rituallvl(c)
     local ct=Duel.GetCounter(c:GetControler(),1,1,0x10fc)
-    return c:GetLevel() - ((ct>3 and 3) or 0)
+    if ct>3 then return c:GetLevel() - 3 end
+    return c:GetLevel()
 end
 --Add 1 of your banished Ritual or Rune monsters
 function s.thcon(e,tp,eg,ep,ev,re,r,rp)
