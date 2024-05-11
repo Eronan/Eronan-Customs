@@ -82,7 +82,7 @@ function s.activate(e,tp,eg,ep,ev,re,r,rp)
 end
 --rune check
 function s.runfilter(c,tp)
-	return c:IsType(TYPE_RITUAL) and c:IsSummonPlayer(tp) and c:IsFaceup()
+	return c:IsType(TYPE_RUNE) and c:IsSummonPlayer(tp) and c:IsFaceup()
 end
 function s.regop(e,tp,eg,ep,ev,re,r,rp)
 	if e:GetLabel()==0 then return end
