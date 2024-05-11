@@ -18,18 +18,16 @@ function s.initial_effect(c)
 	e2:SetCode(EVENT_CHAINING)
 	e2:SetRange(LOCATION_MZONE)
 	e2:SetCondition(s.ctcon)
+	e2:SetTarget(s.cttg)
 	e2:SetOperation(s.ctop)
 	c:RegisterEffect(e2)
-    --damage
+    --prevent removal of opponent's Nocidium counters on negate
 	local e3=Effect.CreateEffect(c)
-	e3:SetDescription(aux.Stringid(id,1))
-	e3:SetCategory(CATEGORY_DAMAGE)
-	e3:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_TRIGGER_F)
-	e3:SetCode(EVENT_PHASE+PHASE_END)
+	e3:SetType(EFFECT_TYPE_FIELD)
+	e3:SetProperty(EFFECT_FLAG_PLAYER_TARGET)
+	e3:SetCode(id)
 	e3:SetRange(LOCATION_MZONE)
-	e3:SetCountLimit(1)
-	e3:SetTarget(s.damtg)
-	e3:SetOperation(s.damop)
+	e3:SetTargetRange(0,1)
 	c:RegisterEffect(e3)
     --Special summon 1 "Maris, Aquamire Mystic"
 	local e4=Effect.CreateEffect(c)
@@ -48,12 +46,18 @@ s.listed_names={928302001,928302004}
 s.counter_place_list={0x10fc}
 --Place Nocidium Counter on your opponent's monster
 function s.ctcon(e,tp,eg,ep,ev,re,r,rp)
-	return rp==1-tp and re:IsActiveType(TYPE_MONSTER) and re:GetActivateLocation()==LOCATION_MZONE
+    return rp==1-tp and re:GetHandler():IsOnField() and (re:IsActiveType(TYPE_MONSTER)
+        or (re:IsActiveType(TYPE_SPELL+TYPE_TRAP) and not re:IsHasType(EFFECT_TYPE_ACTIVATE)))
+end
+function s.cttg(e,tp,eg,ep,ev,re,r,rp,chk)
+	local c=e:GetHandler()
+	if chk==0 then return not c:HasFlagEffect(id) end
+	c:RegisterFlagEffect(id,RESET_CHAIN,0,1)
 end
 function s.ctop(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
     local tc=re:GetHandler()
-	if tc:IsFaceup() and tc:IsRelateToEffect(e) then
+	if tc:IsFaceup() and tc:IsOnField() then
 		tc:AddCounter(0x10fc,1)
 		if tc:GetFlagEffect(0x10fc)~=0 then return end
 		local e1=Effect.CreateEffect(c)
@@ -64,13 +68,14 @@ function s.ctop(e,tp,eg,ep,ev,re,r,rp)
 		e1:SetReset(RESET_EVENT+RESETS_STANDARD)
 		tc:RegisterEffect(e1)
         --disable
-        local e3=Effect.CreateEffect(c)
-        e3:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
-        e3:SetCode(EVENT_CHAIN_SOLVING)
-        e3:SetRange(LOCATION_MZONE)
-        e3:SetCondition(s.discon)
-        e3:SetOperation(s.disop)
-        tc:RegisterEffect(e3)
+        local e2=Effect.CreateEffect(c)
+        e2:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
+        e2:SetCode(EVENT_CHAIN_SOLVING)
+        e2:SetRange(LOCATION_MZONE|LOCATION_SZONE)
+        e2:SetCondition(s.discon)
+        e2:SetOperation(s.disop)
+		e2:SetReset(RESET_EVENT+RESETS_STANDARD)
+        tc:RegisterEffect(e2)
 		tc:RegisterFlagEffect(0x10fc,RESET_EVENT+RESETS_STANDARD,0,0)
 	end
 end
@@ -85,25 +90,12 @@ end
 --disable
 function s.discon(e,tp,eg,ep,ev,re,r,rp)
 	if re:GetHandler()~=e:GetHandler() or e:GetHandler():IsStatus(STATUS_BATTLE_DESTROYED) then return false end
-	return re:IsActiveType(TYPE_MONSTER) and re:GetHandler():GetCounter(0x10fc)>0
+	return re:GetHandler():GetCounter(0x10fc)>0
 end
 function s.disop(e,tp,eg,ep,ev,re,r,rp)
-	Duel.NegateEffect(ev)
-end
---Inflict damage
-function s.damtg(e,tp,eg,ep,ev,re,r,rp,chk)
-	if chk==0 then return true end
-	local ct=e:GetHandler():GetCounter(0x10fc)
-	Duel.SetTargetPlayer(1-tp)
-	Duel.SetTargetParam(ct)
-	Duel.SetOperationInfo(0,CATEGORY_DAMAGE,nil,0,1-tp,ct)
-end
-function s.damop(e,tp,eg,ep,ev,re,r,rp)
-	local p,d=Duel.GetChainInfo(0,CHAININFO_TARGET_PLAYER,CHAININFO_TARGET_PARAM)
-	local c=e:GetHandler()
-	local ct=c:GetCounter(0x10fc)
-	if c:RemoveCounter(tp,0x10fc,ct,REASON_EFFECT) then
-		Duel.Damage(p,ct*500,REASON_EFFECT)
+	if Duel.NegateEffect(ev) and not Duel.IsPlayerAffectedByEffect(tp,id) then
+		Duel.BreakEffect()
+		e:GetHandler():RemoveCounter(tp,0x10fc,1,REASON_EFFECT)
 	end
 end
 --Special Summon "Maris, Aquamire Mystic"

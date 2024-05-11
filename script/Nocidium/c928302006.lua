@@ -12,6 +12,13 @@ function s.initial_effect(c)
 	e1:SetTarget(s.sptg)
 	e1:SetOperation(s.spop)
 	c:RegisterEffect(e1)
+	--Can be activated from the hand
+	local e2=Effect.CreateEffect(c)
+	e2:SetDescription(aux.Stringid(id,0))
+	e2:SetType(EFFECT_TYPE_SINGLE)
+	e2:SetCode(EFFECT_TRAP_ACT_IN_HAND)
+	e2:SetCondition(s.handcon)
+	c:RegisterEffect(e2)
 end
 s.listed_names={928302000}
 s.counter_place_list={0x10fc}
@@ -51,11 +58,14 @@ function s.spop(e,tp,eg,ep,ev,re,r,rp)
 	Duel.SpecialSummonComplete()
 end
 --Nocidium Counter
+function s.ctfilter(c)
+	return c:IsFaceup() and not c:IsCode(id)
+end
 function s.cttg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
-	if chkc then return chkc:IsOnField() and chkc:IsControler(tp) and chkc:IsFaceup() end
-	if chk==0 then return Duel.IsExistingTarget(Card.IsFaceup,tp,LOCATION_MZONE,LOCATION_MZONE,1,nil) end
+	if chkc then return chkc:IsOnField() and chkc:IsControler(tp) and s.ctfilter(chkc) end
+	if chk==0 then return Duel.IsExistingTarget(s.ctfilter,tp,LOCATION_MZONE,LOCATION_MZONE,1,nil) end
 	Duel.Hint(HINT_SELECTMSG,tp,aux.Stringid(id,1))
-	Duel.SelectTarget(tp,Card.IsFaceup,tp,LOCATION_MZONE,LOCATION_MZONE,1,1,nil)
+	Duel.SelectTarget(tp,s.ctfilter,tp,LOCATION_MZONE,LOCATION_MZONE,1,1,nil)
 end
 function s.ctop(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
@@ -71,13 +81,14 @@ function s.ctop(e,tp,eg,ep,ev,re,r,rp)
 		e1:SetReset(RESET_EVENT+RESETS_STANDARD)
 		tc:RegisterEffect(e1)
         --disable
-        local e3=Effect.CreateEffect(c)
-        e3:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
-        e3:SetCode(EVENT_CHAIN_SOLVING)
-        e3:SetRange(LOCATION_MZONE)
-        e3:SetCondition(s.discon)
-        e3:SetOperation(s.disop)
-        tc:RegisterEffect(e3)
+        local e2=Effect.CreateEffect(c)
+        e2:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
+        e2:SetCode(EVENT_CHAIN_SOLVING)
+        e2:SetRange(LOCATION_MZONE)
+        e2:SetCondition(s.discon)
+        e2:SetOperation(s.disop)
+		e2:SetReset(RESET_EVENT+RESETS_STANDARD)
+        tc:RegisterEffect(e2)
 		tc:RegisterFlagEffect(0x10fc,RESET_EVENT+RESETS_STANDARD,0,0)
 	end
 end
@@ -92,8 +103,15 @@ end
 --disable
 function s.discon(e,tp,eg,ep,ev,re,r,rp)
 	if re:GetHandler()~=e:GetHandler() or e:GetHandler():IsStatus(STATUS_BATTLE_DESTROYED) then return false end
-	return re:IsActiveType(TYPE_MONSTER) and re:GetHandler():GetCounter(0x10fc)>0
+	return re:GetHandler():GetCounter(0x10fc)>0
 end
 function s.disop(e,tp,eg,ep,ev,re,r,rp)
-	Duel.NegateEffect(ev)
+	if Duel.NegateEffect(ev) and not Duel.IsPlayerAffectedByEffect(tp,928302003) then
+		Duel.BreakEffect()
+		e:GetHandler():RemoveCounter(tp,0x10fc,1,REASON_EFFECT)
+	end
+end
+--activate from hand
+function s.handcon(e)
+	return Duel.GetFieldGroupCount(e:GetHandlerPlayer(),LOCATION_ONFIELD,0)==0
 end

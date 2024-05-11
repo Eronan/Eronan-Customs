@@ -63,15 +63,15 @@ function s.ctop(e,tp,eg,ep,ev,re,r,rp)
     --Count summons this turn
     local c=e:GetHandler()
     local ct=c:GetFlagEffect(id)
-    if ct<3 then
-        for i=1,math.min(3-ct,#eg) do
-            c:RegisterFlagEffect(id,RESET_EVENT+RESETS_STANDARD+RESET_PHASE+PHASE_END,0,0)
-        end
+    if ct==0 and #eg>0 then
+        --If the opponent summons 2 or more monsters, the latter effect cannot be used but it is counted.
+        --If the opponent summons only 1 monster, only the next summon will gain a counter.
+        c:RegisterFlagEffect(id,RESET_EVENT+RESETS_STANDARD+RESET_PHASE+PHASE_END,0,0)
+        return
     end
 
     --Place counter on exactly 1 face-up summoned monster
-    ct=c:GetFlagEffect(id)
-    if ct<3 or #eg~=1 then return end
+    if #eg~=1 then return end
 	local tc=eg:GetFirst()
     if tc:IsFacedown() or tc:IsControler(tp) then return end
     tc:AddCounter(0x10fc,1)
@@ -86,13 +86,14 @@ function s.ctop(e,tp,eg,ep,ev,re,r,rp)
     e1:SetReset(RESET_EVENT+RESETS_STANDARD)
     tc:RegisterEffect(e1)
     --disable
-    local e3=Effect.CreateEffect(c)
-    e3:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
-    e3:SetCode(EVENT_CHAIN_SOLVING)
-    e3:SetRange(LOCATION_MZONE)
-    e3:SetCondition(s.discon)
-    e3:SetOperation(s.disop)
-    tc:RegisterEffect(e3)
+    local e2=Effect.CreateEffect(c)
+    e2:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
+    e2:SetCode(EVENT_CHAIN_SOLVING)
+    e2:SetRange(LOCATION_MZONE)
+    e2:SetCondition(s.discon)
+    e2:SetOperation(s.disop)
+    e2:SetReset(RESET_EVENT+RESETS_STANDARD)
+    tc:RegisterEffect(e2)
     tc:RegisterFlagEffect(0x10fc,RESET_EVENT+RESETS_STANDARD,0,0)
 end
 --destroy replace
@@ -106,8 +107,11 @@ end
 --disable
 function s.discon(e,tp,eg,ep,ev,re,r,rp)
 	if re:GetHandler()~=e:GetHandler() or e:GetHandler():IsStatus(STATUS_BATTLE_DESTROYED) then return false end
-	return re:IsActiveType(TYPE_MONSTER) and re:GetHandler():GetCounter(0x10fc)>0
+	return re:GetHandler():GetCounter(0x10fc)>0
 end
 function s.disop(e,tp,eg,ep,ev,re,r,rp)
-	Duel.NegateEffect(ev)
+	if Duel.NegateEffect(ev) and not Duel.IsPlayerAffectedByEffect(tp,928302003) then
+		Duel.BreakEffect()
+		e:GetHandler():RemoveCounter(tp,0x10fc,1,REASON_EFFECT)
+	end
 end

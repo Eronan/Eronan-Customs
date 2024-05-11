@@ -1,4 +1,5 @@
 --Maris, Aquamire Crater Celsitial
+if not Rune then Duel.LoadScript("proc_rune.lua") end
 local s,id=GetID()
 function s.initial_effect(c)
     --Rune Summon
@@ -12,12 +13,12 @@ function s.initial_effect(c)
 	e1:SetValue(aux.runlimit)
 	c:RegisterEffect(e1)
     --Cannot negate activated effects
-	local e2=Effect.CreateEffect(c)
-	e2:SetType(EFFECT_TYPE_FIELD)
-	e2:SetCode(EFFECT_CANNOT_DISEFFECT)
-	e2:SetRange(LOCATION_MZONE)
-	e2:SetValue(s.effval)
-	c:RegisterEffect(e2)
+	local e3=Effect.CreateEffect(c)
+	e3:SetType(EFFECT_TYPE_FIELD)
+	e3:SetCode(EFFECT_CANNOT_DISEFFECT)
+	e3:SetRange(LOCATION_MZONE)
+	e3:SetValue(s.effval)
+	c:RegisterEffect(e3)
     --Place 1 Nocidium Counter on a monster you control
 	local e3=Effect.CreateEffect(c)
 	e3:SetDescription(aux.Stringid(id,0))
@@ -30,18 +31,23 @@ function s.initial_effect(c)
 	e3:SetTarget(s.cttg)
 	e3:SetOperation(s.ctop)
 	c:RegisterEffect(e3)
-    --Special summon 1 "Maris, Aquamire Mystic"
-	local e4=Effect.CreateEffect(c)
-	e4:SetDescription(aux.Stringid(id,2))
-	e4:SetCategory(CATEGORY_SPECIAL_SUMMON)
-	e4:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_TRIGGER_O)
-	e4:SetCode(EVENT_TO_GRAVE)
-	e4:SetProperty(EFFECT_FLAG_DAMAGE_STEP+EFFECT_FLAG_DELAY)
-	e4:SetCountLimit(1,id,EFFECT_COUNT_CODE_OATH)
-	e4:SetCondition(s.spcon)
-	e4:SetTarget(s.sptg)
-	e4:SetOperation(s.spop)
+	local e4=e3:Clone()
+	e4:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_TRIGGER_O)
+	e4:SetCode(EVENT_ATTACK_ANNOUNCE)
+	e4:SetCondition(function(_,tp) return Duel.GetAttacker():IsControler(1-tp) end)
 	c:RegisterEffect(e4)
+    --Special summon 1 "Maris, Aquamire Mystic"
+	local e5=Effect.CreateEffect(c)
+	e5:SetDescription(aux.Stringid(id,2))
+	e5:SetCategory(CATEGORY_SPECIAL_SUMMON)
+	e5:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_TRIGGER_O)
+	e5:SetCode(EVENT_TO_GRAVE)
+	e5:SetProperty(EFFECT_FLAG_DAMAGE_STEP+EFFECT_FLAG_DELAY)
+	e5:SetCountLimit(1,id,EFFECT_COUNT_CODE_OATH)
+	e5:SetCondition(s.spcon)
+	e5:SetTarget(s.sptg)
+	e5:SetOperation(s.spop)
+	c:RegisterEffect(e5)
 end
 s.listed_names={928302000}
 s.counter_place_list={0x10fc}
@@ -68,9 +74,9 @@ end
 --Place a Nocidium Counter on a monster
 function s.cttg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	if chkc then return chkc:IsOnField() and chkc:IsControler(tp) and chkc:IsFaceup() end
-	if chk==0 then return Duel.IsExistingTarget(Card.IsFaceup,tp,LOCATION_MZONE,0,1,nil) end
+	if chk==0 then return Duel.IsExistingTarget(Card.IsFaceup,tp,LOCATION_ONFIELD,0,1,nil) end
 	Duel.Hint(HINT_SELECTMSG,tp,aux.Stringid(id,1))
-	Duel.SelectTarget(tp,Card.IsFaceup,tp,LOCATION_MZONE,0,1,1,nil)
+	Duel.SelectTarget(tp,Card.IsFaceup,tp,LOCATION_ONFIELD,0,1,1,nil)
 end
 function s.ctop(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
@@ -86,13 +92,14 @@ function s.ctop(e,tp,eg,ep,ev,re,r,rp)
 		e1:SetReset(RESET_EVENT+RESETS_STANDARD)
 		tc:RegisterEffect(e1)
         --disable
-        local e3=Effect.CreateEffect(c)
-        e3:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
-        e3:SetCode(EVENT_CHAIN_SOLVING)
-        e3:SetRange(LOCATION_MZONE)
-        e3:SetCondition(s.discon)
-        e3:SetOperation(s.disop)
-        tc:RegisterEffect(e3)
+        local e2=Effect.CreateEffect(c)
+        e2:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
+        e2:SetCode(EVENT_CHAIN_SOLVING)
+        e2:SetRange(LOCATION_MZONE|LOCATION_SZONE)
+        e2:SetCondition(s.discon)
+        e2:SetOperation(s.disop)
+		e2:SetReset(RESET_EVENT+RESETS_STANDARD)
+        tc:RegisterEffect(e2)
 		tc:RegisterFlagEffect(0x10fc,RESET_EVENT+RESETS_STANDARD,0,0)
 	end
 end
@@ -107,10 +114,13 @@ end
 --disable
 function s.discon(e,tp,eg,ep,ev,re,r,rp)
 	if re:GetHandler()~=e:GetHandler() or e:GetHandler():IsStatus(STATUS_BATTLE_DESTROYED) then return false end
-	return re:IsActiveType(TYPE_MONSTER) and re:GetHandler():GetCounter(0x10fc)>0
+	return re:GetHandler():GetCounter(0x10fc)>0
 end
 function s.disop(e,tp,eg,ep,ev,re,r,rp)
-	Duel.NegateEffect(ev)
+	if Duel.NegateEffect(ev) and not Duel.IsPlayerAffectedByEffect(tp,928302003) then
+		Duel.BreakEffect()
+		e:GetHandler():RemoveCounter(tp,0x10fc,1,REASON_EFFECT)
+	end
 end
 --Special Summon "Maris, Aquamire Mystic"
 function s.spcon(e,tp,eg,ep,ev,re,r,rp)
@@ -118,7 +128,7 @@ function s.spcon(e,tp,eg,ep,ev,re,r,rp)
 	return c:IsPreviousLocation(LOCATION_MZONE) and c:IsSummonType(SUMMON_TYPE_RUNE)
 end
 function s.spfilter(c,e,tp)
-	return c:IsCode(928302000) and c:IsCanBeSpecialSummoned(e,SUMMON_TYPE_RUNE,tp,false,false)
+	return c:IsCode(928302000) and c:IsCanBeSpecialSummoned(e,SUMMON_TYPE_RUNE,tp,false,true)
 end
 function s.sptg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.IsExistingMatchingCard(s.spfilter,tp,LOCATION_GRAVE,0,1,nil,e,tp) end

@@ -3,7 +3,7 @@ if not Rune then Duel.LoadScript("proc_rune.lua") end
 local s,id=GetID()
 function s.initial_effect(c)
     --Rune Summon
-    Rune.AddProcedure(c,Rune.MonFunctionEx(Card.IsLevelAbove,5),1,1,Rune.STFunction(nil),1,1,LOCATION_DECK,s.exgroup,nil,s.runchk,nil,s.customop)
+    Rune.AddProcedure(c,Rune.MonFunctionEx(Card.IsLevelAbove,5),1,1,Rune.STFunction(nil),1,99,LOCATION_DECK,s.exgroup,nil,s.runchk,nil,s.customop)
     c:EnableReviveLimit()
     --Search for "Tempest, Emberwind Acolyte"
 	local e1=Effect.CreateEffect(c)
@@ -21,13 +21,19 @@ function s.initial_effect(c)
 	e2:SetDescription(aux.Stringid(id,1))
 	e2:SetCategory(CATEGORY_COUNTER)
 	e2:SetType(EFFECT_TYPE_QUICK_O)
-    e2:SetCode(EVENT_FREE_CHAIN)
-	e2:SetCountLimit(2)
+    e2:SetCode(EVENT_CHAINING)
 	e2:SetRange(LOCATION_MZONE)
 	e2:SetProperty(EFFECT_FLAG_CARD_TARGET)
+	e2:SetCountLimit(3,0,EFFECT_COUNT_CODE_SINGLE)
+	e2:SetCondition(s.ctecon)
 	e2:SetTarget(s.cttg)
 	e2:SetOperation(s.ctop)
 	c:RegisterEffect(e2)
+	local e3=e2:Clone()
+	e3:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_TRIGGER_O)
+	e3:SetCode(EVENT_ATTACK_ANNOUNCE)
+	e3:SetCondition(function(_,tp) return Duel.GetAttacker():IsControler(1-tp) end)
+	c:RegisterEffect(e3)
 end
 s.listed_names={928302001}
 s.counter_place_list={0x10fc}
@@ -75,6 +81,13 @@ function s.thop(e,tp,eg,ep,ev,re,r,rp)
 	end
 end
 --Place a Nocidium Counter on a monster
+function s.ctecon(e,tp,eg,ep,ev,re,r,rp)
+	if rp==tp or e:GetHandler():IsStatus(STATUS_BATTLE_DESTROYED) then return false end
+	if re:IsHasCategory(CATEGORY_NEGATE)
+		and Duel.GetChainInfo(ev-1,CHAININFO_TRIGGERING_EFFECT):IsHasType(EFFECT_TYPE_ACTIVATE) then return false end
+	local ex,tg,tc=Duel.GetOperationInfo(ev,CATEGORY_DESTROY)
+	return ex and tg~=nil and tc+tg:FilterCount(Card.IsOnField,nil)-#tg>0
+end
 function s.cttg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	if chkc then return chkc:IsOnField() and chkc:IsControler(tp) and chkc:IsFaceup() end
 	if chk==0 then return Duel.IsExistingTarget(Card.IsFaceup,tp,LOCATION_MZONE,0,1,nil) end
@@ -95,13 +108,14 @@ function s.ctop(e,tp,eg,ep,ev,re,r,rp)
 		e1:SetReset(RESET_EVENT+RESETS_STANDARD)
 		tc:RegisterEffect(e1)
         --disable
-        local e3=Effect.CreateEffect(c)
-        e3:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
-        e3:SetCode(EVENT_CHAIN_SOLVING)
-        e3:SetRange(LOCATION_MZONE)
-        e3:SetCondition(s.discon)
-        e3:SetOperation(s.disop)
-        tc:RegisterEffect(e3)
+        local e2=Effect.CreateEffect(c)
+        e2:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
+        e2:SetCode(EVENT_CHAIN_SOLVING)
+        e2:SetRange(LOCATION_MZONE)
+        e2:SetCondition(s.discon)
+        e2:SetOperation(s.disop)
+		e2:SetReset(RESET_EVENT+RESETS_STANDARD)
+        tc:RegisterEffect(e2)
 		tc:RegisterFlagEffect(0x10fc,RESET_EVENT+RESETS_STANDARD,0,0)
 	end
 end
@@ -116,8 +130,11 @@ end
 --disable
 function s.discon(e,tp,eg,ep,ev,re,r,rp)
 	if re:GetHandler()~=e:GetHandler() or e:GetHandler():IsStatus(STATUS_BATTLE_DESTROYED) then return false end
-	return re:IsActiveType(TYPE_MONSTER) and re:GetHandler():GetCounter(0x10fc)>0
+	return re:GetHandler():GetCounter(0x10fc)>0
 end
 function s.disop(e,tp,eg,ep,ev,re,r,rp)
-	Duel.NegateEffect(ev)
+	if Duel.NegateEffect(ev) and not Duel.IsPlayerAffectedByEffect(tp,928302003) then
+		Duel.BreakEffect()
+		e:GetHandler():RemoveCounter(tp,0x10fc,1,REASON_EFFECT)
+	end
 end
