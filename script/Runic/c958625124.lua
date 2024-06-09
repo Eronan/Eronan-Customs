@@ -78,7 +78,7 @@ function s.efilter(e,re,rp)
 end
 function s.actcon(e)
 	local a=Duel.GetAttacker()
-	return a and a:IsControler(e:GetHandlerPlayer()) and a:IsType(TYPE_RUNE) 
+	return a and a:IsControler(e:GetHandlerPlayer()) and a:IsType(TYPE_RUNE)
 end
 function s.tfcon(e,tp,eg,ep,ev,re,r,rp)
 	return e:GetHandler():IsSummonType(SUMMON_TYPE_RUNE)
