@@ -3,7 +3,7 @@ if not Rune then Duel.LoadScript("proc_rune.lua") end
 local s,id=GetID()
 function s.initial_effect(c)
     --Rune Summon
-    Rune.AddProcedure(c,Rune.MonFunctionEx(aux.NOT(Card.IsSummonableCard)),1,1,Rune.STFunction(nil),1,1)
+    Rune.AddProcedure(c,Rune.MonFunctionEx(Card.HasLevel),1,1,Rune.STFunction(s.stfilter),1,1)
 	c:EnableReviveLimit()
     --activate
 	local e1=Effect.CreateEffect(c)
@@ -30,7 +30,12 @@ function s.initial_effect(c)
 	e4:SetOperation(s.desop)
 	c:RegisterEffect(e4)
 end
+s.listed_series={0xfc9}
 s.listed_names={956374894,956374899}
+--rune summon
+function s.mfilter(c,rc,sumtyp,tp)
+    return c:IsSetCard(0xfc9) and c:IsSpell() and c:IsAttribute(ATTRIBUTE_WATER)
+end
 --Activate Field Spell
 function s.tfcon(e,tp,eg,ep,ev,re,r,rp)
 	return e:GetHandler():IsSummonType(SUMMON_TYPE_RUNE)

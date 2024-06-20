@@ -2,7 +2,7 @@
 if not Rune then Duel.LoadScript("proc_rune.lua") end
 local s,id=GetID()
 function s.initial_effect(c)
-	Rune.AddProcedure(c,Rune.MonFunction(s.mfilter),1,1,Rune.STFunctionEx(Card.IsFieldSpell),2,99,nil,s.exgroup,nil,nil,s.exchk)
+	Rune.AddProcedure(c,Rune.MonFunction(s.mfilter),1,1,Rune.STFunctionEx(Card.IsType,TYPE_FIELD),2,99,nil,s.exgroup,nil,nil,nil,s.customop)
 	c:EnableReviveLimit()
     --Summon Limit
 	local e1=Effect.CreateEffect(c)
@@ -46,7 +46,8 @@ function s.initial_effect(c)
 	e6:SetType(EFFECT_TYPE_QUICK_O)
 	e6:SetCode(EVENT_FREE_CHAIN)
 	e6:SetHintTiming(0,TIMING_MAIN_END)
-	e6:SetRange(LOCATION_SZONE)
+	e6:SetRange(LOCATION_MZONE)
+	e6:SetCountLimit(1,id,EFFECT_COUNT_CODE_OATH)
 	e6:SetTarget(s.acttg)
 	e6:SetOperation(s.actop)
 	c:RegisterEffect(e6)
@@ -83,7 +84,7 @@ function s.tgcon(e)
 end
 --activate limit
 function s.accon(e)
-	return Duel.IsBattlePhase() or Duel.IsMainPhase()
+	return Duel.IsBattlePhase() or Duel.IsPhase(PHASE_MAIN2)
 end
 function s.aclimit(e,re,tp)
 	return not re:GetHandler():IsImmuneToEffect(e)

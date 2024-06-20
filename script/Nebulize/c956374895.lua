@@ -47,7 +47,7 @@ function s.econ(e)
 	return Duel.IsExistingMatchingCard(Card.IsCode,e:GetHandlerPlayer(),LOCATION_MZONE,0,1,nil,956374899) and not e:GetHandler():IsStatus(STATUS_BATTLE_DESTROYED)
 end
 function s.etarget(e,c)
-	return c:IsFaceup() and c:IsCode(956374899)
+	return c:IsFaceup() and not c:IsCode(956374899)
 end
 function s.efilter(e,re)
     return e:GetHandlerPlayer()~=re:GetOwnerPlayer()

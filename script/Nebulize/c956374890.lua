@@ -57,8 +57,8 @@ function s.econ(e)
 	return Duel.IsExistingMatchingCard(Card.IsCode,e:GetHandlerPlayer(),LOCATION_MZONE,0,1,nil,956374899) and not e:GetHandler():IsStatus(STATUS_BATTLE_DESTROYED)
 end
 function s.efilter(e,te)
-	if te:GetOwnerPlayer()==e:GetOwnerPlayer() then return false end
+	if not te:IsActivated() then return false end
 	if not te:IsHasProperty(EFFECT_FLAG_CARD_TARGET) then return true end
 	local g=Duel.GetChainInfo(0,CHAININFO_TARGET_CARDS)
-	return not g:IsExists(Card.IsCode,1,nil,956374899)
+	return #g==0
 end

@@ -3,7 +3,7 @@ if not Rune then Duel.LoadScript("proc_rune.lua") end
 local s,id=GetID()
 function s.initial_effect(c)
     --Rune Summon
-    Rune.AddProcedure(c,Rune.MonFunctionEx(aux.NOT(Card.IsSummonableCard)),1,1,Rune.STFunction(nil),1,1)
+    Rune.AddProcedure(c,Rune.MonFunctionEx(Card.IsLevelAbove,5),1,1,Rune.STFunction(nil),1,1)
 	c:EnableReviveLimit()
     --activate
 	local e1=Effect.CreateEffect(c)
@@ -19,12 +19,12 @@ function s.initial_effect(c)
 	c:RegisterEffect(e1)
     --Search
     local e2=Effect.CreateEffect(c)
-    e2:SetDescription(aux.Stringid(id,1))
+    e2:SetDescription(aux.Stringid(id,2))
     e2:SetCategory(CATEGORY_TOHAND+CATEGORY_SEARCH)
     e2:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_TRIGGER_O)
     e2:SetCode(EVENT_DESTROYED)
     e2:SetProperty(EFFECT_FLAG_DAMAGE_STEP+EFFECT_FLAG_DELAY)
-    e2:SetRange(LOCATION_FZONE)
+    e2:SetRange(LOCATION_MZONE)
     e2:SetCountLimit(1,{id,1},EFFECT_COUNT_CODE_OATH)
     e2:SetCondition(s.thcon)
     e2:SetTarget(s.thtg)
