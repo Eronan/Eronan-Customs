@@ -614,7 +614,7 @@ function Duel.RuneSummon(tp,c,must,materials,tmin,tmax)
 end
 --Checks if Card be counted as a Mentioned Card
 function Card.IsRuneCode(c,code,rc,sumtype,tp)
-	if c:IsCode(code) then return true end
+	if c:IsSummonCode(rc,sumtype,tp,code) then return true end
 	local effs = {c:GetCardEffect(EFFECT_RUNE_SUBSTITUTE)}
 	for _,te in ipairs(effs) do
 		local tcon=te:GetOperation()
