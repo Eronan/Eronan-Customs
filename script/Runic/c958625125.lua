@@ -2,7 +2,7 @@
 if not Rune then Duel.LoadScript("proc_rune.lua") end
 local s,id=GetID()
 function s.initial_effect(c)
-	Rune.AddProcedure(c,Rune.MonFunction(s.MNMatFilter),1,1,Rune.STFunctionEx(Card.IsType,TYPE_FIELD),1,1,nil,s.exgroup,nil,nil,s.exchk)
+	Rune.AddProcedure(c,Rune.MonFunction(s.mfilter),1,1,Rune.STFunctionEx(Card.IsFieldSpell),2,99,nil,s.exgroup,nil,nil,s.exchk)
 	c:EnableReviveLimit()
     --Summon Limit
 	local e1=Effect.CreateEffect(c)
@@ -54,11 +54,7 @@ end
 s.listed_series={0xfe3}
 --Rune Summon
 function s.mfilter(c,rc,sumtyp,tp)
-    return c:IsType(TYPE_RUNE,rc,sumtyp,tp) and c:IsAttribute(ATTRIBUTE_LIGHT)
-end
-function s.stfilter(c,rc,sumtyp,tp)
-    local typ=c:GetOriginalType()
-    return typ==TYPE_SPELL or typ==TYPE_TRAP
+    return c:IsType(TYPE_RUNE,rc,sumtyp,tp) and c:IsAttribute(ATTRIBUTE_WATER)
 end
 function s.exgroup(tp,ex,c)
 	return Duel.GetMatchingGroup(Card.IsAbleToRemove,tp,LOCATION_GRAVE,0,ex)

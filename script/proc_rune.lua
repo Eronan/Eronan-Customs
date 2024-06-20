@@ -13,7 +13,7 @@ function s.initial_effect(c)
 end
 --]]
 --Constants
-TYPE_RUNE			= 0x82000000
+TYPE_RUNE			= 0x80000000
 MATERIAL_RUNE		= 0x20<<32
 REASON_RUNE			= 0x80000000
 SUMMON_TYPE_RUNE	= 0x42000001
