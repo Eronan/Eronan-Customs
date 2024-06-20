@@ -54,7 +54,7 @@ function s.efilter(e,re)
 end
 --search
 function s.thcfilter(c,tp)
-	return c:IsReason(REASON_BATTLE+REASON_EFFECT) and c:IsCode(956374899)
+	return c:IsReason(REASON_BATTLE+REASON_EFFECT) and (c:IsCode(956374899) or c:ListsCode(956374899))
 		and c:IsPreviousLocation(LOCATION_ONFIELD) and c:IsPreviousControler(tp)
 end
 function s.thcon(e,tp,eg,ep,ev,re,r,rp)

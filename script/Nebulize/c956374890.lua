@@ -35,7 +35,7 @@ function s.tfcon(e,tp,eg,ep,ev,re,r,rp)
 	return e:GetHandler():IsSummonType(SUMMON_TYPE_RUNE)
 end
 function s.tffilter(c,tp)
-	return c:IsCode(956374893) and not c:IsForbidden()
+	return c:IsCode(956374893) and c:GetActivateEffect():IsActivatable(tp,true,true)
 end
 function s.tftg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.IsExistingMatchingCard(s.tffilter,tp,LOCATION_DECK,0,1,nil,tp) end

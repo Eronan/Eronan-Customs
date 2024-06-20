@@ -102,5 +102,9 @@ end
 function s.actop(e,tp,eg,ep,ev,re,r,rp)
     Duel.Hint(HINT_SELECTMSG,tp,aux.Stringid(id,0))
     local tc=Duel.GetFirstTarget()
-    Duel.ActivateFieldSpell(tc,e,tp,eg,ep,ev,re,r,rp)
+    if Duel.ActivateFieldSpell(tc,e,tp,eg,ep,ev,re,r,rp) then
+		local te=tc:GetActivateEffect()
+		local op=te:GetOperation()
+		op(te,tp,eg,ep,ev,re,r,rp)
+	end
 end

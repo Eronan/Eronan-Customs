@@ -33,7 +33,7 @@ function s.initial_effect(c)
 	local e4=e3:Clone()
 	e4:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_TRIGGER_O)
 	e4:SetCode(EVENT_ATTACK_ANNOUNCE)
-	e4:SetCondition(function(_,tp) return Duel.GetAttacker():IsControler(1-tp) end)
+	e4:SetCondition(function(e,_) return Duel.GetAttackTarget()==e:GetHandler() end)
 	--Grant Effect
     local e5=Effect.CreateEffect(c)
 	e5:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_GRANT)
