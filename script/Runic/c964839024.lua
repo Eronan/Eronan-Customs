@@ -1,4 +1,4 @@
---Eternal Sovereign of Zerunic Tides
+--Sylph Queen of Zerunic Tempest
 if not Rune then Duel.LoadScript("proc_rune.lua") end
 local s,id=GetID()
 function s.initial_effect(c)
@@ -32,25 +32,26 @@ function s.initial_effect(c)
 	c:RegisterEffect(e4)
     --activate limit
 	local e5=Effect.CreateEffect(c)
-	e5:SetType(EFFECT_TYPE_FIELD)
-	e5:SetProperty(EFFECT_FLAG_PLAYER_TARGET)
-	e5:SetCode(EFFECT_CANNOT_ACTIVATE)
+	e5:SetType(EFFECT_TYPE_CONTINUOUS+EFFECT_TYPE_FIELD)
+	e5:SetCode(EVENT_CHAINING)
 	e5:SetRange(LOCATION_MZONE)
-	e5:SetTargetRange(0,1)
-	e5:SetCondition(s.accon)
-	e5:SetValue(s.aclimit)
+	e5:SetOperation(s.aclimit1)
 	c:RegisterEffect(e5)
-    --activate from banished
 	local e6=Effect.CreateEffect(c)
-	e6:SetDescription(aux.Stringid(id,0))
-	e6:SetType(EFFECT_TYPE_QUICK_O)
-	e6:SetCode(EVENT_FREE_CHAIN)
-	e6:SetHintTiming(0,TIMING_MAIN_END)
+	e6:SetType(EFFECT_TYPE_CONTINUOUS+EFFECT_TYPE_FIELD)
+	e6:SetCode(EVENT_CHAIN_NEGATED)
 	e6:SetRange(LOCATION_MZONE)
-	e6:SetCountLimit(1,id,EFFECT_COUNT_CODE_OATH)
-	e6:SetTarget(s.acttg)
-	e6:SetOperation(s.actop)
+	e6:SetOperation(s.aclimit2)
 	c:RegisterEffect(e6)
+	local e7=Effect.CreateEffect(c)
+	e7:SetType(EFFECT_TYPE_FIELD)
+	e7:SetCode(EFFECT_CANNOT_ACTIVATE)
+	e7:SetProperty(EFFECT_FLAG_PLAYER_TARGET)
+	e7:SetRange(LOCATION_MZONE)
+	e7:SetTargetRange(0,1)
+	e7:SetCondition(s.econ)
+	e7:SetValue(s.elimit)
+	c:RegisterEffect(e7)
 end
 s.listed_series={0xfe3}
 --Rune Summon
@@ -78,33 +79,18 @@ function s.matcheck(e,c)
 		e:GetHandler():RegisterFlagEffect(id,RESET_EVENT+RESETS_STANDARD-RESET_TOFIELD,EFFECT_FLAG_CLIENT_HINT,1,0,aux.Stringid(id,0))
 	end
 end
---cannot be tribute or targeted
-function s.tgcon(e)
-	return e:GetLabelObject():GetLabel()~=0
+--Activate limit
+function s.aclimit1(e,tp,eg,ep,ev,re,r,rp)
+	if ep==tp or not re:IsHasType(EFFECT_TYPE_ACTIVATE) then return end
+	e:GetHandler():RegisterFlagEffect(id,RESET_EVENT|RESETS_STANDARD_DISABLE|RESET_CONTROL|RESET_PHASE|PHASE_END,0,1)
 end
---activate limit
-function s.accon(e)
-	return Duel.IsBattlePhase() or Duel.IsPhase(PHASE_MAIN2)
+function s.aclimit2(e,tp,eg,ep,ev,re,r,rp)
+	if ep==tp or not re:IsHasType(EFFECT_TYPE_ACTIVATE) then return end
+	e:GetHandler():ResetFlagEffect(id)
 end
-function s.aclimit(e,re,tp)
-	return not re:GetHandler():IsImmuneToEffect(e)
+function s.econ(e)
+	return e:GetHandler():GetFlagEffect(id)~=0
 end
---Activate from banished
-function s.actfilter(c,e,tp)
-	return c:IsFaceup() and c:IsFieldSpell() and c:GetActivateEffect():IsActivatable(tp,true,true)
-end
-function s.acttg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
-	if chkc then return chkc:IsControler(tp) and chkc:IsLocation(LOCATION_REMOVED) and s.actfilter(chkc,e,tp) end
-	if chk==0 then return Duel.IsExistingTarget(s.actfilter,tp,LOCATION_REMOVED,0,1,nil,e,tp) end
-	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_SPSUMMON)
-	Duel.SelectTarget(tp,s.actfilter,tp,LOCATION_REMOVED,0,1,1,nil,e,tp)
-end
-function s.actop(e,tp,eg,ep,ev,re,r,rp)
-    Duel.Hint(HINT_SELECTMSG,tp,aux.Stringid(id,0))
-    local tc=Duel.GetFirstTarget()
-    if Duel.ActivateFieldSpell(tc,e,tp,eg,ep,ev,re,r,rp) then
-		local te=tc:GetActivateEffect()
-		local op=te:GetOperation()
-		op(e,tp,eg,ep,ev,re,r,rp)
-	end
+function s.elimit(e,te,tp)
+	return te:IsHasType(EFFECT_TYPE_ACTIVATE)
 end
