@@ -37,7 +37,7 @@ function s.filter1(c,e,tp)
 		and Duel.IsExistingMatchingCard(s.filter2,tp,LOCATION_DECK,0,1,nil,e,tp,c)
 end
 function s.filter2(c,e,tp,mc)
-	return c:GetLevel()>mc:GetLevel() and c:IsType(TYPE_RUNE) and c:IsSetCard(0xfe3) and mc:IsCanBeRuneMaterial(c,tp)
+	return c:IsAttribute(mc:GetAttribute()) and c:GetLevel()>mc:GetLevel() and c:IsType(TYPE_RUNE) and c:IsSetCard(0xfe3) and mc:IsCanBeRuneMaterial(c,tp)
 		and c:IsCanBeSpecialSummoned(e,SUMMON_TYPE_RUNE,tp,false,true) and c:IsRuneCustomCheck(Group.FromCards(e:GetHandler(),mc),tp)
 end
 function s.target(e,tp,eg,ep,ev,re,r,rp,chk,chkc)

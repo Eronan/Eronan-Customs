@@ -68,7 +68,7 @@ end
 s.listed_series={0xfe3}
 --Rune Summon
 function s.mfilter(c,rc,sumtyp,tp)
-    return c:IsType(TYPE_RUNE,rc,sumtyp,tp) and c:IsAttribute(ATTRIBUTE_WATER)
+    return c:IsType(TYPE_RUNE,rc,sumtyp,tp) and c:IsAttribute(ATTRIBUTE_WIND)
 end
 function s.exgroup(tp,ex,c)
 	return Duel.GetMatchingGroup(Card.IsAbleToRemove,tp,LOCATION_GRAVE,0,ex)
