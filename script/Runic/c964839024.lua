@@ -81,7 +81,7 @@ function s.customop(g,e,tp,eg,ep,ev,re,r,rp,pc)
 end
 --material check
 function s.mchkfilter(c)
-    return c:IsRace(RACE_FISH) and c:IsSetCard(0xfe3)
+    return c:IsRace(RACE_FAIRY) and c:IsSetCard(0xfe3)
 end
 function s.matcheck(e,c)
 	local g=c:GetMaterial()
