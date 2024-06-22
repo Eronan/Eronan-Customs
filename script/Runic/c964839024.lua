@@ -81,16 +81,16 @@ function s.matcheck(e,c)
 end
 --Activate limit
 function s.aclimit1(e,tp,eg,ep,ev,re,r,rp)
-	if ep==tp or not re:IsHasType(EFFECT_TYPE_ACTIVATE) then return end
+	if ep==tp or re:GetActivateLocation()&(LOCATION_HAND|LOCATION_GRAVE)==0 then return end
 	e:GetHandler():RegisterFlagEffect(id,RESET_EVENT|RESETS_STANDARD_DISABLE|RESET_CONTROL|RESET_PHASE|PHASE_END,0,1)
 end
 function s.aclimit2(e,tp,eg,ep,ev,re,r,rp)
-	if ep==tp or not re:IsHasType(EFFECT_TYPE_ACTIVATE) then return end
+	if ep==tp or re:GetActivateLocation()&(LOCATION_HAND|LOCATION_GRAVE)==0 then return end
 	e:GetHandler():ResetFlagEffect(id)
 end
 function s.econ(e)
 	return e:GetHandler():GetFlagEffect(id)~=0
 end
 function s.elimit(e,te,tp)
-	return te:IsHasType(EFFECT_TYPE_ACTIVATE)
+	return te:GetActivateLocation()&(LOCATION_HAND|LOCATION_GRAVE)>0
 end
