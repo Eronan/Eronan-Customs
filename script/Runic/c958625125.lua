@@ -96,7 +96,7 @@ end
 function s.acttg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	if chkc then return chkc:IsControler(tp) and chkc:IsLocation(LOCATION_REMOVED) and s.actfilter(chkc,e,tp) end
 	if chk==0 then return Duel.IsExistingTarget(s.actfilter,tp,LOCATION_REMOVED,0,1,nil,e,tp) end
-	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_SPSUMMON)
+	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_TOFIELD)
 	Duel.SelectTarget(tp,s.actfilter,tp,LOCATION_REMOVED,0,1,1,nil,e,tp)
 end
 function s.actop(e,tp,eg,ep,ev,re,r,rp)

@@ -2,7 +2,7 @@
 if not Rune then Duel.LoadScript("proc_rune.lua") end
 local s,id=GetID()
 function s.initial_effect(c)
-	Rune.AddProcedure(c,Rune.MonFunction(s.mfilter),1,1,Rune.STFunctionEx(Card.IsType,TYPE_FIELD),2,99,nil,s.exgroup,nil,nil,nil,s.customop)
+	Rune.AddProcedure(c,Rune.MonFunction(s.mfilter),1,1,Rune.STFunctionEx(Card.IsContinuousSpell),2,99,nil,s.exgroup,nil,nil,nil,s.customop)
 	c:EnableReviveLimit()
     --Summon Limit
 	local e1=Effect.CreateEffect(c)
@@ -52,6 +52,18 @@ function s.initial_effect(c)
 	e7:SetCondition(s.econ)
 	e7:SetValue(s.elimit)
 	c:RegisterEffect(e7)
+    --place in spell & trap zone from banishment
+	local e8=Effect.CreateEffect(c)
+	e8:SetDescription(aux.Stringid(id,0))
+	e8:SetType(EFFECT_TYPE_QUICK_O)
+	e8:SetCode(EVENT_FREE_CHAIN)
+	e8:SetHintTiming(0,TIMING_MAIN_END)
+	e8:SetRange(LOCATION_MZONE)
+	e8:SetCountLimit(1,id,EFFECT_COUNT_CODE_OATH)
+    e2:SetCondition(function() return Duel.IsMainPhase() end)
+	e8:SetTarget(s.tftg)
+	e8:SetOperation(s.tfop)
+	c:RegisterEffect(e8)
 end
 s.listed_series={0xfe3}
 --Rune Summon
@@ -79,6 +91,10 @@ function s.matcheck(e,c)
 		e:GetHandler():RegisterFlagEffect(id,RESET_EVENT+RESETS_STANDARD-RESET_TOFIELD,EFFECT_FLAG_CLIENT_HINT,1,0,aux.Stringid(id,0))
 	end
 end
+--cannot be tribute or targeted
+function s.tgcon(e)
+	return e:GetLabelObject():GetLabel()~=0
+end
 --Activate limit
 function s.aclimit1(e,tp,eg,ep,ev,re,r,rp)
 	if ep==tp or re:GetActivateLocation()&(LOCATION_HAND|LOCATION_GRAVE)==0 then return end
@@ -93,4 +109,21 @@ function s.econ(e)
 end
 function s.elimit(e,te,tp)
 	return te:GetActivateLocation()&(LOCATION_HAND|LOCATION_GRAVE)>0
+end
+--place in spell & trap from banishment
+function s.tffilter(c,e,tp)
+    return c:IsContinuousSpell() and not c:IsForbidden() and c:CheckUniqueOnField(tp)
+end
+function s.tftg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
+	if chkc then return chkc:IsControler(tp) and chkc:IsLocation(LOCATION_REMOVED) and s.tffilter(chkc,e,tp) end
+	if chk==0 then return Duel.IsExistingTarget(s.tffilter,tp,LOCATION_REMOVED,0,1,nil,e,tp) end
+	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_TOFIELD)
+	Duel.SelectTarget(tp,s.tffilter,tp,LOCATION_REMOVED,0,1,1,nil,e,tp)
+end
+function s.tfop(e,tp,eg,ep,ev,re,r,rp)
+    if Duel.GetLocationCount(tp,LOCATION_SZONE)<=0 then return end
+    local tc=Duel.GetFirstTarget()
+    if tc and tc:IsRelateToEffect(e) then
+		Duel.MoveToField(tc,tp,tp,LOCATION_SZONE,POS_FACEUP,true)
+	end
 end
