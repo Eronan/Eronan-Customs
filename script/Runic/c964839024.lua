@@ -66,7 +66,7 @@ function s.customop(g,e,tp,eg,ep,ev,re,r,rp,pc)
     Duel.SendtoGrave(mg,REASON_MATERIAL+REASON_RUNE)
     Duel.Remove(gy,POS_FACEUP,REASON_MATERIAL+REASON_RUNE)
 end
---material check
+--material check, cannot be tribute or targeted
 function s.mchkfilter(c)
     return c:IsRace(RACE_FAIRY) and c:IsSetCard(0xfe3)
 end
@@ -75,23 +75,24 @@ function s.matcheck(e,c)
 	e:SetLabel(0)
 	if g:IsExists(s.mchkfilter,1,nil) then
 		--Cannot be Tributed
-		local e3=Effect.CreateEffect(c)
-		e3:SetDescription(aux.Stringid(id,0))
-		e3:SetType(EFFECT_TYPE_SINGLE)
-		e3:SetProperty(EFFECT_FLAG_SINGLE_RANGE|EFFECT_FLAG_CLIENT_HINT)
-		e3:SetRange(LOCATION_MZONE)
-		e3:SetCode(EFFECT_UNRELEASABLE_SUM)
-		e3:SetValue(1)
-		e3:SetReset(RESET_EVENT+RESETS_STANDARD-RESET_TOFIELD)
+		local e1=Effect.CreateEffect(c)
+		e1:SetDescription(aux.Stringid(id,0))
+		e1:SetType(EFFECT_TYPE_SINGLE)
+		e1:SetProperty(EFFECT_FLAG_SINGLE_RANGE|EFFECT_FLAG_CLIENT_HINT)
+		e1:SetRange(LOCATION_MZONE)
+		e1:SetCode(EFFECT_UNRELEASABLE_SUM)
+		e1:SetValue(1)
+		e1:SetReset(RESET_EVENT+RESETS_STANDARD-RESET_TOFIELD)
+		c:RegisterEffect(e1)
+		local e2=e1:Clone()
+		e2:SetCode(EFFECT_UNRELEASABLE_NONSUM)
+		c:RegisterEffect(e2)
+		--Untargetable
+		local e3=e1:Clone()
+		e3:SetCode(EFFECT_CANNOT_BE_EFFECT_TARGET)
+		e3:SetValue(aux.tgoval)
 		c:RegisterEffect(e3)
-		local e4=e3:Clone()
-		e4:SetCode(EFFECT_UNRELEASABLE_NONSUM)
-		c:RegisterEffect(e4)
 	end
-end
---cannot be tribute or targeted
-function s.tgcon(e)
-	return e:GetLabelObject():GetLabel()~=0
 end
 --Activate limit
 function s.aclimit1(e,tp,eg,ep,ev,re,r,rp)

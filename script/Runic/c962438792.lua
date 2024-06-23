@@ -70,25 +70,37 @@ function s.customop(g,e,tp,eg,ep,ev,re,r,rp,pc)
     Duel.SendtoGrave(mg,REASON_MATERIAL+REASON_RUNE)
     Duel.Remove(gy,POS_FACEUP,REASON_MATERIAL+REASON_RUNE)
 end
---material check
+--material check, cannot be tribute or targeted
 function s.mchkfilter(c)
     return c:IsRace(RACE_WYRM) and c:IsSetCard(0xfe3)
 end
 function s.matcheck(e,c)
-    s.divine_magus_table={}
 	local g=c:GetMaterial()
 	e:SetLabel(0)
 	if g:IsExists(s.mchkfilter,1,nil) then
-		e:SetLabel(1)
-		e:GetHandler():RegisterFlagEffect(id,RESET_EVENT+RESETS_STANDARD-RESET_TOFIELD,EFFECT_FLAG_CLIENT_HINT,1,0,aux.Stringid(id,0))
+		--Cannot be Tributed
+		local e1=Effect.CreateEffect(c)
+		e1:SetDescription(aux.Stringid(id,0))
+		e1:SetType(EFFECT_TYPE_SINGLE)
+		e1:SetProperty(EFFECT_FLAG_SINGLE_RANGE|EFFECT_FLAG_CLIENT_HINT)
+		e1:SetRange(LOCATION_MZONE)
+		e1:SetCode(EFFECT_UNRELEASABLE_SUM)
+		e1:SetValue(1)
+		e1:SetReset(RESET_EVENT+RESETS_STANDARD-RESET_TOFIELD)
+		c:RegisterEffect(e1)
+		local e2=e1:Clone()
+		e2:SetCode(EFFECT_UNRELEASABLE_NONSUM)
+		c:RegisterEffect(e2)
+		--cannot be target
+		local e3=e1:Clone()
+		e3:SetCode(EFFECT_CANNOT_BE_EFFECT_TARGET)
+		e3:SetValue(aux.tgoval)
+		c:RegisterEffect(e3)
 	end
 end
---cannot be tribute or targeted
-function s.tgcon(e)
-	return e:GetLabelObject():GetLabel()~=0
-end
+--Cannot target other cards
 function s.tgtg(e,c)
-	return c~=e:GetHandler() 
+	return c~=e:GetHandler()
 end
 --Add to hand
 function s.thfilter(c)
