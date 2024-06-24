@@ -48,28 +48,6 @@ function s.initial_effect(c)
 	c:RegisterEffect(e6)
 end
 s.listed_series={0xfcf}
-function s.runcon(e,c,must,og,min,max)
-	if Duel.GetFlagEffect(e:GetHandler(),id)>0 then return false end
-	local mt=c:GetMetatable()
-	if mt.rune_parameters then
-		local rune_table = mt.rune_parameters[1]
-		local cond=Rune.Condition(rune_table[1],rune_table[2],rune_table[3],rune_table[4],rune_table[5],rune_table[6],rune_table[8],rune_table[9],rune_table[10],rune_table[11])
-		return cond(e,c,must,og,min,max)
-	else return false end
-end
-function s.runtg(e,tp,eg,ep,ev,re,r,rp,chk,c,must,og,min,max)
-	local mt=c:GetMetatable()
-	local rune_table = mt.rune_parameters[1]
-	local target=Rune.Target(rune_table[1],rune_table[2],rune_table[3],rune_table[4],rune_table[5],rune_table[6],rune_table[8],rune_table[10],rune_table[11])
-	target(e,tp,eg,ep,ev,re,r,rp,chk,c,must,og,min,max)
-end
-function s.runop(e,tp,eg,ep,ev,re,r,rp,chk,c,must,og,min,max)
-	local mt=c:GetMetatable()
-	local rune_table = mt.rune_parameters[1]
-	local operation=Rune.Operation(rune_table[1],rune_table[2],rune_table[3],rune_table[4],rune_table[5],rune_table[6],rune_table[8])
-	operation(e,tp,eg,ep,ev,re,r,rp,c,must,og,min,max)
-	Duel.RegisterFlagEffect(tp,id,RESET_PHASE+PHASE_END,0,1)
-end
 function s.sumtg(e,c)
 	return c:IsSetCard(0xfcf) and c:IsType(TYPE_RUNE)
 end

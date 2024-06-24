@@ -40,6 +40,7 @@ function Rune.AddProcedure(c,monf,mmin,mmax,stf,smin,smax,loc,group,condition,ex
 	if not smax then smax=smin end
 	if not loc then loc=0 end
 	if c.rune_parameters==nil then
+		--Look into turning the metatable into a metatable of the Summoning Effects rather than the parameters
 		local mt=c:GetMetatable()
 		--mt.rune_monster_filter=function(c) end
 		mt.rune_parameters={}
@@ -80,7 +81,7 @@ function Rune.CreateProcedure(c,monf,mmin,mmax,stf,smin,smax,loc,group,condition
 	e1:SetDescription(1175)
 	e1:SetCode(EFFECT_SPSUMMON_PROC)
 	e1:SetProperty(EFFECT_FLAG_UNCOPYABLE+EFFECT_FLAG_IGNORE_IMMUNE+EFFECT_FLAG_CANNOT_DISABLE)
-	e1:SetRange(LOCATION_HAND)
+	e1:SetRange(LOCATION_HAND) -- Look into turning Catenicorum Portal effects into a standard effect type for Rune Summoning.
 	e1:SetCondition(Rune.Condition(monf,mmin,mmax,stf,smin,smax,group,condition,nil,specialchk))
 	e1:SetTarget(Rune.Target(monf,mmin,mmax,stf,smin,smax,group,nil,specialchk))
 	e1:SetOperation(Rune.Operation(monf,mmin,mmax,stf,smin,smax,group,customoperation,stage2))
@@ -612,7 +613,7 @@ end
 function Duel.RuneSummon(tp,c,must,materials,tmin,tmax)
 	return Duel.ProcedureSummon(tp,c,SUMMON_TYPE_RUNE,must,materials,tmin,tmax)
 end
---Checks if Card be counted as a Mentioned Card
+--Checks if Card be counted as a mentioned card
 function Card.IsRuneCode(c,code,rc,sumtype,tp)
 	if c:IsSummonCode(rc,sumtype,tp,code) then return true end
 	local effs = {c:GetCardEffect(EFFECT_RUNE_SUBSTITUTE)}
@@ -622,33 +623,6 @@ function Card.IsRuneCode(c,code,rc,sumtype,tp)
 	end
 	return false
 end
---Checks if a card is treated as a Type for the Rune Summon of a Card
---[[
-if not Rune.BaseCardIsType then
-	Rune.BaseCardIsType = Card.IsType
-	
-	function Card.IsType(c,ctype,scard,sumtype,playerid)
-		if not sumtype then sumtype = 0 end
-		if not playerid then playerid = PLAYER_NONE end
-		if sumtype&SUMMON_TYPE_RUNE == 0 then return Rune.BaseCardIsType(c,ctype,scard,sumtype,playerid) end
-		local rte = c:GetCardEffect(EFFECT_RUNE_TYPE)
-		
-		local effs = {c:GetCardEffect(EFFECT_RUNE_TYPE)}
-		for _,te in ipairs(effs) do
-			local etg = te:GetTarget()
-			local eval = te:GetValue()
-			if etg or not teg(scard) then
-				if (type(val)=='function' and val(rte,scard,sumtype,playerid)&ctype>0)
-					or (type(val) == 'int' and val&ctype>0) then
-					return true
-				end
-			end
-		end
-		
-		return Rune.BaseCardIsType(c,ctype,scard,sumtype,playerid)
-	end
-end
---]]
 --Checks the Rune Custom Check for Cards in cases where Monsters are not being Rune Summoned normally
 function Card.IsRuneCustomCheck(c,mg,tp)
 	if c.rune_custom_check then return c.rune_custom_check(mg,c,SUMMON_TYPE_RUNE,tp)
