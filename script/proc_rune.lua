@@ -35,7 +35,7 @@ function Rune.AddProcedure(c,monf,mmin,mmax,stf,smin,smax,loc,group,condition,ex
 	--mmin, mmax are the minimums and maximums for the monsters
 	--smin, smax are the minimums and maximums for the Spell/Trap cards
 	--loc adds an additional location
-	--group changes the 
+	--group changes the available cards usable for the rune summon.
 	if not mmax then mmax=mmin end
 	if not smax then smax=smin end
 	if not loc then loc=0 end
@@ -60,7 +60,7 @@ function Rune.AddSecondProcedure(c,monf,mmin,mmax,stf,smin,smax,loc,group,condit
 	--mmin, mmax are the minimums and maximums for the monsters
 	--smin, smax are the minimums and maximums for the Spell/Trap cards
 	--loc adds an additional location
-	--group changes the 
+	--group changes the available cards usable for the rune summon.
 	if not mmax then mmax=mmin end
 	if not smax then smax=smin end
 	if c.rune_parameters==nil then
