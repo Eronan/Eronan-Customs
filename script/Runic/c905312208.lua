@@ -34,10 +34,11 @@ function s.cost(e,tp,eg,ep,ev,re,r,rp,chk)
 end
 function s.mustbematerialsallowed(tp,mg)
 	local pg=aux.GetMustBeMaterialGroup(tp,mg,tp,nil,nil,REASON_RUNE)
-	if #pg>2 then return false
-	elseif #pg==2 then return pg:Equal(mg)
+	if #pg>#mg then return false
+	elseif #pg==#mg then return pg:Equal(mg)
+	elseif #pg==0 then return true
 	elseif #pg==1 then return mg:IsContains(pg:GetFirst())
-	else return true end
+	else return not mg:IsExists(function (c) return not pg:IsContains(c) end,1,nil) end
 end
 function s.filter1(c,e,tp)
 	return s.mustbematerialsallowed(tp,Group.FromCards(c,e:GetHandler())) and c:IsFaceup() and c:IsType(TYPE_RUNE)
@@ -59,13 +60,14 @@ function s.target(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 		Duel.SetChainLimit(aux.FALSE)
 	end
 end
+function s.relatefilter(c,e,tp)
+	return c:IsFaceup() and c:IsRelateToEffect(e) and c:IsControler(tp) and not c:IsImmuneToEffect(e)
+end
 function s.activate(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
 	local tc=Duel.GetFirstTarget()
-	local mg=Group.FromCards(tc,c)
-	if c:IsFacedown() or not c:IsRelateToEffect(e) or c:IsControler(1-tp) or c:IsImmuneToEffect(e)
-		or not tc or tc:IsFacedown() or not tc:IsRelateToEffect(e) or tc:IsControler(1-tp) or tc:IsImmuneToEffect(e)
-		or not s.mustbematerialsallowed(tp,mg) then
+	local mg=Group.FromCards(tc,c):Filter(s.relatefilter,nil,e,tp)
+	if not mg:IsContains(tc) or not s.mustbematerialsallowed(tp,mg) then
 		mg:DeleteGroup()
 		return
 	end
