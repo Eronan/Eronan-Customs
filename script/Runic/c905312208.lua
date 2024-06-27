@@ -32,8 +32,15 @@ function s.cost(e,tp,eg,ep,ev,re,r,rp,chk)
 	local g=Duel.SelectMatchingCard(tp,s.cfilter,tp,LOCATION_MZONE+LOCATION_GRAVE,0,3,3,nil)
 	Duel.Remove(g,POS_FACEUP,REASON_COST)
 end
+function s.mustbematerialsallowed(tp,mg)
+	local pg=aux.GetMustBeMaterialGroup(tp,mg,tp,nil,nil,REASON_RUNE)
+	if #pg>2 then return false
+	elseif #pg==2 then return pg:Equal(mg)
+	elseif #pg==1 then return mg:IsContains(pg:GetFirst())
+	else return true end
+end
 function s.filter1(c,e,tp)
-	return c:IsFaceup() and c:IsType(TYPE_RUNE)
+	return s.mustbematerialsallowed(tp,Group.FromCards(c,e:GetHandler())) and c:IsFaceup() and c:IsType(TYPE_RUNE)
 		and Duel.IsExistingMatchingCard(s.filter2,tp,LOCATION_DECK,0,1,nil,e,tp,c)
 end
 function s.filter2(c,e,tp,mc)
@@ -53,36 +60,38 @@ function s.target(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	end
 end
 function s.activate(e,tp,eg,ep,ev,re,r,rp)
-	if Duel.GetLocationCount(tp,LOCATION_MZONE)<0 then return end
+	local c=e:GetHandler()
 	local tc=Duel.GetFirstTarget()
-	if tc:IsFacedown() or not tc:IsRelateToEffect(e) or tc:IsImmuneToEffect(e) then return end
+	local mg=Group.FromCards(tc,c)
+	if c:IsFacedown() or not c:IsRelateToEffect(e) or c:IsControler(1-tp) or c:IsImmuneToEffect(e)
+		or not tc or tc:IsFacedown() or not tc:IsRelateToEffect(e) or tc:IsControler(1-tp) or tc:IsImmuneToEffect(e)
+		or not s.mustbematerialsallowed(tp,mg) then
+		mg:DeleteGroup()
+		return
+	end
+
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_SPSUMMON)
 	local g=Duel.SelectMatchingCard(tp,s.filter2,tp,LOCATION_DECK,0,1,1,nil,e,tp,tc)
 	local sc=g:GetFirst()
-    local c=e:GetHandler()
 	if sc then
-		local mg=Group.FromCards(tc,c)
-		Duel.BreakEffect()
-		if sc:IsRuneCustomCheck(mg,tp) then
-			sc:SetMaterial(mg)
-			Duel.SendtoGrave(mg,REASON_EFFECT+REASON_MATERIAL+REASON_RUNE)
-			if Duel.SpecialSummonStep(sc,SUMMON_TYPE_RUNE,tp,tp,false,true,POS_FACEUP) then
-                --immune
-                local e1=Effect.CreateEffect(c)
-                e1:SetDescription(aux.Stringid(id,1))
-                e1:SetType(EFFECT_TYPE_SINGLE)
-                e1:SetCode(EFFECT_IMMUNE_EFFECT)
-                e1:SetProperty(EFFECT_FLAG_SINGLE_RANGE|EFFECT_FLAG_CLIENT_HINT)
-                e1:SetRange(LOCATION_MZONE)
-                e1:SetReset(RESET_EVENT+RESETS_STANDARD)
-                e1:SetValue(s.efilter)
-                sc:RegisterEffect(e1)
-				Duel.SpecialSummonComplete()
-			end
+		sc:SetMaterial(mg)
+		Duel.SendtoGrave(mg,REASON_EFFECT+REASON_MATERIAL+REASON_RUNE)
+		if Duel.SpecialSummonStep(sc,SUMMON_TYPE_RUNE,tp,tp,false,true,POS_FACEUP) then
+			--immune
+			local e1=Effect.CreateEffect(c)
+			e1:SetDescription(aux.Stringid(id,1))
+			e1:SetType(EFFECT_TYPE_SINGLE)
+			e1:SetCode(EFFECT_IMMUNE_EFFECT)
+			e1:SetProperty(EFFECT_FLAG_SINGLE_RANGE|EFFECT_FLAG_CLIENT_HINT)
+			e1:SetRange(LOCATION_MZONE)
+			e1:SetReset(RESET_EVENT+RESETS_STANDARD)
+			e1:SetValue(s.efilter)
+			sc:RegisterEffect(e1)
+			Duel.SpecialSummonComplete()
 		end
 		sc:CompleteProcedure()
-		mg:DeleteGroup()
 	end
+	mg:DeleteGroup()
 end
 --immune effect
 function s.efilter(e,re,rp)
