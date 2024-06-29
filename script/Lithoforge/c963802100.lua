@@ -35,7 +35,7 @@ function s.thfilter(c)
 	return c:IsSetCard(0xfc8) and c:IsAbleToHand()
 end
 function s.thtg(e,tp,eg,ep,ev,re,r,rp,chk)
-	if chk==0 then return Duel.IsExistingMatchingCard(s.thfilter,tp,LOCATION_DECK,0,1,nil) end
+	if chk==0 then return Duel.IsExistingMatchingCard(s.thfilter,tp,LOCATION_DECK,0,1,nil) and Duel.GetLocationCount(tp,LOCATION_MZONE)>0 end
 	Duel.SetOperationInfo(0,CATEGORY_TOHAND,nil,1,tp,LOCATION_DECK)
 end
 function s.thop(e,tp,eg,ep,ev,re,r,rp)
@@ -48,7 +48,7 @@ function s.thop(e,tp,eg,ep,ev,re,r,rp)
 end
 --Special Summon itself
 function s.spcfilter(c,ft)
-	return c:IsSetCard(0xfc8) and c:IsFaceup() and c:IsSpell() and c:IsAbleToGraveAsCost()
+	return c:IsSetCard(0xfc8) and c:IsFaceup() and c:IsSpellTrap() and c:IsAbleToGraveAsCost()
         and (ft>0 or (c:IsLocation(LOCATION_MZONE) and c:GetSequence()<5))
 end
 function s.spcost(e,tp,eg,ep,ev,re,r,rp,chk)

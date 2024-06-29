@@ -13,6 +13,7 @@ function s.initial_effect(c)
 	e1:SetCode(EVENT_FREE_CHAIN)
 	e1:SetRange(LOCATION_GRAVE)
 	e1:SetCountLimit(1,id,EFFECT_COUNT_CODE_OATH)
+	e1:SetCondition(aux.exccon)
 	e1:SetCost(s.spcost)
 	e1:SetTarget(s.sptg)
 	e1:SetOperation(s.spop)
@@ -24,7 +25,6 @@ function s.initial_effect(c)
 	e2:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_TRIGGER_O)
 	e2:SetProperty(EFFECT_FLAG_DELAY+EFFECT_FLAG_CARD_TARGET)
 	e2:SetCode(EVENT_SPSUMMON_SUCCESS)
-	e2:SetCountLimit(1,id,EFFECT_COUNT_CODE_OATH)
 	e2:SetCondition(s.poscon)
 	e2:SetTarget(s.postg)
 	e2:SetOperation(s.posop)
@@ -40,7 +40,7 @@ function s.exgroup(tp,ex,c)
 end
 --Special Summon itself
 function s.spcfilter(c,ft)
-	return c:IsSetCard(0xfc8) and c:IsFaceup() and c:IsSpell() and c:IsAbleToGraveAsCost()
+	return c:IsFaceup() and c:IsContinuousSpellTrap() and c:IsAbleToGraveAsCost()
         and (ft>0 or (c:IsLocation(LOCATION_MZONE) and c:GetSequence()<5))
 end
 function s.spcost(e,tp,eg,ep,ev,re,r,rp,chk)
@@ -52,7 +52,7 @@ function s.spcost(e,tp,eg,ep,ev,re,r,rp,chk)
 end
 function s.sptg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	local c=e:GetHandler()
-	if chk==0 then return c:IsCanBeSpecialSummoned(e,0,tp,false,false,POS_FACEUP,tp) end
+	if chk==0 then return c:IsCanBeSpecialSummoned(e,1,tp,false,false,POS_FACEUP,tp) and Duel.GetLocationCount(tp,LOCATION_MZONE)>0 end
 	Duel.SetOperationInfo(0,CATEGORY_SPECIAL_SUMMON,c,1,tp,LOCATION_GRAVE)
 end
 function s.spop(e,tp,eg,ep,ev,re,r,rp)
@@ -67,7 +67,7 @@ function s.poscon(e,tp,eg,ep,ev,re,r,rp)
 	return c:IsSummonType(SUMMON_TYPE_RUNE) or c:IsSummonType(SUMMON_TYPE_SPECIAL+1)
 end
 function s.posfilter(c)
-    return c:IsCanTurnSet() or c:IsSSetable(true)
+    return c:IsFaceup() and (c:IsCanTurnSet() or c:IsSSetable(true))
 end
 function s.postg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
     if chkc then return chkc:IsLocation(LOCATION_ONFIELD) and s.posfilter(chkc) and chkc:IsControler(1-tp) end
@@ -81,7 +81,7 @@ function s.posop(e,tp,eg,ep,ev,re,r,rp)
 	if not tc or not tc:IsRelateToEffect(e) then return end
 	if tc:IsSSetable(true) then
 		Duel.ChangePosition(tc,POS_FACEDOWN)
-	elseif c:IsCanTurnSet() then
+	elseif tc:IsCanTurnSet() then
 		Duel.ChangePosition(tc,POS_FACEDOWN_DEFENSE)
 	end
 end

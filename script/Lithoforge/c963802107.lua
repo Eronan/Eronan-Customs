@@ -64,7 +64,7 @@ function s.cpop(e,tp,eg,ep,ev,re,r,rp)
 
     --Copy Effects
     local code=tc:GetCode()
-    c:CopyEffect(code,RESET_EVENT+RESETS_STANDARD+RESET_PHASE+PHASE_END+RESET_SELF_TURN)
+    c:CopyEffect(code,RESET_EVENT+RESETS_STANDARD+RESET_PHASE+PHASE_END)
 end
 --send itself to the gy
 function s.tgcfilter(c)
