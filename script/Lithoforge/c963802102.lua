@@ -3,7 +3,7 @@ if not Rune then Duel.LoadScript("proc_rune.lua") end
 local s,id=GetID()
 function s.initial_effect(c)
 	--Rune Summon
-	Rune.AddProcedure(c,Rune.MonFunctionEx(Card.IsType,TYPE_EFFECT),1,1,Rune.STFunctionEx(Card.IsContinuousSpellTrap),1,1,nil,s.exgroup)
+	Rune.AddProcedure(c,Rune.MonFunction(s.mnfilter),1,1,Rune.STFunctionEx(Card.IsContinuousSpellTrap),1,1,nil,s.exgroup)
 	c:EnableReviveLimit()
     --Special Summon Rune monster
 	local e1=Effect.CreateEffect(c)
@@ -28,6 +28,9 @@ function s.initial_effect(c)
 end
 s.listed_series={0xfc8}
 --Rune Summon Group
+function s.mnfilter(c)
+	return c:IsSummonType(SUMMON_TYPE_SPECIAL)
+end
 function s.exrnfilter(c)
 	return c:IsSetCard(0xfc8) and c:IsFacedown() and c:IsContinuousSpell()
 end
@@ -51,7 +54,7 @@ function s.filter1(c,e,tp)
 end
 function s.filter2(c,e,tp,sc)
     local mc=e:GetHandler()
-	return sc:IsCanBeRuneMaterial(c,tp) and mc:IsCanBeRuneMaterial(c,tp) and c:IsType(TYPE_RUNE) and c:GetLevel()>mc:GetLevel()
+	return mc:IsCanBeRuneMaterial(c,tp) and c:IsType(TYPE_RUNE) and c:GetLevel()>mc:GetLevel()
 		and c:IsCanBeSpecialSummoned(e,SUMMON_TYPE_RUNE,tp,false,true) and c:IsRuneCustomCheck(Group.FromCards(e:GetHandler(),sc),tp)
 end
 function s.sptg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
@@ -65,9 +68,9 @@ end
 function s.spop(e,tp,eg,ep,ev,re,r,rp)
     local c=e:GetHandler()
 	local tc=Duel.GetFirstTarget()
-	local mg=Group.FromCards(tc,c)
+	local mg=Group.FromCards(c)
+	if tc and tc:IsFaceup() and tc:IsRelateToEffect(e) and tc:IsControler(tp) and not tc:IsImmuneToEffect(e) then mg:AddCard(tc) end
 	if c:IsFacedown() or not c:IsRelateToEffect(e) or c:IsControler(1-tp) or c:IsImmuneToEffect(e)
-		or not tc or tc:IsFacedown() or not tc:IsRelateToEffect(e) or tc:IsControler(1-tp) or tc:IsImmuneToEffect(e)
 		or not s.mustbematerialsallowed(tp,mg) then
 		mg:DeleteGroup()
 		return
