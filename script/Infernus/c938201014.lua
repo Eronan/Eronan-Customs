@@ -18,20 +18,23 @@ function s.initial_effect(c)
 	e3:SetProperty(EFFECT_FLAG_CARD_TARGET)
 	e3:SetCode(EVENT_PHASE+PHASE_END)
 	e3:SetRange(LOCATION_GRAVE)
-	e3:SetCountLimit(1,{id,1},EFFECT_COUNT_CODE_OATH)
+	e3:SetCountLimit(1,id,EFFECT_COUNT_CODE_OATH)
     e3:SetCondition(function (_,tp) return Duel.IsTurnPlayer(1-tp) end)
 	e3:SetTarget(s.eqtg)
 	e3:SetOperation(s.eqop)
 	c:RegisterEffect(e3)
 end
 s.listed_names={938201010}
-s.listed_series={0xfe8}
 --place on bottom deck
+function s.tdfilter(c,tp)
+    return c:IsFaceup() and c:IsAbleToDeck()
+        and (c:IsControler(tp) or c:GetColumnGroup():IsExists(Card.IsCode,1,nil,938201010))
+end
 function s.tdtg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
-    if chkc then return chkc:IsFaceup() and chkc:IsLocation(LOCATION_MZONE) and chkc:IsControler(tp) and chkc:IsAbleToDeck() end
-    if chk==0 then return Duel.IsExistingTarget(aux.FaceupFilter(Card.IsAbleToDeck),tp,LOCATION_MZONE,0,1,nil) end
+    if chkc then return chkc:IsLocation(LOCATION_MZONE) and s.tdfilter(chkc,tp) end
+    if chk==0 then return Duel.IsExistingTarget(s.tdfilter,tp,LOCATION_MZONE,LOCATION_MZONE,1,nil,tp) end
     Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_RTOHAND)
-    local g=Duel.SelectTarget(tp,aux.FaceupFilter(Card.IsAbleToDeck),tp,LOCATION_MZONE,0,1,1,nil,tp)
+    local g=Duel.SelectTarget(tp,s.tdfilter,tp,LOCATION_MZONE,LOCATION_MZONE,1,1,nil,tp)
     Duel.SetOperationInfo(0,CATEGORY_TOHAND,g,1,0,0)
 end
 function s.tdop(e,tp,eg,ep,ev,re,r,rp)
@@ -54,12 +57,10 @@ function s.aclimit(e,re,tp)
     return re:GetHandler():IsCode(e:GetLabelObject():GetCode())
 end
 --equip
-function s.eqfilter2(c)
-	return c:IsFaceup() and c:IsMonster() and (c:IsSetCard(0xfe8) or c:ListsCode(938201010))
-end
 function s.eqtg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	if chk==0 then return Duel.GetLocationCount(tp,LOCATION_SZONE)>0
-		and Duel.IsExistingMatchingCard(s.eqfilter2,tp,LOCATION_MZONE,0,1,nil) end
+		and Duel.IsExistingTarget(Card.IsFaceup,tp,LOCATION_MZONE,LOCATION_MZONE,1,nil) end
+	Duel.SelectTarget(tp,Card.IsFaceup,tp,LOCATION_MZONE,LOCATION_MZONE,1,1,nil)
 	Duel.SetOperationInfo(0,CATEGORY_EQUIP,e:GetHandler(),1,0,0)
 	Duel.SetOperationInfo(0,CATEGORY_LEAVE_GRAVE,e:GetHandler(),1,0,0)
 end
@@ -67,10 +68,8 @@ function s.eqop(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
 	if not c:IsRelateToEffect(e) then return end
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_EQUIP)
-	local g=Duel.SelectMatchingCard(tp,s.eqfilter2,tp,LOCATION_MZONE,0,1,1,nil)
-	if #g<1 then return end
-	Duel.HintSelection(g)
-	local tc=g:GetFirst()
+	local tc=Duel.GetFirstTarget()
+	if not tc then return end
 	Duel.Equip(tp,c,tc)
 	local e1=Effect.CreateEffect(c)
 	e1:SetType(EFFECT_TYPE_SINGLE)

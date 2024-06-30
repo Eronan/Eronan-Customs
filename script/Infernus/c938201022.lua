@@ -21,10 +21,12 @@ function s.initial_effect(c)
     local e2=Effect.CreateEffect(c)
     e2:SetDescription(aux.Stringid(id,0))
     e2:SetCategory(CATEGORY_SPECIAL_SUMMON)
-    e2:SetProperty(EFFECT_FLAG_CARD_TARGET|EFFECT_FLAG_DELAY)
+    e2:SetProperty(EFFECT_FLAG_CARD_TARGET|EFFECT_FLAG_DELAY|EFFECT_FLAG_DAMAGE_STEP|EFFECT_FLAG_DAMAGE_CAL)
     e2:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_TRIGGER_O)
     e2:SetCode(EVENT_TO_GRAVE)
     e2:SetRange(LOCATION_MZONE)
+    e2:SetCountLimit(1,id,EFFECT_COUNT_CODE_OATH)
+    e2:SetCondition(function(_,tp) return Duel.IsTurnPlayer(1-tp) end)
     e2:SetTarget(s.sptg)
     e2:SetOperation(s.spop)
     c:RegisterEffect(e2)
@@ -34,7 +36,7 @@ s.listed_series={0xffb}
 --special summon synchro monster from extra
 function s.exspcfilter(c,e,tp)
 	return c:IsFaceup() and (c:IsCode(938201010) or (c:IsType(TYPE_TUNER) and c:IsSetCard(0xffb))) and c:IsControler(tp)
-        and Duel.IsExistingMatchingCard(s.exspfilter,tp,LOCATION_EXTRA,0,1,nil,e,tp)
+        and Duel.IsExistingMatchingCard(s.exspfilter,tp,LOCATION_EXTRA,0,1,nil,e,tp,c:GetLevel())
 end
 function s.exspfilter(c,e,tp,lv)
 	return c:IsFaceup() and c:IsType(TYPE_SYNCHRO) and c:GetLevel()==lv+1
@@ -65,8 +67,8 @@ function s.exspop(e,tp,eg,ep,ev,re,r,rp)
 end
 --special summon tuner and then synchro
 function s.spfilter(c,e,tp)
-    return c:IsPreviousPosition(POS_FACEUP) and c:IsOriginalType(TYPE_TUNER) and c:IsPreviousLocation(LOCATION_ONFIELD) and c:IsControler(tp)
-        and c:IsCanBeEffectTarget(e) and c:IsCanBeSpecialSummoned(e,0,tp,false,false)
+    return c:IsPreviousPosition(POS_FACEUP) and c:IsOriginalType(TYPE_TUNER) and c:IsPreviousLocation(LOCATION_ONFIELD)
+        and c:IsControler(tp) and c:IsCanBeSpecialSummoned(e,0,tp,false,false) and c:IsCanBeEffectTarget(e)
         and Duel.IsExistingMatchingCard(s.scfilter,tp,LOCATION_EXTRA,0,1,nil,c)
 end
 function s.scfilter(c,mc)

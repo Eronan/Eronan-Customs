@@ -1,4 +1,5 @@
 --Shimzu Infernus Sewanin
+if not Rune then Duel.LoadScript("proc_rune.lua") end
 local s,id=GetID()
 function s.initial_effect(c)
     --synchro summon
@@ -30,15 +31,15 @@ s.listed_names={938201010}
 s.listed_series={0xfcf}
 --Synchro Summon
 function s.syncheck(g,sc,tp)
-	return g:IsExists(Card.IsType,sc,TYPE_SYNCHRO|TYPE_RUNE,SUMMON_TYPE_SYNCHRO,tp)
+	return g:IsExists(Card.IsType,1,nil,TYPE_SYNCHRO|TYPE_RUNE,sc,SUMMON_TYPE_SYNCHRO,tp)
 end
 --Cannot be target
 function s.tgcfilter(c,tp)
     return c:IsControler(tp) and (c:IsCode(938201010) or c:IsSetCard(0xfcf))
 end
-function s.tgcon(e,tp,eg,ep,ev,re,r,rp)
+function s.tgcon(e)
 	local c=e:GetHandler()
-	return c:GetColumnGroup():IsExists(s.tgcfilter,1,nil,tp)
+	return c:GetColumnGroup():IsExists(s.tgcfilter,1,nil,e:GetHandlerPlayer())
 end
 function s.tgtg(e,c)
     local ec=e:GetHandler()

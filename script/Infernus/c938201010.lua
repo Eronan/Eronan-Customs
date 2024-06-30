@@ -1,6 +1,6 @@
 --Infernus, Armor of Storm
 local s,id=GetID()
-function s.initial_effect()
+function s.initial_effect(c)
     aux.AddUnionProcedure(c,aux.FilterBoolFunction(Card.IsType,TYPE_SYNCHRO),false)
     --cannot be synchro material
     local e1=Effect.CreateEffect(c)
@@ -26,10 +26,10 @@ function s.initial_effect()
 	e3:SetOperation(s.eqop)
 	c:RegisterEffect(e3)
 end
---synchro limit
+--synchro limit, only allow odd-level synchro monsters
 function s.synlimit(e,c)
     if not c then return false end
-    return c:GetLevel()%2==1
+    return c:GetLevel()%2==0
 end
 --immune
 function s.efilter(e,re)
@@ -48,7 +48,7 @@ function s.eqop(e,tp,eg,ep,ev,re,r,rp)
         aux.SetUnionState(c)
         --Cannot be Special Summoned this turn
 			local e1=Effect.CreateEffect(e:GetHandler())
-			e1:SetDescription(aux.Stringid(id,3))
+			e1:SetDescription(aux.Stringid(id,1))
 			e1:SetType(EFFECT_TYPE_SINGLE)
 			e1:SetProperty(EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_CLIENT_HINT)
 			e1:SetCode(EFFECT_CANNOT_SPECIAL_SUMMON)

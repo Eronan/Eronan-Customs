@@ -7,7 +7,6 @@ function s.initial_effect(c)
 	e1:SetCategory(CATEGORY_SPECIAL_SUMMON)
 	e1:SetType(EFFECT_TYPE_ACTIVATE)
 	e1:SetCode(EVENT_FREE_CHAIN)
-	e1:SetCountLimit(1,id,EFFECT_COUNT_CODE_OATH)
     e1:SetCost(s.cost)
 	e1:SetTarget(s.target)
 	e1:SetOperation(s.activate)
@@ -17,22 +16,22 @@ function s.initial_effect(c)
 	e2:SetDescription(aux.Stringid(id,2))
 	e2:SetType(EFFECT_TYPE_SINGLE)
 	e2:SetCode(EFFECT_TRAP_ACT_IN_HAND)
-	e2:SetValue(function(e,c) e:SetLabel(1) end)
+    e2:SetCondition(s.handcon)
+	e2:SetValue(function(e) e:SetLabel(1) end)
 	c:RegisterEffect(e2)
 	e1:SetLabelObject(e2)
 end
 s.listed_series={0xfd6}
 s.listed_names={938201010}
+--Activate
+function s.handcon(e)
+    return Duel.IsExistingMatchingCard(Card.IsAbleToRemoveAsCost,e:GetHandlerPlayer(),LOCATION_HAND,0,1,e:GetHandler())
+end
 function s.cost(e,tp,eg,ep,ev,re,r,rp,chk)
-    if chk==0 then
-        if e:GetLabelObject():GetLabel()>0 then
-            e:GetLabelObject():SetLabel(0)
-            return Duel.IsExistingMatchingCard(Card.IsAbleToRemoveAsCost,tp,LOCATION_HAND,0,1,nil)
-        else return true end
-    end
+    if chk==0 then e:GetLabelObject():SetLabel(0) return true end
     if e:GetLabelObject():GetLabel()>0 then
         Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_REMOVE)
-        local g=Duel.SelectMatchingCard(tp,Card.IsAbleToRemoveAsCost,tp,LOCATION_HAND,0,1,1,nil)
+        local g=Duel.SelectMatchingCard(tp,Card.IsAbleToRemoveAsCost,tp,LOCATION_HAND,0,1,1,e:GetHandler())
         Duel.Remove(g,POS_FACEUP,REASON_COST)
     end
 end

@@ -11,6 +11,7 @@ function s.initial_effect(c)
 	e1:SetCode(EVENT_FREE_CHAIN)
 	e1:SetCountLimit(1,id,EFFECT_COUNT_CODE_OATH)
 	e1:SetRange(LOCATION_MZONE)
+	e1:SetCost(s.spcost1)
     e1:SetCondition(s.spcon1)
 	e1:SetTarget(s.sptg1)
 	e1:SetOperation(s.spop1)
@@ -31,6 +32,10 @@ end
 s.listed_names={938201010}
 s.listed_series={0xff3}
 --Special Summon 2 Tuners from GY
+function s.spcost1(e,tp,eg,ep,ev,re,r,rp,chk)
+	if chk==0 then return e:GetHandler():IsReleasable() end
+	Duel.Release(e:GetHandler(),REASON_COST)
+end
 function s.spcon1(e,tp,eg,ep,ev,re,r,rp)
 	return Duel.GetCurrentChain(true)>=2 and not e:GetHandler():IsStatus(STATUS_BATTLE_DESTROYED)
 end
@@ -69,7 +74,7 @@ function s.spop1(e,tp,eg,ep,ev,re,r,rp)
 end
 --Special Summon 1 Infernus or Reguraptor from GY
 function s.spfilter2(c,e,tp)
-	return (c:ListsCode(938201010) or c:IsSetCard(0xffb)) and c:IsCanBeSpecialSummoned(e,0,tp,false,false)
+	return (c:IsCode(938201010) or c:IsSetCard(0xffb)) and c:IsCanBeSpecialSummoned(e,0,tp,false,false,POS_FACEUP_DEFENSE)
 end
 function s.sptg2(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	if chkc then return chkc:IsLocation(LOCATION_GRAVE) and chkc:IsControler(tp) and s.spfilter2(chkc,e,tp) end

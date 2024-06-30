@@ -1,4 +1,5 @@
 --Theraformation Call
+if not Rune then Duel.LoadScript("proc_rune.lua") end
 local s,id=GetID()
 function s.initial_effect(c)
     --Activate
@@ -19,16 +20,22 @@ function s.initial_effect(c)
     e2:SetTargetRange(1,0)
     e2:SetValue(s.effectfilter)
     c:RegisterEffect(e2)
-    --Change control
-	local e6=Effect.CreateEffect(c)
-	e6:SetCategory(CATEGORY_EQUIP)
-	e6:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_TRIGGER_O)
-	e6:SetProperty(EFFECT_FLAG_DELAY)
-	e6:SetCode(EVENT_TO_GRAVE)
-	e6:SetCondition(s.eqcon)
-	e6:SetTarget(s.cttg)
-	e6:SetOperation(s.ctop)
-	c:RegisterEffect(e6)
+	--Cannot be targeted by monster effects
+	local e3=e2:Clone()
+	e3:SetCode(EFFECT_CANNOT_BE_EFFECT_TARGET)
+	e3:SetValue(s.tgfilter)
+	c:RegisterEffect(e3)
+    --Equip to Summoned monster
+	local e4=Effect.CreateEffect(c)
+	e4:SetCategory(CATEGORY_EQUIP)
+	e4:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_TRIGGER_O)
+	e4:SetProperty(EFFECT_FLAG_DELAY)
+	e4:SetCode(EVENT_TO_GRAVE)
+	e4:SetCountLimit(1,{id,1},EFFECT_COUNT_CODE_OATH)
+	e4:SetCondition(s.eqcon)
+	e4:SetTarget(s.eqtg)
+	e4:SetOperation(s.eqop)
+	c:RegisterEffect(e4)
 end
 s.listed_names={938201010}
 --Special Summon and equip
@@ -67,6 +74,10 @@ end
 function s.effectfilter(e,ct)
 	local te=Duel.GetChainInfo(ct,CHAININFO_TRIGGERING_EFFECT)
 	return te:GetHandler() and te:GetHandler()==e:GetHandler():GetEquipTarget() and te:IsActivated()
+end
+--Cannot be targeted
+function s.tgfilter(e,re,rp)
+	return aux.tgoval(e,re,rp) and re:IsActiveType(TYPE_MONSTER)
 end
 --Equip
 function s.eqcon(e,tp,eg,ep,ev,re,r,rp)

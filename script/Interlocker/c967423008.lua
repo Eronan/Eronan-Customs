@@ -30,6 +30,7 @@ function s.tgfilter(c,tp)
 end
 function s.eqfilter(c,tc)
 	return c:IsType(TYPE_UNION) and c:CheckUnionTarget(tc) and aux.CheckUnionEquip(c,tc)
+		and c:IsSetCard(0xfe6)
 end
 function s.target(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
     if chkc then return chkc:IsLocation(LOCATION_MZONE) and s.tgfilter(chkc,tp) end
