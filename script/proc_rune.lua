@@ -21,6 +21,7 @@ HINTMSG_RMATERIAL	= 600
 EFFECT_RUNE_MAT_RESTRICTION		=73941492+TYPE_RUNE
 EFFECT_CANNOT_BE_RUNE_MATERIAL	=500
 EFFECT_RUNE_SUBSTITUTE	= 900001031
+EFFECT_RUNE_LOCATION	= 927210205
 
 if not aux.RuneProcedure then
 	aux.RuneProcedure = {}
@@ -28,6 +29,79 @@ if not aux.RuneProcedure then
 end
 if not Rune then
 	Rune = aux.RuneProcedure
+end
+--Create Effects
+function Rune.CreateProcedure(c,monf,mmin,mmax,stf,smin,smax,group,condition,specialchk,customoperation,stage2)
+	local e1=Effect.CreateEffect(c)
+	e1:SetType(EFFECT_TYPE_FIELD)
+	e1:SetDescription(1175)
+	e1:SetCode(EFFECT_SPSUMMON_PROC)
+	e1:SetProperty(EFFECT_FLAG_UNCOPYABLE+EFFECT_FLAG_IGNORE_IMMUNE+EFFECT_FLAG_CANNOT_DISABLE)
+	e1:SetRange(LOCATION_HAND) -- Look into turning Catenicorum Portal effects into a standard effect type for Rune Summoning.
+	e1:SetCondition(Rune.Condition(monf,mmin,mmax,stf,smin,smax,group,condition,nil,specialchk))
+	e1:SetTarget(Rune.Target(monf,mmin,mmax,stf,smin,smax,group,nil,specialchk))
+	e1:SetOperation(Rune.Operation(monf,mmin,mmax,stf,smin,smax,group,customoperation,stage2))
+	e1:SetValue(SUMMON_TYPE_RUNE)
+	return e1
+end
+function Rune.CreatePortalProcedure(c,monf,mmin,mmax,stf,smin,smax,group,condition,specialchk,customoperation,stage2)
+	function PortalCondition(e,sc,must,og,min,max)
+		local tp=e:GetHandlerPlayer()
+		local portaleffs={Duel.GetPlayerEffect(tp,EFFECT_RUNE_LOCATION)}
+		for _,te in ipairs(portaleffs) do
+			local tg=te:GetTarget()
+			if te:CheckCountLimit(tp) and (not tg or tg(te,c)) then
+				local runechk=Rune.CombineRuneChecks(specialchk,te:GetValue())
+				return Rune.Condition(monf,mmin,mmax,stf,smin,smax,group,condition,nil,specialchk)(e,sc,must,og,min,max)
+			end
+		end
+		return false
+	end
+	function PortalTarget(e,tp,eg,ep,ev,re,r,rp,chk,sc,must,og,min,max)
+		local effs={Duel.GetPlayerEffect(tp,EFFECT_RUNE_LOCATION)}
+		local descriptions={}
+		for _,te in ipairs(effs) do
+			local tg=te:GetTarget()
+			table.insert(descriptions,{te:CheckCountLimit(tp) and (not tg or tg(te,sc)),te:GetDescription()})
+		end
+		local op=Duel.SelectEffect(tp,table.unpack(descriptions))
+		local te=effs[op]
+		local runechk=Rune.CombineRuneChecks(specialchk,te:GetValue())
+		if Rune.Target(monf,mmin,mmax,stf,smin,smax,group,nil,specialchk)(e,tp,eg,ep,ev,re,r,rp,chk,sc,must,og,min,max) then
+			te:UseCountLimit(tp,1)
+			Duel.Hint(HINT_CARD,tp,te:GetHandler():GetCode())
+			if te:GetOperation() then
+				te:GetOperation()(te,tp,sc)
+			end
+			return true
+		else return false end
+	end
+
+	--Only supporting Rune Summon from Deck, other locations will be supported later.
+	local e1=Effect.CreateEffect(c)
+	e1:SetType(EFFECT_TYPE_FIELD)
+	e1:SetDescription(1175)
+	e1:SetCode(EFFECT_SPSUMMON_PROC)
+	e1:SetProperty(EFFECT_FLAG_UNCOPYABLE+EFFECT_FLAG_IGNORE_IMMUNE+EFFECT_FLAG_CANNOT_DISABLE)
+	e1:SetRange(LOCATION_ALL-LOCATION_MZONE)
+	e1:SetCondition(PortalCondition)
+	e1:SetTarget(PortalTarget)
+	e1:SetOperation(Rune.Operation(monf,mmin,mmax,stf,smin,smax,group,customoperation,stage2))
+	e1:SetValue(SUMMON_TYPE_RUNE)
+	return e1
+end
+function Rune.CreateSecondProcedure(c,monf,mmin,mmax,stf,smin,smax,loc,group,condition,excondition,specialchk,customoperation,stage2)
+	local e1=Effect.CreateEffect(c)
+	e1:SetType(EFFECT_TYPE_FIELD)
+	e1:SetDescription(1175)
+	e1:SetCode(EFFECT_SPSUMMON_PROC)
+	e1:SetProperty(EFFECT_FLAG_UNCOPYABLE+EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_IGNORE_IMMUNE)
+	e1:SetRange(loc)
+	e1:SetCondition(Rune.Condition(monf,mmin,mmax,stf,smin,smax,group,condition,excondition,specialchk))
+	e1:SetTarget(Rune.Target(monf,mmin,mmax,stf,smin,smax,group,excondition,specialchk))
+	e1:SetOperation(Rune.Operation(monf,mmin,mmax,stf,smin,smax,group,customoperation,stage2))
+	e1:SetValue(SUMMON_TYPE_RUNE)
+	return e1
 end
 --Procedure Functions
 function Rune.AddProcedure(c,monf,mmin,mmax,stf,smin,smax,loc,group,condition,excondition,specialchk,customoperation,stage2)
@@ -46,13 +120,19 @@ function Rune.AddProcedure(c,monf,mmin,mmax,stf,smin,smax,loc,group,condition,ex
 		mt.rune_parameters={}
 		table.insert(mt.rune_parameters,{monf,mmin,mmax,stf,smin,smax,loc+LOCATION_HAND,group,condition,excondition,specialchk,customoperation,stage2})
 	end
-	
-	local e1=Rune.CreateProcedure(c,monf,mmin,mmax,stf,smin,smax,loc,group,condition,specialchk,customoperation,stage2)
+
+	--Basic Rune Summon Procedure
+	local e1=Rune.CreateProcedure(c,monf,mmin,mmax,stf,smin,smax,group,condition,specialchk,customoperation,stage2)
 	c:RegisterEffect(e1)
-	
+
+	--Portal Effect
+	local e2=Rune.CreatePortalProcedure(c,monf,mmin,mmax,stf,smin,smax,group,condition,specialchk,customoperation,stage2)
+	c:RegisterEffect(e2)
+
 	if loc then
-		local e2=Rune.CreateSecondProcedure(c,monf,mmin,mmax,stf,smin,smax,loc,group,condition,excondition,specialchk,customoperation,stage2)
-		c:RegisterEffect(e2)
+		--Extra Rune Summon Procedure
+		local e3=Rune.CreateSecondProcedure(c,monf,mmin,mmax,stf,smin,smax,loc,group,condition,excondition,specialchk,customoperation,stage2)
+		c:RegisterEffect(e3)
 	end
 end
 function Rune.AddSecondProcedure(c,monf,mmin,mmax,stf,smin,smax,loc,group,condition,excondition,specialchk,customoperation,stage2)
@@ -72,36 +152,11 @@ function Rune.AddSecondProcedure(c,monf,mmin,mmax,stf,smin,smax,loc,group,condit
 		local mt=c:GetMetatable()
 		table.insert(mt.rune_parameters,{monf,mmin,mmax,stf,smin,smax,loc,group,condition,excondition,specialchk,customoperation,stage2})
 	end
+	--Extra Rune Summon Procedure
 	local e1=Rune.CreateSecondProcedure(c,monf,mmin,mmax,stf,smin,smax,loc,group,condition,excondition,specialchk,customoperation,stage2)
 	c:RegisterEffect(e1)
 end
-function Rune.CreateProcedure(c,monf,mmin,mmax,stf,smin,smax,loc,group,condition,specialchk,customoperation,stage2)
-	local e1=Effect.CreateEffect(c)
-	e1:SetType(EFFECT_TYPE_FIELD)
-	e1:SetDescription(1175)
-	e1:SetCode(EFFECT_SPSUMMON_PROC)
-	e1:SetProperty(EFFECT_FLAG_UNCOPYABLE+EFFECT_FLAG_IGNORE_IMMUNE+EFFECT_FLAG_CANNOT_DISABLE)
-	e1:SetRange(LOCATION_HAND) -- Look into turning Catenicorum Portal effects into a standard effect type for Rune Summoning.
-	e1:SetCondition(Rune.Condition(monf,mmin,mmax,stf,smin,smax,group,condition,nil,specialchk))
-	e1:SetTarget(Rune.Target(monf,mmin,mmax,stf,smin,smax,group,nil,specialchk))
-	e1:SetOperation(Rune.Operation(monf,mmin,mmax,stf,smin,smax,group,customoperation,stage2))
-	e1:SetValue(SUMMON_TYPE_RUNE)
-	return e1
-end
-function Rune.CreateSecondProcedure(c,monf,mmin,mmax,stf,smin,smax,loc,group,condition,excondition,specialchk,customoperation,stage2)
-	local e1=Effect.CreateEffect(c)
-	e1:SetType(EFFECT_TYPE_FIELD)
-	e1:SetDescription(1175)
-	e1:SetCode(EFFECT_SPSUMMON_PROC)
-	e1:SetProperty(EFFECT_FLAG_UNCOPYABLE+EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_IGNORE_IMMUNE)
-	e1:SetRange(loc)
-	e1:SetCondition(Rune.Condition(monf,mmin,mmax,stf,smin,smax,group,condition,excondition,specialchk))
-	e1:SetTarget(Rune.Target(monf,mmin,mmax,stf,smin,smax,group,excondition,specialchk))
-	e1:SetOperation(Rune.Operation(monf,mmin,mmax,stf,smin,smax,group,customoperation,stage2))
-	e1:SetValue(SUMMON_TYPE_RUNE)
-	return e1
-end
---
+--Material Filtering
 function Rune.MonFunction(f)
 	return	function(target,scard,sumtype,tp)
 				return target:IsMonster() and (not f or f(target,scard,sumtype,tp)) and Rune.IsCanBeMaterial(target,scard,tp)
@@ -351,6 +406,12 @@ function Rune.CheckGoal(mnct,stct,bothct,mmin,smin,tmin,tmax)
 		and stct+bothct>=smin
 		and mnct+stct+bothct<=tmax
 end
+function Rune.CombineRuneChecks(f1,f2)
+	return function (sg,rc,sumtype,tp)
+		return (not f1 or (f1(sg,rc,sumtype,tp)))
+			and (not f2 or (f2(sg,rc,sumtype,tp)))
+	end
+end
 function Rune.Condition(monf,mmin,mmax,stf,smin,smax,group,condition,excondition,specialchk)
 	return	function(e,c,must,og,min,max)
 				if c==nil then return true end
@@ -366,12 +427,7 @@ function Rune.Condition(monf,mmin,mmax,stf,smin,smax,group,condition,excondition
 					g:Merge(group(tp,nil,c))
 				end
 				--Get Material Check function
-				local matchk=specialchk
-				if specialchk and c.rune_custom_check then
-					matchk=aux.AND(c.rune_custom_check,specialchk)
-				elseif c.rune_custom_check then
-					matchk=c.rune_custom_check
-				end
+				local matchk=Rune.CombineRuneChecks(c.rune_custom_check,specialchk)
 				--There is a bug in the IsProcedureSummonable Condition where nil becomes 0 for max if min has been set
 				--if max==0 and min>0 then max=nil end
 				--Determine if Minimum and Maximum is Possible
@@ -415,12 +471,7 @@ function Rune.Target(monf,mmin,mmax,stf,smin,smax,group,excondition,specialchk)
 					g:Merge(group(tp,nil,c))
 				end
 				--Get Material Check function
-				local matchk=specialchk
-				if specialchk and c.rune_custom_check then
-					matchk=aux.AND(c.rune_custom_check,specialchk)
-				elseif c.rune_custom_check then
-					matchk=c.rune_custom_check
-				end
+				local matchk=Rune.CombineRuneChecks(c.rune_custom_check,specialchk)
 				--There is a bug in the IsProcedureSummonable Condition where nil becomes 0 for max if min has been set
 				--if max==0 and min>0 then max=nil end
 				--Minimums and Maximums
@@ -488,25 +539,25 @@ function Rune.Target(monf,mmin,mmax,stf,smin,smax,group,excondition,specialchk)
 end
 function Rune.Operation(monf,mmin,mmax,stf,smin,smax,group,customoperation,stage2)
 	return 	function(e,tp,eg,ep,ev,re,r,rp,c,must,g,min,max)
-				local g,filt,emt=table.unpack(e:GetLabelObject())
+				local sg,filt,emt=table.unpack(e:GetLabelObject())
 				for _,ex in ipairs(filt) do
 					if ex[3]:GetValue() then
-						ex[3]:GetValue()(1,SUMMON_TYPE_RUNE,ex[3],ex[1]&g,c,tp)
+						ex[3]:GetValue()(1,SUMMON_TYPE_RUNE,ex[3],ex[1]&sg,c,tp)
 						if ex[3]:CheckCountLimit(tp) then
 							ex[3]:UseCountLimit(tp,1)
 						end
 					end
 				end
-				c:SetMaterial(g)
+				c:SetMaterial(sg)
 				local rmgroup
 				local tdgroup
 				local thgroup
 				for _,ex in ipairs(emt) do
 					local te=ex[3]
-					local ug=Rune.UsedExtraMaterials(g,ex[1])
+					local ug=Rune.UsedExtraMaterials(sg,ex[1])
 					local locfunc=te:GetTarget()
 					if locfunc and #ug>0 then
-						local toloc=locfunc(te:GetHandler(),te,tp,g,ug,c,0)
+						local toloc=locfunc(te:GetHandler(),te,tp,sg,ug,c,0)
 						
 						if toloc==LOCATION_REMOVED then
 							if rmgroup then rmgroup:AddCard(ug)
@@ -523,28 +574,28 @@ function Rune.Operation(monf,mmin,mmax,stf,smin,smax,group,customoperation,stage
 					end
 				end
 				if rmgroup then
-					g:Sub(rmgroup)
+					sg:Sub(rmgroup)
 					Duel.Remove(rmgroup,POS_FACEUP,REASON_MATERIAL+REASON_RUNE)
 				end
 				if tdgroup then
-					g:Sub(tdgroup)
+					sg:Sub(tdgroup)
 					Duel.Remove(tdgroup,POS_FACEUP,REASON_MATERIAL+REASON_RUNE)
 					Duel.SendtoDeck(tdgroup,nil,SEQ_DECKBOTTOM,REASON_MATERIAL+REASON_RUNE)
 				end
 				if thgroup then
-					g:Sub(thgroup)
+					sg:Sub(thgroup)
 					Duel.SendtoHand(thgroup,nil,REASON_MATERIAL+REASON_RUNE)
 				end
 				if not customoperation then
-					Duel.SendtoGrave(g,REASON_MATERIAL+REASON_RUNE)
+					Duel.SendtoGrave(sg,REASON_MATERIAL+REASON_RUNE)
 					
 					if stage2 then
-						stage2(g,e,tp,eg,ep,ev,re,r,rp,pc)
+						stage2(sg,e,tp,eg,ep,ev,re,r,rp,pc)
 					end
 				else
-					customoperation(g:Clone(),e,tp,eg,ep,ev,re,r,rp,pc)
+					customoperation(sg:Clone(),e,tp,eg,ep,ev,re,r,rp,pc)
 				end
-				g:DeleteGroup()
+				sg:DeleteGroup()
 				e:GetLabelObject(nil)
 				aux.DeleteExtraMaterialGroups(emt)
 			end

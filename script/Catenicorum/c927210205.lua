@@ -12,9 +12,11 @@ function s.initial_effect(c)
     local e2=Effect.CreateEffect(c)
     e2:SetType(EFFECT_TYPE_FIELD)
     e2:SetProperty(EFFECT_FLAG_PLAYER_TARGET)
-    e2:SetCode(id)
+    e2:SetCode(EFFECT_RUNE_LOCATION)
     e2:SetRange(LOCATION_SZONE)
-    e2:SetTargetRange(1,0)
+	e2:SetTarget(aux.TargetBoolFunction(Card.IsSetCard,0xfcf))
+    e2:SetTargetRange(LOCATION_DECK,0)
+	e2:SetCountLimit(1,{id,1},EFFECT_COUNT_CODE_OATH)
     c:RegisterEffect(e2)
 	--Extra Rune Material
 	local e4=Effect.CreateEffect(c)
@@ -48,8 +50,12 @@ function s.initial_effect(c)
 	c:RegisterEffect(e6)
 end
 s.listed_series={0xfcf}
+--Rune from deck
 function s.sumtg(e,c)
 	return c:IsSetCard(0xfcf) and c:IsType(TYPE_RUNE)
+end
+function s.runcon(e)
+	return Duel.GetFlagEffect(e:GetHandlerPlayer(),id)==0
 end
 --extra material
 function s.eftg(e,c)
