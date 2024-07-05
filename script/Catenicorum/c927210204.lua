@@ -43,12 +43,6 @@ s.listed_series={0xfcf}
 function s.matcheck(g,rc,sumtype,tp)
 	return g:IsExists(Card.IsSetCard,1,nil,0xfcf,rc,sumtype,tp)
 end
---Catenicorum Portal effect
-function s.runchk(e,tp,chk,mg)
-	if chk==0 then return Duel.IsPlayerAffectedByEffect(tp,927210205) and Duel.GetFlagEffect(tp,927210205)==0 end
-	Duel.RegisterFlagEffect(tp,927210205,RESET_PHASE+PHASE_END,0,1)
-	return true
-end
 --act limit
 function s.actcon(e)
     return Duel.GetCurrentChain(true)==2

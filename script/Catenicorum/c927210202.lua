@@ -32,12 +32,6 @@ function s.initial_effect(c)
 	c:RegisterEffect(e2)
 end
 s.listed_series={0xfcf}
---Catenicorum Portal effect
-function s.runchk(e,tp,chk,mg)
-	if chk==0 then return Duel.IsPlayerAffectedByEffect(tp,927210205) and Duel.GetFlagEffect(tp,927210205)==0 end
-	Duel.RegisterFlagEffect(tp,927210205,RESET_PHASE+PHASE_END,0,1)
-	return true
-end
 --to deck
 function s.tdcon(e,tp,eg,ep,ev,re,r,rp)
 	return Duel.GetCurrentChain(true)>=2 and not e:GetHandler():IsStatus(STATUS_BATTLE_DESTROYED)

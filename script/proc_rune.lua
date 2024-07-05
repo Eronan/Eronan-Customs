@@ -52,7 +52,7 @@ function Rune.CreatePortalProcedure(c,monf,mmin,mmax,stf,smin,smax,group,conditi
 			local tg=te:GetTarget()
 			if te:CheckCountLimit(tp) and (not tg or tg(te,c)) then
 				local runechk=Rune.CombineRuneChecks(specialchk,te:GetValue())
-				return Rune.Condition(monf,mmin,mmax,stf,smin,smax,group,condition,nil,specialchk)(e,sc,must,og,min,max)
+				return Rune.Condition(monf,mmin,mmax,stf,smin,smax,group,condition,nil,runechk)(e,sc,must,og,min,max)
 			end
 		end
 		return false
@@ -64,10 +64,15 @@ function Rune.CreatePortalProcedure(c,monf,mmin,mmax,stf,smin,smax,group,conditi
 			local tg=te:GetTarget()
 			table.insert(descriptions,{te:CheckCountLimit(tp) and (not tg or tg(te,sc)),te:GetDescription()})
 		end
-		local op=Duel.SelectEffect(tp,table.unpack(descriptions))
-		local te=effs[op]
+		local te=effs[1]
+		if #descriptions>1 then
+			local op=Duel.SelectEffect(tp,table.unpack(descriptions))
+			te=effs[op]
+		elseif #descriptions==1 then
+			Duel.Hint(HINT_SELECTMSG,tp,te:GetDescription())
+		else return false end
 		local runechk=Rune.CombineRuneChecks(specialchk,te:GetValue())
-		if Rune.Target(monf,mmin,mmax,stf,smin,smax,group,nil,specialchk)(e,tp,eg,ep,ev,re,r,rp,chk,sc,must,og,min,max) then
+		if Rune.Target(monf,mmin,mmax,stf,smin,smax,group,nil,runechk)(e,tp,eg,ep,ev,re,r,rp,chk,sc,must,og,min,max) then
 			te:UseCountLimit(tp,1)
 			Duel.Hint(HINT_CARD,tp,te:GetHandler():GetCode())
 			if te:GetOperation() then
@@ -407,10 +412,10 @@ function Rune.CheckGoal(mnct,stct,bothct,mmin,smin,tmin,tmax)
 		and mnct+stct+bothct<=tmax
 end
 function Rune.CombineRuneChecks(f1,f2)
-	return function (sg,rc,sumtype,tp)
-		return (not f1 or (f1(sg,rc,sumtype,tp)))
-			and (not f2 or (f2(sg,rc,sumtype,tp)))
-	end
+	if type(f1)=="function" and type(f2)=="function" then return aux.AND(f1,f2)
+	elseif type(f1)=="function" then return f1
+	elseif type(f2)=="function" then return f2
+	else return nil end
 end
 function Rune.Condition(monf,mmin,mmax,stf,smin,smax,group,condition,excondition,specialchk)
 	return	function(e,c,must,og,min,max)
