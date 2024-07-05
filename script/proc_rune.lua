@@ -492,6 +492,9 @@ function Rune.Operation(monf,mmin,mmax,stf,smin,smax,group,customoperation,stage
 				for _,ex in ipairs(filt) do
 					if ex[3]:GetValue() then
 						ex[3]:GetValue()(1,SUMMON_TYPE_RUNE,ex[3],ex[1]&g,c,tp)
+						if ex[3]:CheckCountLimit(tp) then
+							ex[3]:UseCountLimit(tp,1)
+						end
 					end
 				end
 				c:SetMaterial(g)
