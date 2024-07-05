@@ -3,7 +3,7 @@ if not Rune then Duel.LoadScript("proc_rune.lua") end
 local s,id=GetID()
 function s.initial_effect(c)
     --Rune Summon
-    Rune.AddProcedure(c,Rune.MonFunctionEx(Card.IsLevelAbove,5),1,1,Rune.STFunction(nil),1,99,LOCATION_DECK,s.exgroup,nil,s.runchk,nil,s.customop)
+    Rune.AddProcedure(c,Rune.MonFunctionEx(Card.IsLevelAbove,5),1,1,Rune.STFunction(nil),1,99,nil,s.exgroup,nil,nil,nil,s.customop)
     c:EnableReviveLimit()
     --Search for "Tempest, Emberwind Acolyte"
 	local e1=Effect.CreateEffect(c)
@@ -40,12 +40,6 @@ s.counter_place_list={0x10fc}
 --Rune Summon
 function s.exgroup(tp,ex,c)
 	return Duel.GetMatchingGroup(Card.IsAbleToRemove,tp,LOCATION_GRAVE,0,ex)
-end
-function s.runchk(e,tp,chk,mg)
-	--Voice of Maris effect
-	if chk==0 then return Duel.IsPlayerAffectedByEffect(tp,928302006) and Duel.GetFlagEffect(tp,928302006)==0 end
-	Duel.RegisterFlagEffect(tp,928302006,RESET_PHASE+PHASE_END,0,1)
-	return true
 end
 function s.customop(g,e,tp,eg,ep,ev,re,r,rp,pc)
     local gy=g:Filter(Card.IsLocation,nil,LOCATION_GRAVE)

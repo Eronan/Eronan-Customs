@@ -45,12 +45,20 @@ function Rune.CreateProcedure(c,monf,mmin,mmax,stf,smin,smax,group,condition,spe
 	return e1
 end
 function Rune.CreatePortalProcedure(c,monf,mmin,mmax,stf,smin,smax,group,condition,specialchk,customoperation,stage2)
+	function PortalEffectActive(te,tp,se,sc)
+		if not te:CheckCountLimit(tp) then return false end
+		local s,o=te:GetTargetRange()
+		if sc:IsControler(tp) and not sc:IsLocation(s) then return false
+		elseif sc:IsControler(1-tp) and not sc:IsLocation(o) then return false end
+		local tg=te:GetTarget()
+		if not tg then return true end
+		return tg(te,sc)
+	end
 	function PortalCondition(e,sc,must,og,min,max)
 		local tp=e:GetHandlerPlayer()
 		local portaleffs={Duel.GetPlayerEffect(tp,EFFECT_RUNE_LOCATION)}
 		for _,te in ipairs(portaleffs) do
-			local tg=te:GetTarget()
-			if te:CheckCountLimit(tp) and (not tg or tg(te,c)) then
+			if PortalEffectActive(te,tp,e,c) then
 				local runechk=Rune.CombineRuneChecks(specialchk,te:GetValue())
 				return Rune.Condition(monf,mmin,mmax,stf,smin,smax,group,condition,nil,runechk)(e,sc,must,og,min,max)
 			end
@@ -62,19 +70,17 @@ function Rune.CreatePortalProcedure(c,monf,mmin,mmax,stf,smin,smax,group,conditi
 		local descriptions={}
 		for _,te in ipairs(effs) do
 			local tg=te:GetTarget()
-			table.insert(descriptions,{te:CheckCountLimit(tp) and (not tg or tg(te,sc)),te:GetDescription()})
+			table.insert(descriptions,{PortalEffectActive(te,tp,e,c),te:GetDescription()})
 		end
 		local te=effs[1]
 		if #descriptions>1 then
 			local op=Duel.SelectEffect(tp,table.unpack(descriptions))
 			te=effs[op]
-		elseif #descriptions==1 then
-			Duel.Hint(HINT_SELECTMSG,tp,te:GetDescription())
-		else return false end
+		elseif #descriptions==0 then return false end
+		Duel.Hint(HINT_CARD,tp,te:GetHandler():GetCode())
 		local runechk=Rune.CombineRuneChecks(specialchk,te:GetValue())
 		if Rune.Target(monf,mmin,mmax,stf,smin,smax,group,nil,runechk)(e,tp,eg,ep,ev,re,r,rp,chk,sc,must,og,min,max) then
 			te:UseCountLimit(tp,1)
-			Duel.Hint(HINT_CARD,tp,te:GetHandler():GetCode())
 			if te:GetOperation() then
 				te:GetOperation()(te,tp,sc)
 			end
