@@ -81,9 +81,15 @@ function Rune.CreatePortalProcedure(c,monf,mmin,mmax,stf,smin,smax,group,conditi
 		local runechk=Rune.CombineRuneChecks(specialchk,te:GetValue())
 		if Rune.Target(monf,mmin,mmax,stf,smin,smax,group,nil,runechk)(e,tp,eg,ep,ev,re,r,rp,chk,sc,must,og,min,max) then
 			te:UseCountLimit(tp,1)
-			if te:GetOperation() then
-				te:GetOperation()(te,tp,sc)
+			local op=te:GetOperation()
+			if op then
+				local afteroperation=op(customoperation,stage2)
+				e:SetOperation(Rune.Operation(monf,mmin,mmax,stf,smin,smax,group,afteroperation))
+			else
+				e:SetOperation(Rune.Operation(monf,mmin,mmax,stf,smin,smax,group,customoperation,stage2))
 			end
+			
+			e:SetOperation(Rune.Operation(monf,mmin,mmax,stf,smin,smax,group,))
 			return true
 		else return false end
 	end
@@ -97,7 +103,6 @@ function Rune.CreatePortalProcedure(c,monf,mmin,mmax,stf,smin,smax,group,conditi
 	e1:SetRange(LOCATION_ALL-LOCATION_MZONE)
 	e1:SetCondition(PortalCondition)
 	e1:SetTarget(PortalTarget)
-	e1:SetOperation(Rune.Operation(monf,mmin,mmax,stf,smin,smax,group,customoperation,stage2))
 	e1:SetValue(SUMMON_TYPE_RUNE)
 	return e1
 end
