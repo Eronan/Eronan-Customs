@@ -69,7 +69,7 @@ function s.cpop(e,tp,eg,ep,ev,re,r,rp)
 		Duel.BreakEffect()
 		--Copy Effects and Name
 		local code=tc:GetCode()
-		c:CopyEffect(code,RESET_EVENT+RESETS_STANDARD+RESET_PHASE+PHASE_END)
+		c:CopyEffect(code,RESET_EVENT+RESETS_STANDARD)
 		local e1=Effect.CreateEffect(c)
 		e1:SetType(EFFECT_TYPE_SINGLE)
 		e1:SetProperty(EFFECT_FLAG_CANNOT_DISABLE)

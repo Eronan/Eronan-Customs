@@ -43,7 +43,7 @@ function s.tgcon(e)
 end
 function s.tgtg(e,c)
     local ec=e:GetHandler()
-	return ec:GetColumnGroup():IsContains(c)
+	return c==e:GetHandler() or ec:GetColumnGroup():IsContains(c)
 end
 --Cannot Special Summon from same Location
 function s.epcfilter(c,tp)
