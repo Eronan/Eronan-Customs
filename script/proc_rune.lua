@@ -88,8 +88,6 @@ function Rune.CreatePortalProcedure(c,monf,mmin,mmax,stf,smin,smax,group,conditi
 			else
 				e:SetOperation(Rune.Operation(monf,mmin,mmax,stf,smin,smax,group,customoperation,stage2))
 			end
-			
-			e:SetOperation(Rune.Operation(monf,mmin,mmax,stf,smin,smax,group,))
 			return true
 		else return false end
 	end

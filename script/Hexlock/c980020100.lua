@@ -58,19 +58,19 @@ function s.runfilter(c)
 	return c:IsType(TYPE_RUNE) and c:IsSetCard(0xfc7) and c:IsAbleToHand()
 		and c:IsRuneSummonable(nil,mg,nil,nil,LOCATION_HAND)
 end
-function s.extrafilter(c)
-    return (c:IsFaceup() and c:IsOnField()) or (c:IsSetCard(0xfc7) and c:IsContinuousTrap() and c:IsLocation(LOCATION_DECK))
+function s.matfilter(c)
+    return c:IsFaceup() or c:IsLocation(LOCATION_HAND)
 end
 function s.runtg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then
-        local mg=Duel.GetMatchingGroup(s.extrafilter,tp,LOCATION_ONFIELD|LOCATION_DECK,0,nil)
-        return Duel.IsExistingMatchingCard(s.runfilter,tp,LOCATION_DECK,0,1,nil,mg)
+        local mg=Duel.GetMatchingGroup(s.matfilter,tp,LOCATION_ONFIELD|LOCATION_HAND,0,nil)
+        return Duel.IsExistingMatchingCard(s.runfilter,tp,LOCATION_HAND,0,1,nil,mg)
     end
     Duel.SetOperationInfo(0,CATEGORY_TOHAND,nil,1,tp,LOCATION_DECK)
     Duel.SetOperationInfo(0,CATEGORY_SPECIAL_SUMMON,nil,1,tp,LOCATION_HAND)
 end
 function s.runop(e,tp,eg,ep,ev,re,r,rp)
-    local mg=Duel.GetMatchingGroup(s.extrafilter,tp,LOCATION_ONFIELD|LOCATION_DECK,0,nil)
+    local mg=Duel.GetMatchingGroup(s.matfilter,tp,LOCATION_ONFIELD|LOCATION_HAND,0,nil)
     local g=Duel.GetMatchingGroup(s.runfilter,tp,LOCATION_DECK,0,nil,mg)
     if #g>0 then
         Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_ATOHAND)
