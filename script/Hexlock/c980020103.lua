@@ -61,7 +61,8 @@ function s.discon(e,tp,eg,ep,ev,re,r,rp)
 	return eg:IsExists(s.discfilter,1,nil)
 end
 function s.disfilter(c)
-	return c:IsFaceup() and not c:IsDisabled() and c:IsType(TYPE_EFFECT)
+	return c:IsFaceup() and not c:IsDisabled()
+		and (c:IsType(TYPE_EFFECT) or not c:IsLocation(LOCATION_MZONE))
 end
 function s.distg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	if chkc then return chkc:IsControler(1-tp) and chkc:IsLocation(LOCATION_ONFIELD) and s.disfilter(chkc) end

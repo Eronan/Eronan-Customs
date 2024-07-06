@@ -46,11 +46,10 @@ function s.thfilter(c)
 	return c:IsSetCard(0xfc7) and c:IsAbleToHand() and not c:IsCode(id)
 end
 function s.thtg(e,tp,eg,ep,ev,re,r,rp,chk)
-	if chk==0 then return true end
+	if chk==0 then return Duel.IsExistingMatchingCard(s.thfilter,tp,LOCATION_DECK,1,nil) end
 	Duel.SetOperationInfo(0,CATEGORY_TOHAND,nil,1,tp,LOCATION_DECK)
 end
 function s.thop(e,tp,eg,ep,ev,re,r,rp)
-	if not e:GetHandler():IsRelateToEffect(e) then return end
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_ATOHAND)
 	local g=Duel.SelectMatchingCard(tp,s.thfilter,tp,LOCATION_DECK,0,1,1,nil)
 	if #g>0 then
@@ -60,26 +59,26 @@ function s.thop(e,tp,eg,ep,ev,re,r,rp)
 end
 --Rune Summon "Hexlock" Rune monster
 function s.runfilter(c,mg)
-	return c:IsType(TYPE_RUNE) and c:IsSetCard(0xfc7) and c:IsAbleToHand()
-		and c:IsRuneSummonable(nil,mg,nil,nil,LOCATION_HAND)
+	return c:IsType(TYPE_RUNE) and c:IsAbleToHand()
 end
 function s.matfilter(c)
     return c:IsFaceup() or c:IsLocation(LOCATION_HAND)
 end
 function s.runtg(e,tp,eg,ep,ev,re,r,rp,chk)
-	if chk==0 then
-        local mg=Duel.GetMatchingGroup(s.matfilter,tp,LOCATION_ONFIELD|LOCATION_HAND,0,nil)
-        return Duel.IsExistingMatchingCard(s.runfilter,tp,LOCATION_DECK,0,1,nil,mg)
-    end
+	if chk==0 then return Duel.IsExistingMatchingCard(s.runfilter,tp,LOCATION_DECK,0,1,nil) end
     Duel.SetOperationInfo(0,CATEGORY_TOHAND,nil,1,tp,LOCATION_DECK)
-    Duel.SetOperationInfo(0,CATEGORY_SPECIAL_SUMMON,nil,1,tp,LOCATION_HAND)
+    Duel.SetPossibleOperationInfo(0,CATEGORY_SPECIAL_SUMMON,nil,1,tp,LOCATION_HAND)
 end
 function s.runop(e,tp,eg,ep,ev,re,r,rp)
-    local mg=Duel.GetMatchingGroup(s.matfilter,tp,LOCATION_ONFIELD|LOCATION_HAND,0,nil)
-    local g=Duel.GetMatchingGroup(s.runfilter,tp,LOCATION_DECK,0,nil,mg)
-    if #g>0 then
-        Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_ATOHAND)
-        local rc=g:Select(tp,1,1,nil):GetFirst()
-        Duel.RuneSummon(tp,rc)
-    end
+    local g=Duel.GetMatchingGroup(s.runfilter,tp,LOCATION_DECK,0,nil)
+    if #g==0 then return end
+	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_ATOHAND)
+	local tc=g:Select(tp,1,1,nil):GetFirst()
+	Duel.SendtoHand(tc,tp,REASON_EFFECT)
+	local c=e:GetHandler()
+	local mg=Duel.GetMatchingGroup(Card.IsSetCard,tp,LOCATION_DECK,0,nil,0xfc7)
+	mg:AddCard(c)
+	if tc:IsSetCard(0xfc7) and tc:IsRuneSummonable(c,mg) and Duel.SelectYesNo(tp,aux.Stringid(id,2)) then
+		Duel.RuneSummon(tp,tc,c,mg)
+	end
 end

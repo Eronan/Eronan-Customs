@@ -131,12 +131,7 @@ function s.handcon(e)
     return Duel.GetFlagEffect(e:GetHandlerPlayer(),id)>0
 end
 function s.checkop(e,tp,eg,ep,ev,re,r,rp)
-	if eg:IsExists(Card.IsSummonPlayer,1,nil,tp) then
-        s[1-tp]=1
-    end
-    if eg:IsExists(Card.IsSummonPlayer,1,nil,1-tp) then
-        s[tp]=1
-    end
+	s[1-rp]=1
 end
 function s.regop(e,tp,eg,ep,ev,re,r,rp)
 	if s[0]>0 then

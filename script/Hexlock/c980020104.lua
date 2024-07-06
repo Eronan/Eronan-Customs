@@ -20,8 +20,8 @@ function s.initial_effect(c)
 	e2:SetProperty(EFFECT_FLAG_CARD_TARGET)
 	e2:SetCode(EVENT_FREE_CHAIN)
 	e2:SetCost(aux.bfgcost)
-	e2:SetTarget(s.mttg)
-	e2:SetOperation(s.mtop)
+	e2:SetTarget(s.runtg)
+	e2:SetOperation(s.runop)
 	c:RegisterEffect(e2)
     --act in hand
 	local e4=Effect.CreateEffect(c)
@@ -73,46 +73,31 @@ function s.spop(e,tp,eg,ep,ev,re,r,rp)
 	Duel.SpecialSummonComplete()
 end
 --use opponent's targeted monster as extra material
-function s.exfilter(c)
-	return c:IsFaceup()
+function s.matfilter(c,tp,mg)
+	mg:AddCard(c)
+	return c:IsFaceup() and Duel.IsExistingMatchingCard(s.runfilter,tp,0x3ff~LOCATION_MZONE,0,1,nil,c,mg)
 end
-function s.mttg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
-	if chkc then return chkc:IsLocation(LOCATION_ONFIELD) and chkc:IsControler(1-tp) and chkc:IsFaceup() end
-	if chk==0 then return Duel.IsExistingTarget(Card.IsFaceup,tp,0,LOCATION_ONFIELD,1,nil) end
+function s.runfilter(c,mc,mg)
+	return c:IsSetCard(0xfc7) and c:IsRuneSummonable(mc,mg)
+end
+function s.runtg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
+	local mg=Duel.GetMatchingGroup(Card.IsFaceup,tp,LOCATION_ONFIELD,0,nil)
+	if chkc then return chkc:IsLocation(LOCATION_ONFIELD) and chkc:IsControler(1-tp) and s.matfilter(c,tp,mg) end
+	if chk==0 then return Duel.IsExistingTarget(s.matfilter,tp,0,LOCATION_ONFIELD,1,nil,tp,mg) end
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_FACEUP)
-	Duel.SelectTarget(tp,s.exfilter,tp,0,LOCATION_ONFIELD,1,1,nil)
+	Duel.SelectTarget(tp,s.matfilter,tp,0,LOCATION_ONFIELD,1,1,nil,tp,mg)
+	Duel.SetOperationInfo(0,CATEGORY_SPECIAL_SUMMON,nil,1,tp,0x3ff~LOCATION_MZONE)
 end
-function s.mtop(e,tp,eg,ep,ev,re,r,rp)
+function s.runop(e,tp,eg,ep,ev,re,r,rp)
 	local tc=Duel.GetFirstTarget()
-	if tc:IsRelateToEffect(e) and tc:IsFaceup() and tc:IsControler(1-tp) then
-        local c=e:GetHandler()
-        --Extra Material
-        local e1=Effect.CreateEffect(c)
-        e1:SetType(EFFECT_TYPE_FIELD)
-        e1:SetRange(LOCATION_MZONE|LOCATION_SZONE)
-        e1:SetCode(EFFECT_EXTRA_MATERIAL)
-        e1:SetProperty(EFFECT_FLAG_PLAYER_TARGET)
-        e1:SetTargetRange(0,1)
-        e1:SetReset(RESET_EVENT+RESETS_STANDARD+RESET_PHASE+PHASE_END)
-        e1:SetValue(s.extraval)
-        tc:RegisterEffect(e1)
-	end
-end
-function s.extraval(chk,summon_type,e,...)
-	local c=e:GetHandler()
-	if chk==0 then
-		local tp,sc=...
-		if summon_type~=SUMMON_TYPE_RUNE or not sc:IsSetCard(0xfc7) or not c:IsControler(1-tp) then
-			return Group.CreateGroup()
-		else
-			return Group.FromCards(c)
-		end
-	elseif chk==1 then
-		local sg,sc,tp=...
-		if summon_type&SUMMON_TYPE_RUNE == SUMMON_TYPE_RUNE and #sg>0 and sc:IsSetCard(0xfc7) and c:IsControler(1-tp) then
-			Duel.Hint(HINT_CARD,tp,id)
-		end
-	end
+	if not tc:IsRelateToEffect(e) or tc:IsFacedown() then return end
+	local mg=Duel.GetMatchingGroup(Card.IsFaceup,tp,LOCATION_ONFIELD,0,nil)
+	mg:AddCard(tc)
+	local g=Duel.GetMatchingGroup(s.runfilter,tp,0x3ff~LOCATION_MZONE,0,nil,tc,mg)
+	if #g==0 then return end
+	Duel.Hint(HINT_SELECTMSG,tp,1175)
+	local sc=g:Select(tp,1,1,nil):GetFirst()
+	Duel.RuneSummon(tp,sc,tc,mg)
 end
 --Check that card can be activated from hand
 function s.checkop(e,tp,eg,ep,ev,re,r,rp)

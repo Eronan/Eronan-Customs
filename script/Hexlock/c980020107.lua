@@ -8,6 +8,7 @@ function s.initial_effect(c)
 	e1:SetType(EFFECT_TYPE_ACTIVATE)
 	e1:SetCode(EVENT_FREE_CHAIN)
 	e1:SetProperty(EFFECT_FLAG_CARD_TARGET)
+    e1:SetCountLimit(1,id,EFFECT_COUNT_CODE_OATH)
 	e1:SetTarget(s.target)
     e1:SetOperation(s.activate)
 	c:RegisterEffect(e1)
@@ -167,7 +168,7 @@ function s.ctfilter(c,e,tp)
 end
 function s.cttg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
     if chkc then return false end
-    if chk==0 then return eg:IsExists(s.cfilter,1,nil,e,1-tp) and rp==1-tp end
+    if chk==0 then return eg:IsExists(s.ctfilter,1,nil,e,1-tp) and rp==1-tp end
     local g=eg:Filter(s.ctfilter,nil,e,1-tp)
     local tc=g:GetFirst()
     if #g>1 then
@@ -181,10 +182,10 @@ function s.ctop(e,tp,eg,ep,ev,re,r,rp)
     local tc=Duel.GetFirstTarget()
     if tc and tc:IsRelateToEffect(e) and Duel.GetControl(tc,tp,PHASE_END|RESET_SELF_TURN,1) then
         --Negate its effects
-		local e1=Effect.CreateEffect(c)
+		local e1=Effect.CreateEffect(e:GetHandler())
 		e1:SetType(EFFECT_TYPE_SINGLE)
 		e1:SetCode(EFFECT_DISABLE)
-		e1:SetReset(RESET_EVENT+RESETS_STANDARD)
+		e1:SetReset(RESET_EVENT+RESETS_STANDARD+RESET_PHASE+PHASE_END+RESET_SELF_TURN)
 		tc:RegisterEffect(e1)
 		local e2=e1:Clone()
 		e2:SetCode(EFFECT_DISABLE_EFFECT)
@@ -199,11 +200,8 @@ function s.handcon(e)
     return Duel.GetFlagEffect(e:GetHandlerPlayer(),id)>0
 end
 function s.checkop(e,tp,eg,ep,ev,re,r,rp)
-    if eg:IsExists(s.cfilter,1,nil,tp) then
-        s[1-tp]=1
-    end
-    if eg:IsExists(s.cfilter,1,nil,1-tp) then
-        s[tp]=1
+    if eg:IsExists(s.cfilter,1,nil,rp) then
+        s[1-rp]=1
     end
 end
 function s.regop(e,tp,eg,ep,ev,re,r,rp)

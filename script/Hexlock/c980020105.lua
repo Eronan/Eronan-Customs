@@ -99,21 +99,21 @@ function s.matlimit(e,c,sumtype,tp)
 end
 --extra material
 function s.extracon(c,e,tp,sg,mg,rc,og,chk)
-	if tp==nil then tp=rc:GetControler() end
-	return ct==0 or (sg:IsContains(e:GetLabelObject()) and ct<2)
+	if not sg then return true end
+	return sg:IsContains(e:GetLabelObject())
 end
 function s.extraval(chk,summon_type,e,...)
 	local c=e:GetHandler()
 	if chk==0 then
 		local tp,sc=...
-		if summon_type~=SUMMON_TYPE_RUNE or not sc:IsSetCard(0xfc7) or not c:IsControler(1-tp) then
+		if summon_type~=SUMMON_TYPE_RUNE or not sc:IsSetCard(0xfc7) or not c:IsControler(tp) then
 			return Group.CreateGroup()
 		else
 			return c:GetCardTarget()
 		end
 	elseif chk==1 then
 		local sg,sc,tp=...
-		if summon_type&SUMMON_TYPE_RUNE == SUMMON_TYPE_RUNE and #sg>0 and sc:IsSetCard(0xfc7) and c:IsControler(1-tp) then
+		if summon_type&SUMMON_TYPE_RUNE == SUMMON_TYPE_RUNE and #sg>0 and sc:IsSetCard(0xfc7) and c:IsControler(tp) then
 			Duel.Hint(HINT_CARD,tp,id)
 		end
 	end
