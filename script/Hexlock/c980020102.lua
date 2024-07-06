@@ -3,7 +3,7 @@ if not Rune then Duel.LoadScript("proc_rune.lua") end
 local s,id=GetID()
 function s.initial_effect(c)
     --Rune Summon
-    Rune.AddProcedure(c,Rune.MonFunctionEx(Card.IsSummonType,SUMMON_TYPE_SPECIAL),1,1,Rune.STFunction(s.stfilter),1,1)
+    Rune.AddProcedure(c,Rune.MonFunction(s.mtfilter),1,1,Rune.STFunction(s.stfilter),1,1)
     c:EnableReviveLimit()
     --act limit
 	local e1=Effect.CreateEffect(c)
@@ -17,14 +17,18 @@ function s.initial_effect(c)
 	e2:SetDescription(aux.Stringid(id,0))
 	e2:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_TRIGGER_O)
 	e2:SetCode(EVENT_SPSUMMON_SUCCESS)
-    e2:SetCondition(s.lkcon)
+    e2:SetCondition(function(e) return e:GetHandler():IsSummonType(SUMMON_TYPE_RUNE) end)
 	e2:SetTarget(s.lktg)
 	e2:SetOperation(s.kop)
 	c:RegisterEffect(e2)
 end
+s.listed_series={0xfc7}
 --Rune Summon
+function s.mtfilter(c,rc,sumtype,tp)
+    return c:IsSummonType(SUMMON_TYPE_SPECIAL)
+end
 function s.stfilter(c,rc,sumtype,tp)
-    return c:IsSetCard(rc,sumtype,tp) and c:IsTrap()
+    return c:IsSetCard(0xfc7,rc,sumtype,tp) and c:IsTrap()
 end
 --act limit
 function s.chainop(e,tp,eg,ep,ev,re,r,rp)
@@ -38,9 +42,6 @@ function s.chainlm(g)
     end
 end
 --Lockdown face-down cards
-function s.lkcon(e,tp,eg,ep,ev,re,r,rp)
-	return e:GetHandler():IsSummonType(SUMMON_TYPE_RUNE)
-end
 function s.lktg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
     if chkc then return chkc:IsControler(1-tp) and chkc:IsLocation(LOCATION_ONFIELD) and chkc:IsFacedown() end
     if chk==0 then return Duel.IsExistingTarget(Card.IsFacedown,tp,0,LOCATION_ONFIELD,1,nil) end

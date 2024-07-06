@@ -24,7 +24,7 @@ function s.initial_effect(c)
 	e2:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_TRIGGER_O)
 	e2:SetCode(EVENT_SPSUMMON_SUCCESS)
     e2:SetCountLimit(1,id,EFFECT_COUNT_CODE_OATH)
-    e2:SetCondition(s.thcon)
+	e2:SetCondition(function(e) return e:GetHandler():IsSummonType(SUMMON_TYPE_RUNE) end)
 	e2:SetTarget(s.thtg)
 	e2:SetOperation(s.thop)
 	c:RegisterEffect(e2)
@@ -39,8 +39,8 @@ function s.matfilter(c)
 end
 function s.runtg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then
-        local mg=Duel.GetMatchingGroup(s.matfilter,tp,LOCATION_ONFIELD|LOCATION_HAND,0,nil)
-        return e:GetHandler():IsRuneSummonable(nil,mg,nil,nil) end
+		local mg=Duel.GetMatchingGroup(s.matfilter,tp,LOCATION_ONFIELD|LOCATION_HAND,0,nil)
+		return e:GetHandler():IsRuneSummonable(nil,mg,nil,nil) end
 	Duel.SetOperationInfo(0,CATEGORY_SPECIAL_SUMMON,e:GetHandler(),1,0,0)
 end
 function s.runop(e,tp,eg,ep,ev,re,r,rp)
@@ -51,18 +51,15 @@ function s.runop(e,tp,eg,ep,ev,re,r,rp)
 	end
 end
 --Search
-function s.thcon(e,tp,eg,ep,ev,re,r,rp)
-	return e:GetHandler():IsSummonType(SUMMON_TYPE_RUNE)
-end
-function s.filter(c)
+function s.thfilter(c)
     return c:IsSetCard(0xfc7) and c:IsContinuousTrap() and c:IsAbleToHand()
 end
 function s.thtg(e,tp,eg,ep,ev,re,r,rp,chk)
-    if chk==0 then return Duel.IsExistingMatchingCard(s.filter,tp,LOCATION_DECK,0,2,nil) end
-    Duel.SetOperationInfo(0,CATEGORY_TOHAND,nil,2,tp,LOCATION_DECK)
+    if chk==0 then return Duel.IsExistingMatchingCard(s.thfilter,tp,LOCATION_DECK,0,1,nil) end
+    Duel.SetOperationInfo(0,CATEGORY_TOHAND,nil,1,tp,LOCATION_DECK)
 end
 function s.thop(e,tp,eg,ep,ev,re,r,rp)
-    local sg=Duel.GetMatchingGroup(s.filter,tp,LOCATION_DECK,0,nil)
+    local sg=Duel.GetMatchingGroup(s.thfilter,tp,LOCATION_DECK,0,nil)
     if #sg==0 then return end
     Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_ATOHAND)
     local g=sg:Select(tp,1,1,nil)
@@ -70,11 +67,11 @@ function s.thop(e,tp,eg,ep,ev,re,r,rp)
     Duel.ConfirmCards(1-tp,g)
     --disable effect
     local tc=g:GetFirst()
-	local e2=Effect.CreateEffect(c)
-	e2:SetType(EFFECT_TYPE_FIELD)
-	e2:SetCode(EFFECT_TRAP_ACT_IN_HAND)
-	e2:SetTargetRange(LOCATION_HAND,0)
-	e2:SetTarget(aux.TargetBoolFunction(Card.IsCode,tc:GetCode()))
-    e2:SetReset(RESET_PHASE+PHASE_END)
-	Duel.RegisterEffect(e2,tp)
+	local e1=Effect.CreateEffect(e:GetHandler())
+	e1:SetType(EFFECT_TYPE_FIELD)
+	e1:SetCode(EFFECT_TRAP_ACT_IN_HAND)
+	e1:SetTargetRange(LOCATION_HAND,0)
+	e1:SetTarget(aux.TargetBoolFunction(Card.IsCode,tc:GetCode()))
+    e1:SetReset(RESET_PHASE+PHASE_END)
+	Duel.RegisterEffect(e1,tp)
 end

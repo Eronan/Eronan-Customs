@@ -46,7 +46,7 @@ function s.exgroup(tp,ex,c)
 end
 --Destroy replace
 function s.repcon(e)
-    return e:GetHandler():IsSummonType(SUMMON_TYPE_RUNE)
+	return e:GetHandler():IsSummonType(SUMMON_TYPE_RUNE)
 end
 function s.repfilter(c,e)
 	return c:IsDestructable(e) and not c:IsStatus(STATUS_DESTROY_CONFIRMED)

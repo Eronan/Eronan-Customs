@@ -47,26 +47,31 @@ end
 function Rune.CreatePortalProcedure(c,monf,mmin,mmax,stf,smin,smax,group,condition,specialchk,customoperation,stage2)
 	function PortalEffectActive(te,tp,se,sc)
 		if not te:CheckCountLimit(tp) then return false end
-		local s,o=te:GetTargetRange()
-		if sc:IsControler(tp) and not sc:IsLocation(s) then return false
-		elseif sc:IsControler(1-tp) and not sc:IsLocation(o) then return false end
 		local tg=te:GetTarget()
 		if not tg then return true end
 		return tg(te,sc)
 	end
+	function PortalRuneCheck(te)
+		local val=te:GetValue()
+		if type(val)~="function" then return nil end
+
+		return function (g,rc,sumtype,tp)
+			return val(te,tp,g,rc)
+		end
+	end
 	function PortalCondition(e,sc,must,og,min,max)
 		local tp=e:GetHandlerPlayer()
-		local portaleffs={Duel.GetPlayerEffect(tp,EFFECT_RUNE_LOCATION)}
+		local portaleffs={e:GetHandler():GetCardEffect(EFFECT_RUNE_LOCATION)}
 		for _,te in ipairs(portaleffs) do
 			if PortalEffectActive(te,tp,e,c) then
-				local runechk=Rune.CombineRuneChecks(specialchk,te:GetValue())
+				local runechk=Rune.CombineRuneChecks(specialchk,PortalRuneCheck(te))
 				return Rune.Condition(monf,mmin,mmax,stf,smin,smax,group,condition,nil,runechk)(e,sc,must,og,min,max)
 			end
 		end
 		return false
 	end
 	function PortalTarget(e,tp,eg,ep,ev,re,r,rp,chk,sc,must,og,min,max)
-		local effs={Duel.GetPlayerEffect(tp,EFFECT_RUNE_LOCATION)}
+		local effs={e:GetHandler():GetCardEffect(EFFECT_RUNE_LOCATION)}
 		local descriptions={}
 		for _,te in ipairs(effs) do
 			local tg=te:GetTarget()
@@ -77,9 +82,9 @@ function Rune.CreatePortalProcedure(c,monf,mmin,mmax,stf,smin,smax,group,conditi
 			local op=Duel.SelectEffect(tp,table.unpack(descriptions))
 			te=effs[op]
 		elseif #descriptions==0 then return false end
-		Duel.Hint(HINT_CARD,tp,te:GetHandler():GetCode())
-		local runechk=Rune.CombineRuneChecks(specialchk,te:GetValue())
+		local runechk=Rune.CombineRuneChecks(specialchk,PortalRuneCheck(te))
 		if Rune.Target(monf,mmin,mmax,stf,smin,smax,group,nil,runechk)(e,tp,eg,ep,ev,re,r,rp,chk,sc,must,og,min,max) then
+			Duel.Hint(HINT_CARD,tp,te:GetHandler():GetCode())
 			te:UseCountLimit(tp,1)
 			local op=te:GetOperation()
 			if op then
