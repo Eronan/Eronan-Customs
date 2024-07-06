@@ -42,7 +42,7 @@ function s.mustbematerialsallowed(tp,mg)
 end
 function s.filter1(c,e,tp)
 	return s.mustbematerialsallowed(tp,Group.FromCards(c,e:GetHandler())) and c:IsFaceup() and c:IsType(TYPE_RUNE)
-		and Duel.IsExistingMatchingCard(s.filter2,tp,LOCATION_DECK,0,1,nil,e,tp,c)
+		and c:IsSetCard(0xfe3) and Duel.IsExistingMatchingCard(s.filter2,tp,LOCATION_DECK,0,1,nil,e,tp,c)
 end
 function s.filter2(c,e,tp,mc)
 	return c:IsAttribute(mc:GetAttribute()) and c:GetLevel()>mc:GetLevel() and c:IsType(TYPE_RUNE) and c:IsSetCard(0xfe3) and mc:IsCanBeRuneMaterial(c,tp)

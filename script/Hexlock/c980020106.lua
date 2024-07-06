@@ -58,7 +58,6 @@ function s.initial_effect(c)
 	e6:SetCode(EFFECT_TRAP_ACT_IN_HAND)
 	e6:SetCondition(s.handcon)
 	c:RegisterEffect(e6)
-    Duel.AddCustomActivityCounter(id,ACTIVITY_CHAIN,function(te) return Duel.GetCurrentChain()>=3 end)
 end
 s.listed_series={0xfc7}
 --Destroy when leaves the field
@@ -146,6 +145,11 @@ function s.negop(e,tp,eg,ep,ev,re,r,rp)
 	end
 end
 --activate from hand
+function s.handcfilter(c)
+	return c:IsType(TYPE_RUNE) and c:IsSetCard(0xfc7)
+end
 function s.handcon(e)
-    return Duel.GetCustomActivityCount(id,1-e:GetHandlerPlayer(),ACTIVITY_CHAIN)>0
+	local tp=e:GetHandlerPlayer()
+    return Duel.GetFieldGroupCount(tp,LOCATION_MZONE,0)==0 or
+		Duel.IsExistingMatchingCard(s.handcfilter,tp,LOCATION_MZONE,0,1,nil)
 end

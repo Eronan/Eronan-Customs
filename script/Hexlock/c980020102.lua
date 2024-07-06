@@ -44,12 +44,15 @@ end
 --act limit
 function s.chainop(e,tp,eg,ep,ev,re,r,rp)
     if not re:IsHasProperty(EFFECT_FLAG_CARD_TARGET) then return end
-    local g=Duel.GetChainInfo(0,CHAININFO_TARGET_CARDS)
-    Duel.SetChainLimit(s.chainlm(g))
+    local g=Duel.GetChainInfo(ev,CHAININFO_TARGET_CARDS)
+    local mg=g:Filter(Card.IsControler,nil,1-tp)
+    for tc in aux.Next(mg) do
+        Duel.SetChainLimit(s.chainlm(tc))
+    end
 end
-function s.chainlm(g)
+function s.chainlm(tc)
     return function (e,rp,tp)
-        return tp==rp and not g:IsContains(e:GetHandler())
+        return e==tc
     end
 end
 --Lockdown face-down cards
@@ -110,7 +113,7 @@ function s.thfilter(c)
 	return c:IsSetCard(0xfc7) and c:IsAbleToHand() and not c:IsCode(id)
 end
 function s.thtg(e,tp,eg,ep,ev,re,r,rp,chk)
-	if chk==0 then return Duel.IsExistingMatchingCard(s.thfilter,tp,LOCATION_DECK,1,nil) end
+	if chk==0 then return Duel.IsExistingMatchingCard(s.thfilter,tp,LOCATION_DECK,0,1,nil) end
 	Duel.SetOperationInfo(0,CATEGORY_TOHAND,nil,1,tp,LOCATION_DECK)
     Duel.SetPossibleOperationInfo(0,CATEGORY_SPECIAL_SUMMON,nil,1,tp,LOCATION_HAND)
 end
