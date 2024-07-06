@@ -29,7 +29,7 @@ function s.initial_effect(c)
     e2:SetOperation(s.runop)
 	c:RegisterEffect(e2)
 	local e3=e2:Clone()
-	e3:SetCOde(EVENT_SPSUMMON_SUCCESS)
+	e3:SetCode(EVENT_SPSUMMON_SUCCESS)
 	c:RegisterEffect(e3)
 end
 s.listed_series={0xfc7}
@@ -40,7 +40,7 @@ function s.thcost(e,tp,eg,ep,ev,re,r,rp,chk)
 	Duel.SendtoGrave(c,REASON_COST+REASON_DISCARD)
 end
 function s.thcon(e,tp,eg,ep,ev,re,r,rp)
-	return Duel.IsTurnPlayer(1-tp) and eg:IsExists(Card.IsPreviousPosition,1,nil,LOCATION_MZONE)
+	return Duel.IsTurnPlayer(1-tp) and eg:IsExists(Card.IsPreviousLocation,1,nil,LOCATION_MZONE)
 end
 function s.thfilter(c)
 	return c:IsSetCard(0xfc7) and c:IsAbleToHand() and not c:IsCode(id)
@@ -69,7 +69,7 @@ end
 function s.runtg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then
         local mg=Duel.GetMatchingGroup(s.matfilter,tp,LOCATION_ONFIELD|LOCATION_HAND,0,nil)
-        return Duel.IsExistingMatchingCard(s.runfilter,tp,LOCATION_HAND,0,1,nil,mg)
+        return Duel.IsExistingMatchingCard(s.runfilter,tp,LOCATION_DECK,0,1,nil,mg)
     end
     Duel.SetOperationInfo(0,CATEGORY_TOHAND,nil,1,tp,LOCATION_DECK)
     Duel.SetOperationInfo(0,CATEGORY_SPECIAL_SUMMON,nil,1,tp,LOCATION_HAND)

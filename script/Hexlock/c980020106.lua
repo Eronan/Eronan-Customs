@@ -1,7 +1,7 @@
 --Hexlocked Imprisoning Book
 local s,id=GetID()
 function s.initial_effect(c)
-    aux.AddPersistentProcedure(c,PLAYER_ALL,Card.IsFaceup,CATEGORY_DISABLE,nil,nil,TIMINGS_CHECK_MONSTER)
+    aux.AddPersistentProcedure(c,PLAYER_ALL,aux.FilterBoolFunction(Card.IsType,TYPE_EFFECT),CATEGORY_DISABLE,nil,nil,TIMINGS_CHECK_MONSTER)
     --Destroy
     local e1=Effect.CreateEffect(c)
     e1:SetType(EFFECT_TYPE_CONTINUOUS+EFFECT_TYPE_FIELD)

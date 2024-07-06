@@ -117,7 +117,7 @@ end
 --Check that card can be activated from hand
 function s.checkop(e,tp,eg,ep,ev,re,r,rp)
 	if re:IsActiveType(TYPE_MONSTER) then
-		s[1-re:GetHandlerPlayer()]=1
+		s[1-rp]=1
 	end
 end
 function s.regop(e,tp,eg,ep,ev,re,r,rp)
