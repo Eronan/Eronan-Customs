@@ -3,7 +3,7 @@ if not Rune then Duel.LoadScript("proc_rune.lua") end
 local s,id=GetID()
 function s.initial_effect(c)
     --Rune Summon
-    Rune.AddProcedure(c,Rune.MonFunctionEx(Card.HasLevel),1,1,Rune.STFunction(s.stfilter),1,1)
+    Rune.AddProcedure(c,Rune.MonFunction(nil),1,1,Rune.STFunction(s.stfilter),1,1)
 	c:EnableReviveLimit()
     --activate
 	local e1=Effect.CreateEffect(c)

@@ -2,7 +2,7 @@
 if not Rune then Duel.LoadScript("proc_rune.lua") end
 local s,id=GetID()
 function s.initial_effect(c)
-	Rune.AddProcedure(c,Rune.MonFunction(s.mfilter),1,1,Rune.STFunction(s.stfilter),2,99,nil,s.exgroup,nil,nil,nil,s.customop)
+	Rune.AddProcedure(c,Rune.MonFunctionEx(Card.IsAttribute,ATTRIBUTE_LIGHT),2,99,Rune.STFunction(s.stfilter),3,99,nil,s.exgroup,nil,nil,nil,s.customop)
 	c:EnableReviveLimit()
 	--Summon Limit
 	local e1=Effect.CreateEffect(c)
@@ -38,8 +38,8 @@ function s.initial_effect(c)
 end
 s.listed_series={0xfe3}
 --Rune Summon
-function s.mfilter(c,rc,sumtyp,tp)
-    return c:IsType(TYPE_RUNE,rc,sumtyp,tp) and c:IsAttribute(ATTRIBUTE_LIGHT)
+function s.rune_custom_check(g,rc,sumtype,tp)
+	return g:IsExists(Card.IsType,1,nil,TYPE_RUNE)
 end
 function s.stfilter(c,rc,sumtyp,tp)
     local typ=c:GetOriginalType()
