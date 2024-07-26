@@ -85,7 +85,7 @@ function s.tgfilter(c,tp)
 		and Duel.IsExistingMatchingCard(s.eqfilter,tp,LOCATION_MZONE,0,1,nil,c)
 end
 function s.eqfilter(c,ec)
-    return c:IsFaceup() and ec:CheckUnionTarget(c) and aux.CheckUnionEquip(ec,c)
+    return c:IsFaceup() and ec:CheckUnionTarget(c) and ec:CheckUnionTarget(c)
 end
 function s.eqtg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
     if chkc then return chkc:IsLocation(LOCATION_GRAVE) and chkc:IsControler(tp) and s.tgfilter(chkc,tp) end

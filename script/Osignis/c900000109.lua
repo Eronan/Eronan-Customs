@@ -17,7 +17,7 @@ function s.filter(c)
 	return c:IsRace(RACE_PYRO) or (c:IsType(TYPE_RUNE) and c:IsAttribute(ATTRIBUTE_FIRE))
 end
 function s.eqfilter(c,ec)
-	return c:IsType(TYPE_UNION) and c:CheckUnionTarget(ec) and aux.CheckUnionEquip(c,ec)
+	return c:IsType(TYPE_UNION) and c:CheckUnionTarget(ec) and c:CheckUnionTarget(ec)
 end
 function s.eqtg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	local ec=e:GetHandler():GetEquipTarget()
@@ -31,7 +31,7 @@ function s.eqop(e,tp,eg,ep,ev,re,r,rp)
 		Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_EQUIP)
 		local sg=Duel.SelectMatchingCard(tp,s.eqfilter,tp,LOCATION_DECK+LOCATION_GRAVE,0,1,1,nil,tc)
 		local ec=sg:GetFirst()
-		if ec and aux.CheckUnionEquip(ec,tc) and Duel.Equip(tp,ec,tc) then
+		if ec and ec:CheckUnionTarget(tc) and Duel.Equip(tp,ec,tc) then
 			aux.SetUnionState(ec)
 			local e1=Effect.CreateEffect(e:GetHandler())
 			e1:SetType(EFFECT_TYPE_SINGLE)
