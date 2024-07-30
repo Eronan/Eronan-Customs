@@ -1,4 +1,5 @@
 --Curse of Grimvow Greed
+if not Rune then Duel.LoadScript("proc_rune.lua") end
 local s,id=GetID()
 function s.initial_effect(c)
     aux.AddEquipProcedure(c)
@@ -14,7 +15,6 @@ function s.initial_effect(c)
 	e2:SetType(EFFECT_TYPE_CONTINUOUS+EFFECT_TYPE_FIELD)
 	e2:SetCode(EVENT_CHAIN_SOLVED)
 	e2:SetRange(LOCATION_SZONE)
-    e2:SetOperation(s.drcon)
 	e2:SetOperation(s.drop)
 	c:RegisterEffect(e2)
     --
@@ -40,27 +40,33 @@ function s.initial_effect(c)
 	e5:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_TRIGGER_O)
 	e5:SetProperty(EFFECT_FLAG_DELAY)
 	e5:SetCategory(CATEGORY_EQUIP)
-	e5:SetCode(EVENT_LEAVE_FIELD)
+	e5:SetCode(EVENT_TO_GRAVE)
 	e5:SetCountLimit(1,id,EFFECT_COUNT_CODE_OATH)
-	e5:SetCondition(s.eqcon)
+	e5:SetCondition(function(e) return c:IsLocation(LOCATION_GRAVE) and c:GetEquipTarget()~=nil end)
 	e5:SetTarget(s.eqtg)
 	e5:SetOperation(s.eqop)
 	c:RegisterEffect(e5)
+    local e6=e5:Clone()
+    e6:SetCode(EVENT_TO_GRAVE)
+    e6:SetCondition(s.eqcon)
+    c:RegisterEffect(e6)
 end
 --Draw after activating effect
 function s.regop(e,tp,eg,ep,ev,re,r,rp)
     local c=e:GetHandler()
+    local rc=re:GetHandler()
+    if not rc or rc~=c:GetEquipTarget() then return end
     c:RegisterFlagEffect(id)
     local ec=c:GetEquipTarget()
     ec:RegisterFlagEffect(id)
 end
-function s.drcon(e,tp,eg,ep,ev,re,r,rp)
-    local c=e:GetHandler()
-	return c:GetFlagEffect(id)>0 and re:GetHandler()==c:GetEquipTarget()
-end
 function s.drop(e,tp,eg,ep,ev,re,r,rp)
+    local c=e:GetHandler()
     local ec=e:GetHandler():GetEquipTarget()
-	Duel.Draw(1-ec:GetControler(),1,REASON_EFFECT)
+    local rc=re:GetHandler()
+    if c:GetFlagEffect(id)>0 and rc and rc==ec then
+        Duel.Draw(1-ec:GetControler(),1,REASON_EFFECT)
+    end
 end
 --Must be material
 function s.mandmatcon(e,tp,eg,ep,ev,re,r,rp)
@@ -75,7 +81,8 @@ function s.tcfilter(tc,ec)
 	return tc:IsFaceup() and ec:CheckEquipTarget(tc)
 end
 function s.ecfilter(c,tp)
-	return c:IsType(TYPE_EQUIP) and Duel.IsExistingTarget(s.tcfilter,tp,0,LOCATION_MZONE,1,nil,c)
+	return c:IsType(TYPE_EQUIP) and not c:IsCode(id)
+        and Duel.IsExistingMatchingCard(s.tcfilter,tp,0,LOCATION_MZONE,1,nil,c)
 end
 function s.eqtg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	if chkc then return chkc:IsLocation(LOCATION_GRAVE) and chkc:IsControler(tp) and s.ecfilter(chkc,tp) end
@@ -88,6 +95,6 @@ end
 function s.eqop(e,tp,eg,ep,ev,re,r,rp)
 	local ec=Duel.GetFirstTarget()
     if not ec or not ec:IsRelateToEffect(e) then return end
-    local tc=Duel.SelectMatchingCard(tp,s.tcfilter,tp,0,LOCATION_MZONE,1,1,nil,ec)
+    local tc=Duel.SelectMatchingCard(tp,s.tcfilter,tp,0,LOCATION_MZONE,1,1,nil,ec):GetFirst()
     Duel.Equip(tp,ec,tc)
 end

@@ -32,6 +32,7 @@ function s.initial_effect(c)
     e4:SetDescription(aux.Stringid(id,3))
     e4:SetType(EFFECT_TYPE_IGNITION)
     e4:SetRange(LOCATION_GRAVE)
+    e4:SetCountLimit(1,{id,1},EFFECT_COUNT_CODE_OATH)
     e4:SetCost(s.actcost)
     e4:SetTarget(s.acttg)
     e4:SetOperation(s.actop)
@@ -95,7 +96,7 @@ end
 function s.actcost(e,tp,eg,ep,ev,re,r,rp,chk)
     if chk==0 then return Duel.IsExistingMatchingCard(s.actcfilter,tp,LOCATION_ONFIELD,0,1,nil) end
     local g=Duel.SelectMatchingCard(tp,s.actcfilter,tp,LOCATION_ONFIELD,0,1,1,nil)
-    Duel.SendToGrave(g,REASON_COST)
+    Duel.SendtoGrave(g,REASON_COST)
 end
 function s.acttg(e,tp,eg,ep,ev,re,r,rp,chk)
     if chk==0 then return e:GetHandler():GetActivateEffect():IsActivatable(tp,true,true) end

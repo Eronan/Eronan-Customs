@@ -50,7 +50,7 @@ function s.exspcost(e,tp,eg,ep,ev,re,r,rp,chk)
     else tc=g:Select(tp,1,1,nil) end
 
     if tc then
-        Duel.SendToGrave(tc,REASON_COST)
+        Duel.SendtoGrave(tc,REASON_COST)
         e:SetLabel(tc:GetLevel())
     end
 end

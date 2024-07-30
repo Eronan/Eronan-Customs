@@ -36,10 +36,14 @@ function s.initial_effect(c)
 	e4:SetCategory(CATEGORY_EQUIP)
 	e4:SetCode(EVENT_LEAVE_FIELD)
 	e4:SetCountLimit(1,id,EFFECT_COUNT_CODE_OATH)
-	e4:SetCondition(s.eqcon)
+	e4:SetCondition(function(e) return c:IsLocation(LOCATION_GRAVE) and c:GetEquipTarget()~=nil end)
 	e4:SetTarget(s.eqtg)
 	e4:SetOperation(s.eqop)
 	c:RegisterEffect(e4)
+    local e5=e4:Clone()
+    e5:SetCode(EVENT_TO_GRAVE)
+    e5:SetCondition(s.eqcon)
+    c:RegisterEffect(e5)
 end
 s.listed_series={0xfc6}
 --equip
@@ -80,28 +84,29 @@ end
 --Equip from Deck
 function s.eqcon(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
-	return c:GetEquipTarget()~=nil or (c:IsReason(REASON_EFFECT) and rp==1-tp)
+	return c:IsReason(REASON_EFFECT) and rp==1-tp
 end
-function s.eqspfilter(c,tp)
-	return c:IsSetCard(0x56) and c:IsType(TYPE_EQUIP) and c:IsSpell()
-		and Duel.IsExistingMatchingCard(s.eqfilter,tp,0,LOCATION_MZONE,1,nil,c)
+function s.eqspfilter(c,ec)
+	return c:IsSetCard(0xfc6) and c:IsEquipSpell()
+        and c:CheckEquipTarget(ec)
 end
-function s.eqfilter(c,ec)
-	return c:IsFaceup() and c:IsSetCard(0xfc6) and ec:CheckEquipTarget(c)
-        and not c:IsCode(id)
+function s.eqfilter(c,tp)
+	return c:IsFaceup() and c:GetEquipCount()==0
+        and Duel.IsExistingMatchingCard(s.eqspfilter,tp,LOCATION_DECK,0,1,nil,c)
 end
 function s.eqtg(e,tp,eg,ep,ev,re,r,rp,chk)
-	if chk==0 then return Duel.GetLocationCount(tp,LOCATION_SZONE)>0 and Duel.IsExistingMatchingCard(s.eqspfilter,tp,LOCATION_DECK,0,1,nil,tp,ft) end
+	if chk==0 then return Duel.GetLocationCount(tp,LOCATION_SZONE)>0 and Duel.IsExistingTarget(s.eqfilter,tp,0,LOCATION_MZONE,1,nil,tp) end
+    Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_EQUIP)
+    Duel.SelectTarget(tp,s.eqfilter,tp,0,LOCATION_MZONE,1,1,nil,tp)
     Duel.SetOperationInfo(0,CATEGORY_EQUIP,nil,1,tp,LOCATION_DECK)
 end
 function s.eqop(e,tp,eg,ep,ev,re,r,rp)
 	if Duel.GetLocationCount(tp,LOCATION_SZONE)==0 then return end
+    local ec=Duel.GetFirstTarget()
+    if not ec or not ec:IsRelateToEffect(e) then return end
     Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_EQUIP)
-    local sc=Duel.SelectMatchingCard(tp,s.eqspfilter,tp,LOCATION_DECK,0,1,1,nil,tp):GetFirst()
+    local sc=Duel.SelectMatchingCard(tp,s.eqspfilter,tp,LOCATION_DECK,0,1,1,nil,ec):GetFirst()
     if not sc then return end
-    Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_EQUIP)
-    local ec=Duel.SelectMatchingCard(tp,s.eqfilter,tp,0,LOCATION_MZONE,1,1,nil,sc):GetFirst()
     Duel.HintSelection(ec,true)
-    if not ec then return end
     Duel.Equip(tp,sc,ec)
 end

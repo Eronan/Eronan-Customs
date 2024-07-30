@@ -1,4 +1,5 @@
 --Grimvow of Opportunity
+if not Rune then Duel.LoadScript("proc_rune.lua") end
 local s,id=GetID()
 function s.initial_effect(c)
     -- Negate activation
@@ -69,7 +70,7 @@ end
 function s.setcost(e,tp,eg,ep,ev,re,r,rp,chk)
     if chk==0 then return Duel.IsExistingMatchingCard(s.costfilter,tp,LOCATION_ONFIELD,0,1,nil) end
     local g=Duel.SelectMatchingCard(tp,s.costfilter,tp,LOCATION_ONFIELD,0,1,1,nil)
-    Duel.SendToGrave(g,REASON_COST)
+    Duel.SendtoGrave(g,REASON_COST)
 end
 function s.settg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
     if chkc then return false end

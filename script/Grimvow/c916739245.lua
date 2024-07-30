@@ -25,12 +25,16 @@ function s.initial_effect(c)
 	e3:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_TRIGGER_O)
 	e3:SetProperty(EFFECT_FLAG_DELAY)
 	e3:SetCategory(CATEGORY_TOHAND)
-	e3:SetCode(EVENT_LEAVE_FIELD)
+	e3:SetCode(EVENT_TO_GRAVE)
 	e3:SetCountLimit(1,id,EFFECT_COUNT_CODE_OATH)
-	e3:SetCondition(s.thcon)
+	e3:SetCondition(function(e) return c:IsLocation(LOCATION_GRAVE) and c:GetEquipTarget()~=nil end)
 	e3:SetTarget(s.thtg)
 	e3:SetOperation(s.thop)
 	c:RegisterEffect(e3)
+    local e4=e3:Clone()
+    e4:SetCode(EVENT_TO_GRAVE)
+    e4:SetCondition(s.thcon)
+    c:RegisterEffect(e4)
 end
 s.listed_series={0xfc6}
 --redirect effect target
@@ -63,7 +67,7 @@ end
 --Search
 function s.thcon(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
-	return c:GetEquipTarget()~=nil or (c:IsReason(REASON_EFFECT) and rp==1-tp)
+	return c:IsReason(REASON_EFFECT) and rp==1-tp
 end
 function s.thfilter(c)
 	return c:IsSetCard(0xfc6) and c:IsMonster() and c:IsAbleToHand()
