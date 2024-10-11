@@ -47,7 +47,7 @@ function s.extraval(chk,summon_type,e,...)
 	local c=e:GetHandler()
 	if chk==0 then
 		local tp,sc=...
-		if summon_type~=SUMMON_TYPE_RUNE or not sc:IsSetCard(0xfc6) or not c:IsControler(tp) then
+		if summon_type~=SUMMON_TYPE_RUNE or Duel.GetFlagEffect(tp,id)>0 or not sc:IsSetCard(0xfc6) or not c:IsControler(tp) then
 			return Group.CreateGroup()
 		else
 			return Duel.GetMatchingGroup(s.extrafilter,tp,0,LOCATION_MZONE,nil,tp)

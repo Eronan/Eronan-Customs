@@ -18,25 +18,18 @@ function s.initial_effect(c)
 	e1:SetTarget(s.eqtg)
 	e1:SetOperation(s.eqop)
 	c:RegisterEffect(e1)
-    --activate cost
-    local e2=Effect.CreateEffect(c)
-    e2:SetType(EFFECT_TYPE_FIELD)
-    e2:SetCode(EFFECT_ACTIVATE_COST)
-    e2:SetRange(LOCATION_MZONE)
-    e2:SetProperty(EFFECT_FLAG_PLAYER_TARGET)
-    e2:SetTargetRange(0,1)
-    e2:SetTarget(s.costtg)
-    e2:SetCost(s.costchk)
-    e2:SetOperation(s.costop)
-    c:RegisterEffect(e2)
-    --accumulate
-    local e3=Effect.CreateEffect(c)
-    e3:SetType(EFFECT_TYPE_FIELD)
-    e3:SetCode(id)
-    e3:SetRange(LOCATION_MZONE)
-    e3:SetProperty(EFFECT_FLAG_PLAYER_TARGET)
-    e3:SetTargetRange(0,1)
-    c:RegisterEffect(e3)
+    --Equip "Grimvow" to opponent's monster
+	local e2=Effect.CreateEffect(c)
+    e2:SetCategory(CATEGORY_TOHAND|CATEGORY_SEARCH|CATEGORY_SPECIAL_SUMMON)
+	e2:SetDescription(aux.Stringid(id,1))
+	e2:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_TRIGGER_O)
+	e2:SetProperty(EFFECT_FLAG_DELAY)
+    e2:SetCountLimit(1,{id,1},EFFECT_COUNT_CODE_OATH)
+	e2:SetCode(EVENT_TO_GRAVE)
+    e2:SetCondition(s.thcon)
+	e2:SetTarget(s.thtg)
+	e2:SetOperation(s.thop)
+	c:RegisterEffect(e2)
 end
 s.listed_series={0xfc6}
 --equip
@@ -69,14 +62,28 @@ function s.eqop(e,tp,eg,ep,ev,re,r,rp)
     Duel.HintSelection(ec,true)
     Duel.Equip(tp,sc,ec)
 end
---Activate cost
-function s.costtg(e,te,tp)
-    return te:IsHasCategory(CATEGORY_REMOVE)
+--Add Rune monster and Rune Summon
+function s.thcon(e,tp,eg,ep,ev,re,r,rp)
+	local c=e:GetHandler()
+	return c:IsReason(REASON_EFFECT) and rp==1-tp
 end
-function s.costchk(e,te,tp)
-    local ct=#{Duel.GetPlayerEffect(tp,id)}
-    return Duel.CheckLPCost(tp,ct*500)
+function s.thfilter(c)
+	return c:IsSetCard(0xfc6) and c:IsType(TYPE_RUNE) and c:IsAbleToHand()
 end
-function s.costop(e,tp,eg,ep,ev,re,r,rp)
-    Duel.PayLPCost(tp,500)
+function s.thtg(e,tp,eg,ep,ev,re,r,rp,chk)
+	if chk==0 then return Duel.IsExistingMatchingCard(s.thfilter,tp,LOCATION_DECK|LOCATION_GRAVE,0,1,nil) end
+	Duel.SetOperationInfo(0,CATEGORY_TOHAND,nil,1,tp,LOCATION_DECK|LOCATION_GRAVE)
+    Duel.SetPossibleOperationInfo(0,CATEGORY_SPECIAL_SUMMON,nil,1,tp,LOCATION_HAND)
+end
+function s.thop(e,tp,eg,ep,ev,re,r,rp)
+	if not e:GetHandler():IsRelateToEffect(e) then return end
+	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_ATOHAND)
+	local g=Duel.SelectMatchingCard(tp,s.thfilter,tp,LOCATION_DECK|LOCATION_GRAVE,0,1,1,nil)
+	if #g>0 and Duel.SendtoHand(g,nil,REASON_EFFECT) then
+		Duel.ConfirmCards(1-tp,g)
+        local sc=g:GetFirst()
+        if sc:IsRuneSummonable() and Duel.SelectYesNo(tp,aux.Stringid(id,2)) then
+            Duel.RuneSummon(tp,sc)
+        end
+	end
 end

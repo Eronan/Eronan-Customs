@@ -73,11 +73,11 @@ function s.costtg(e,te,tp)
 end
 function s.costchk(e,te,tp)
     local ct=#{Duel.GetPlayerEffect(tp,id)}
-    return Duel.IsExistingMatchingCard(Card.IsAbleToRemoveAsCost,tp,0,LOCATION_ONFIELD|LOCATION_HAND,ct,nil)
+    return Duel.IsExistingMatchingCard(Card.IsAbleToRemoveAsCost,tp,LOCATION_ONFIELD|LOCATION_HAND,0,ct,nil)
 end
 function s.costop(e,tp,eg,ep,ev,re,r,rp)
     Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_REMOVE)
-	local g=Duel.SelectMatchingCard(1-tp,Card.IsAbleToRemoveAsCost,tp,0,LOCATION_ONFIELD|LOCATION_HAND,1,1,nil)
+	local g=Duel.SelectMatchingCard(tp,Card.IsAbleToRemoveAsCost,tp,LOCATION_ONFIELD|LOCATION_HAND,0,1,1,nil)
     if #g>0 then
         Duel.Remove(g,POS_FACEDOWN,REASON_COST)
     end

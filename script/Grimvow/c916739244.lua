@@ -8,8 +8,8 @@ function s.initial_effect(c)
 	e1:SetCode(EFFECT_ACTIVATE_COST)
 	e1:SetRange(LOCATION_SZONE)
 	e1:SetProperty(EFFECT_FLAG_PLAYER_TARGET)
-	e1:SetTargetRange(0,1)
-    e1:SetTarget(s.costtg)
+	e1:SetTargetRange(1,1)
+    e1:SetTarget(function (e,te) return te:GetHandler()==c:GetEquipTarget() end)
 	e1:SetCost(s.costchk)
 	e1:SetOperation(s.costop)
 	c:RegisterEffect(e1)
@@ -33,17 +33,12 @@ function s.initial_effect(c)
 	e4:SetDescription(aux.Stringid(id,1))
 	e4:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_TRIGGER_O)
 	e4:SetProperty(EFFECT_FLAG_DELAY)
-	e4:SetCategory(CATEGORY_EQUIP)
-	e4:SetCode(EVENT_LEAVE_FIELD)
+	e4:SetCode(EVENT_TO_GRAVE)
 	e4:SetCountLimit(1,id,EFFECT_COUNT_CODE_OATH)
-	e4:SetCondition(function(e) return c:IsLocation(LOCATION_GRAVE) and c:GetEquipTarget()~=nil end)
+    e4:SetCondition(s.eqcon)
 	e4:SetTarget(s.eqtg)
 	e4:SetOperation(s.eqop)
 	c:RegisterEffect(e4)
-    local e5=e4:Clone()
-    e5:SetCode(EVENT_TO_GRAVE)
-    e5:SetCondition(s.eqcon)
-    c:RegisterEffect(e5)
 end
 s.listed_series={0xfc6}
 --equip
@@ -58,10 +53,6 @@ function s.limit(ec)
             end
 end
 --Activate cost
-function s.costtg(e,te,tp)
-    local ec=e:GetHandler():GetEquipTarget()
-    return te:GetHandler()==ec
-end
 function s.costchk(e,te,tp,sumtyp)
     local ec=e:GetHandler():GetEquipTarget()
     local ct=#{ec:GetCardEffect(id)}
@@ -69,6 +60,7 @@ function s.costchk(e,te,tp,sumtyp)
 end
 function s.costop(e,tp,eg,ep,ev,re,r,rp)
     local ec=e:GetHandler():GetEquipTarget()
+    if not ec then return end
     local ectp=ec:GetControler()
     Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_REMOVE)
 	local g=Duel.SelectMatchingCard(ectp,Card.IsAbleToRemoveAsCost,ectp,LOCATION_EXTRA,0,1,1,nil)
@@ -84,15 +76,15 @@ end
 --Equip from Deck
 function s.eqcon(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
-	return c:IsReason(REASON_EFFECT) and rp==1-tp
+	return (c:IsReason(REASON_EFFECT) and rp==1-tp)
+        or (c:IsPreviousPosition(POS_FACEUP) and c:IsPreviousLocation(LOCATION_ONFIELD) and c:IsPreviousControler(tp))
 end
 function s.eqspfilter(c,ec)
 	return c:IsSetCard(0xfc6) and c:IsEquipSpell()
         and c:CheckEquipTarget(ec)
 end
 function s.eqfilter(c,tp)
-	return c:IsFaceup() and c:GetEquipCount()==0
-        and Duel.IsExistingMatchingCard(s.eqspfilter,tp,LOCATION_DECK,0,1,nil,c)
+	return c:IsFaceup() and Duel.IsExistingMatchingCard(s.eqspfilter,tp,LOCATION_DECK,0,1,nil,c)
 end
 function s.eqtg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.GetLocationCount(tp,LOCATION_SZONE)>0 and Duel.IsExistingTarget(s.eqfilter,tp,0,LOCATION_MZONE,1,nil,tp) end

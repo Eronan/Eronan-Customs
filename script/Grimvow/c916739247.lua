@@ -54,7 +54,7 @@ function s.repop(e,tp,eg,ep,ev,re,r,rp)
 	Duel.Hint(HINT_SELECTMSG,1-tp,HINTMSG_TOGRAVE)
 	local g=Duel.SelectMatchingCard(1-tp,s.tgfilter,1-tp,LOCATION_DECK,0,1,1,nil)
 	if #g>0 then
-        Duel.SendtoGrave(g,REASON_EFFECT,PLAYER_NONE,1-tp)
+        Duel.SendtoGrave(g,REASON_EFFECT)
 	end
 end
 --Set itself from GY
@@ -65,7 +65,7 @@ function s.setcon(e,tp,eg,ep,ev,re,r,rp)
     return Duel.IsExistingMatchingCard(s.confilter,tp,LOCATION_MZONE,0,1,nil)
 end
 function s.costfilter(c)
-    return c:IsSetCard(0xfc6) and c:IsEquipSpell() and c:IsAbleToGraveAsCost()
+    return c:IsEquipSpell() and c:IsAbleToGraveAsCost()
 end
 function s.setcost(e,tp,eg,ep,ev,re,r,rp,chk)
     if chk==0 then return Duel.IsExistingMatchingCard(s.costfilter,tp,LOCATION_ONFIELD,0,1,nil) end

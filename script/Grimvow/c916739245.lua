@@ -27,14 +27,10 @@ function s.initial_effect(c)
 	e3:SetCategory(CATEGORY_TOHAND)
 	e3:SetCode(EVENT_TO_GRAVE)
 	e3:SetCountLimit(1,id,EFFECT_COUNT_CODE_OATH)
-	e3:SetCondition(function(e) return c:IsLocation(LOCATION_GRAVE) and c:GetEquipTarget()~=nil end)
+	e3:SetCondition(s.thcon)
 	e3:SetTarget(s.thtg)
 	e3:SetOperation(s.thop)
 	c:RegisterEffect(e3)
-    local e4=e3:Clone()
-    e4:SetCode(EVENT_TO_GRAVE)
-    e4:SetCondition(s.thcon)
-    c:RegisterEffect(e4)
 end
 s.listed_series={0xfc6}
 --redirect effect target
@@ -51,7 +47,7 @@ function s.repop(e,tp,eg,ep,ev,re,r,rp)
 	Duel.Hint(HINT_SELECTMSG,1-tp,HINTMSG_TOGRAVE)
 	local g=Duel.SelectMatchingCard(1-tp,Card.IsAbleToGrave,1-tp,LOCATION_EXTRA|LOCATION_DECK,0,1,1,nil)
 	if #g>0 then
-        Duel.SendtoGrave(g,REASON_EFFECT,PLAYER_NONE,1-tp)
+        Duel.SendtoGrave(g,REASON_EFFECT)
 	end
 end
 --Limit battle target
@@ -67,7 +63,8 @@ end
 --Search
 function s.thcon(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
-	return c:IsReason(REASON_EFFECT) and rp==1-tp
+	return (c:IsReason(REASON_EFFECT) and rp==1-tp)
+        or (c:IsPreviousPosition(POS_FACEUP) and c:IsPreviousLocation(LOCATION_ONFIELD) and c:IsPreviousControler(tp))
 end
 function s.thfilter(c)
 	return c:IsSetCard(0xfc6) and c:IsMonster() and c:IsAbleToHand()
