@@ -73,9 +73,9 @@ function s.exgroup(tp,ex,c)
 	return Duel.GetMatchingGroup(s.excfilter,tp,0,LOCATION_ONFIELD,ex)
 end
 --Activate cost
-function s.costchk(e,te,tp,sumtyp)
+function s.costchk(e,tc,tp,sumtyp)
     local ct=#{Duel.GetPlayerEffect(tp,id)}
-    return Duel.IsExistingMatchingCard(Card.IsAbleToRemoveAsCost,tp,LOCATION_EXTRA|LOCATION_HAND,0,ct,nil)
+    return Duel.IsExistingMatchingCard(Card.IsAbleToRemoveAsCost,tp,LOCATION_EXTRA|LOCATION_HAND,0,ct,tc)
 end
 function s.costop(e,tp,eg,ep,ev,re,r,rp)
     Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_REMOVE)
