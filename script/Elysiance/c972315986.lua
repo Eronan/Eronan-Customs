@@ -9,11 +9,11 @@ function s.initial_effect(c)
     --ritual summon
 	local e2=Effect.CreateEffect(c)
 	e2:SetDescription(aux.Stringid(id,2))
-	e2:SetCategory(CATEGORY_DRAW)
-	e2:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_TRIGGER_F)
+	e2:SetCategory(CATEGORY_SPECIAL_SUMMON)
+	e2:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_TRIGGER_O)
 	e2:SetCode(EVENT_LEAVE_FIELD)
 	e2:SetProperty(EFFECT_FLAG_PLAYER_TARGET)
-	e2:SetRange(LOCATION_MZONE)
+	e2:SetRange(LOCATION_SZONE)
 	e2:SetCountLimit(1,id,EFFECT_COUNT_CODE_OATH)
 	e2:SetCondition(s.ritcon)
 	e2:SetTarget(s.rittg)
@@ -81,11 +81,11 @@ end
 function s.distg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	if chkc then return false end
 	if chk==0 then return Duel.IsExistingTarget(s.disfilter,tp,LOCATION_PZONE,0,1,nil)
-		and Duel.IsExistingTarget(s.disfilter,tp,0,LOCATION_ONFIELD,1,nil) end
+		and Duel.IsExistingTarget(s.disfilter,tp,LOCATION_ONFIELD,LOCATION_ONFIELD,1,nil) end
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_DESTROY)
 	local g1=Duel.SelectTarget(tp,s.disfilter,tp,LOCATION_PZONE,0,1,1,nil)
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_DESTROY)
-	local g2=Duel.SelectTarget(tp,s.disfilter,tp,0,LOCATION_ONFIELD,1,1,nil)
+	local g2=Duel.SelectTarget(tp,s.disfilter,tp,LOCATION_ONFIELD,LOCATION_ONFIELD,1,1,nil)
 	g1:Merge(g2)
     Duel.SetOperationInfo(0,CATEGORY_DISABLE,g1,2,0,0)
 end

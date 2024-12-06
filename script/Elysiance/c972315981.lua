@@ -36,22 +36,21 @@ function s.initial_effect(c)
 	c:RegisterEffect(e4)
     --special summon cost
 	local e5=Effect.CreateEffect(c)
-	e5:SetType(EFFECT_TYPE_FIELD)
-	e5:SetCode(EFFECT_SPSUMMON_COST)
-	e5:SetRange(LOCATION_MZONE)
-	e5:SetTargetRange(1,1)
-	e5:SetCost(s.costchk)
-	e5:SetOperation(s.costop)
-	c:RegisterEffect(e5)
+    e5:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
+    e5:SetCode(EVENT_SPSUMMON)
+    e5:SetRange(LOCATION_MZONE)
+    e5:SetCondition(s.handdescon)
+    e5:SetOperation(s.handesop)
+    c:RegisterEffect(e5)
     --destroy replace
-    local e6=Effect.CreateEffect(c)
-    e6:SetType(EFFECT_TYPE_CONTINUOUS+EFFECT_TYPE_FIELD)
-    e6:SetCode(EFFECT_DESTROY_REPLACE)
-    e6:SetRange(LOCATION_MZONE)
-    e6:SetTarget(s.desreptg)
-    e6:SetValue(s.desrepval)
-    e6:SetOperation(s.desrepop)
-    c:RegisterEffect(e6)
+    local e7=Effect.CreateEffect(c)
+    e7:SetType(EFFECT_TYPE_CONTINUOUS+EFFECT_TYPE_FIELD)
+    e7:SetCode(EFFECT_DESTROY_REPLACE)
+    e7:SetRange(LOCATION_MZONE)
+    e7:SetTarget(s.desreptg)
+    e7:SetValue(s.desrepval)
+    e7:SetOperation(s.desrepop)
+    c:RegisterEffect(e7)
 end
 --special summon condition
 function s.splimit(e,se,sp,st)
@@ -79,16 +78,16 @@ function s.thop(e,tp,eg,ep,ev,re,r,rp)
     end
 end
 --special summon cost
-function s.costchk(e,te,tp,sumtyp)
-    local ct=#{Duel.GetPlayerEffect(tp,id)}
-    return Duel.GetFieldGroupCount(tp,LOCATION_EXTRA,0)<=7 or Duel.IsExistingMatchingCard(Card.IsAbleToGraveAsCost,tp,LOCATION_EXTRA|LOCATION_HAND,0,ct,nil)
+function s.handdescon(e,tp,eg,ep,ev,re,r,rp)
+	return Duel.GetCurrentChain()==0 and Duel.GetLocationCount(ep,LOCATION_EXTRA,0)>Duel.GetLocationCount(1-ep,LOCATION_EXTRA,0)
 end
-function s.costop(e,tp,eg,ep,ev,re,r,rp)
-    if Duel.GetFieldGroupCount(tp,LOCATION_EXTRA,0)<=7 then return end
-    Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_REMOVE)
-	local g=Duel.SelectMatchingCard(tp,Card.IsAbleToGraveAsCost,tp,LOCATION_EXTRA|LOCATION_HAND,0,1,1,nil)
-    if #g>0 then
-        Duel.SendtoGrave(g,REASON_COST)
+function s.handesop(e,tp,eg,ep,ev,re,r,rp)
+    if Duel.GetFieldGroupCount(ep,LOCATION_HAND,0)>0 and Duel.SelectYesNo(ep,aux.Stringid(id,1)) then
+        Duel.DiscardHand(ep,nil,1,1,REASON_EFFECT|REASON_DISCARD,nil)
+        Duel.BreakEffect()
+    else
+        Duel.NegateSummon(eg)
+        Duel.Destroy(eg,REASON_EFFECT)
     end
 end
 --destroy replace

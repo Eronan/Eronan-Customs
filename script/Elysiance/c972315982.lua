@@ -33,24 +33,21 @@ function s.initial_effect(c)
 	e4:SetTarget(s.pctg)
 	e4:SetOperation(s.pcop)
 	c:RegisterEffect(e4)
-    --activate cost
-    local e5=Effect.CreateEffect(c)
-    e5:SetType(EFFECT_TYPE_FIELD)
-    e5:SetCode(EFFECT_ACTIVATE_COST)
-    e5:SetRange(LOCATION_MZONE)
-    e5:SetProperty(EFFECT_FLAG_PLAYER_TARGET)
-    e5:SetTargetRange(0,1)
-    e5:SetTarget(s.costtg)
-    e5:SetCost(s.costchk)
-    e5:SetOperation(s.costop)
-    c:RegisterEffect(e5)
-    --accumulate
+	--cannot remove
+	local e5=Effect.CreateEffect(c)
+	e5:SetType(EFFECT_TYPE_FIELD)
+	e5:SetCode(EFFECT_CANNOT_REMOVE)
+	e5:SetRange(LOCATION_MZONE)
+	e5:SetProperty(EFFECT_FLAG_PLAYER_TARGET)
+	e5:SetTargetRange(1,1)
+	c:RegisterEffect(e5)
+	--id chk
     local e6=Effect.CreateEffect(c)
     e6:SetType(EFFECT_TYPE_FIELD)
-    e6:SetCode(id)
+    e6:SetCode(30459350)
     e6:SetRange(LOCATION_MZONE)
     e6:SetProperty(EFFECT_FLAG_PLAYER_TARGET)
-    e6:SetTargetRange(0,1)
+    e6:SetTargetRange(1,1)
     c:RegisterEffect(e6)
     --immune
 	local e7=Effect.CreateEffect(c)
@@ -88,24 +85,6 @@ function s.pcop(e,tp,eg,ep,ev,re,r,rp)
 	if #g>0 then
 		Duel.MoveToField(g:GetFirst(),tp,tp,LOCATION_PZONE,POS_FACEUP,true)
 	end
-end
---Activate cost
-function s.costtg(e,te,tp)
-    return te:IsSpellTrapEffect() and te:IsHasType(EFFECT_TYPE_ACTIVATE) and Duel.GetFieldGroupCount(tp,LOCATION_EXTRA,0)>7
-end
-function s.costfilter(c)
-    return c:IsSpellTrap() and c:IsAbleToGraveAsCost()
-end
-function s.costchk(e,te,tp)
-    local ct=#{Duel.GetPlayerEffect(tp,id)}
-    return Duel.IsExistingMatchingCard(s.costfilter,tp,LOCATION_ONFIELD,0,ct,nil)
-end
-function s.costop(e,tp,eg,ep,ev,re,r,rp)
-    Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_REMOVE)
-	local g=Duel.SelectMatchingCard(tp,s.costfilter,tp,LOCATION_ONFIELD,0,1,1,nil)
-    if #g>0 then
-        Duel.SendtoGrave(g,REASON_COST)
-    end
 end
 --immune effect
 function s.efilter(e,te)

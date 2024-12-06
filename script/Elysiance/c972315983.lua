@@ -33,17 +33,14 @@ function s.initial_effect(c)
 	e4:SetTarget(s.thtg)
 	e4:SetOperation(s.thop)
 	c:RegisterEffect(e4)
-    --activate cost
-	local e5=Effect.CreateEffect(c)
-	e5:SetType(EFFECT_TYPE_FIELD)
-	e5:SetCode(EFFECT_ACTIVATE_COST)
-	e5:SetRange(LOCATION_MZONE)
-	e5:SetProperty(EFFECT_FLAG_PLAYER_TARGET)
-	e5:SetTargetRange(1,1)
-	e5:SetCondition(s.accon)
-	e5:SetTarget(s.actarget)
-	e5:SetOperation(s.acop)
-	c:RegisterEffect(e5)
+    --When a monster effect activated from hand or field resolves, they must Tribute that monster or the effect is negated
+    local e5=Effect.CreateEffect(c)
+    e5:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
+    e5:SetCode(EVENT_CHAIN_SOLVING)
+    e5:SetRange(LOCATION_MZONE)
+	e5:SetCondition(s.relcon)
+    e5:SetOperation(s.relop)
+    c:RegisterEffect(e5)
     --place in pendulum zone
 	local e6=Effect.CreateEffect(c)
 	e6:SetDescription(aux.Stringid(id,1))
@@ -87,21 +84,19 @@ function s.thop(e,tp,eg,ep,ev,re,r,rp)
 	end
 end
 --activate cost
-function s.accon(e)
-	s[0]=false
-	return true
+function s.relcon(e,tp,eg,ep,ev,re,r,rp)
+	local trig_loc,ep=Duel.GetChainInfo(ev,CHAININFO_TRIGGERING_LOCATION,CHAININFO_TRIGGERING_PLAYER)
+	return (trig_loc&(LOCATION_MZONE|LOCATION_HAND)>0 and re:IsMonsterEffect()) and Duel.GetFieldGroupCount(ep,LOCATION_EXTRA,0)>7
 end
-function s.acfilter(c)
-	return c:IsSpell() and c:IsAbleToGraveAsCost()
-end
-function s.actarget(e,te,tp)
-	return te:IsActiveType(TYPE_MONSTER) and te:GetActivateLocation()&(LOCATION_HAND|LOCATION_MZONE)>0 and te:IsHasType(EFFECT_TYPE_ACTIVATE)
-end
-function s.acop(e,tp,eg,ep,ev,re,r,rp)
-    local tc=e:GetHandler()
-    if s[0] or not tc:IsReleasable() then return end
-    Duel.Release(tc,REASON_COST)
-	s[0]=true
+function s.relop(e,tp,eg,ep,ev,re,r,rp)
+    local te,ep,chain_id=Duel.GetChainInfo(ev,CHAININFO_TRIGGERING_EFFECT,CHAININFO_TRIGGERING_PLAYER,CHAININFO_CHAIN_ID)
+	if chain_id==s[0] then return end
+    s[0]=chain_id
+	local tc=te:GetHandler()
+    if tc:IsReleasable() and Duel.SelectYesNo(ep,aux.Stringid(id,1)) then
+        Duel.Release(tc,REASON_EFFECT)
+        Duel.BreakEffect()
+    else Duel.NegateEffect(ev) end
 end
 --place in pendulum zone
 function s.pccon(e)
