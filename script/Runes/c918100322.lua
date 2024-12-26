@@ -14,7 +14,7 @@ function s.initial_effect(c)
 	e3:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_GRANT)
 	e3:SetRange(LOCATION_SZONE)
 	e3:SetTargetRange(LOCATION_DECK,0)
-	e3:SetTarget(aux.TargetBoolFunction(Card.IsType,TYPE_R))
+	e3:SetTarget(aux.TargetBoolFunction(Card.IsType,TYPE_RUNE))
 	e3:SetLabelObject(re)
 	c:RegisterEffect(e3)
     --be material
