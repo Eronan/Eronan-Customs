@@ -200,8 +200,8 @@ function s.handcon(e)
     return Duel.GetFlagEffect(e:GetHandlerPlayer(),id)>0
 end
 function s.checkop(e,tp,eg,ep,ev,re,r,rp)
-    if not Duel.IsChainSolving() then Duel.RegisterFlagEffect(1-rp,id,RESET_CHAIN,0,0) return end
     if eg:IsExists(s.cfilter,1,nil,rp) then
+		if not Duel.IsChainSolving() then Duel.RegisterFlagEffect(1-rp,id,RESET_CHAIN,0,0) return end
         s[1-rp]=1
     end
 end
