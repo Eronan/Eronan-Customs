@@ -73,5 +73,5 @@ function s.econ(e)
 	return e:GetHandler():GetFlagEffect(id)~=0
 end
 function s.elimit(e,te,tp)
-	return te:IsActiveType(TYPE_MONSTER) and re:GetActivateLocation()&LOCATION_MZONE==LOCATION_MZONE
+	return te:IsActiveType(TYPE_MONSTER) and te:GetActivateLocation()&LOCATION_MZONE==LOCATION_MZONE
 end

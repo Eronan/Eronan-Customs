@@ -183,6 +183,7 @@ function Rune.MonFunction(f)
 end
 function Rune.MonFunctionEx(f,val)
 	return	function(target,scard,sumtype,tp)
+				-- Debug.Message(type(target).."|"..type(scard).."|"..type(sumtype).."|"..type(tp))
 				return target:IsMonster() and f(target,val,scard,sumtype,tp) and Rune.IsCanBeMaterial(target,scard,tp)
 			end
 end
@@ -200,7 +201,7 @@ function Rune.STFunctionEx(f,val)
 			end
 end
 --Check if Usable as Material at all
-function Rune.ConditionFilter(c,monf,stf,rc,tp)	
+function Rune.ConditionFilter(c,monf,stf,rc,tp)
 	return monf(c,rc,SUMMON_TYPE_RUNE,tp) or stf(c,rc,SUMMON_TYPE_RUNE,tp)
 end
 function Rune.IsCanBeMaterial(c,runc,tp)
