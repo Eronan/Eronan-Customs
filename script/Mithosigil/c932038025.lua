@@ -60,6 +60,7 @@ end
 --Special Summon 'Mithosigil, Bringer of Storm'
 function s.spfilter(c,e,tp)
 	return c:IsCode(932038020) and c:IsCanBeSpecialSummoned(e,0,tp,false,false)
+        and Duel.IsExistingTarget(s.ecfilter,tp,LOCATION_GRAVE,0,1,nil,c)
 end
 function s.ecfilter(c,tc)
 	return c:IsType(TYPE_EQUIP) and c:CheckEquipTarget(tc)
@@ -67,22 +68,23 @@ end
 function s.sptg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	local c=e:GetHandler()
 	if chkc then return false end
-	if chk==0 then return Duel.GetMZoneCount(tp,c)>0 and Duel.IsExistingTarget(s.spfilter,tp,LOCATION_GRAVE,0,1,nil,e,tp) end
+	if chk==0 then return Duel.GetMZoneCount(tp,c)>0
+        and Duel.IsExistingTarget(s.spfilter,tp,LOCATION_GRAVE,0,1,nil,e,tp) end
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_TARGET)
 	local g1=Duel.SelectTarget(tp,s.spfilter,tp,LOCATION_GRAVE,0,1,1,nil,e,tp,c)
 	Duel.SetOperationInfo(0,CATEGORY_SPECIAL_SUMMON,g1,1,tp,0)
     local etc=g1:GetFirst()
     local g2=Duel.SelectTarget(tp,s.ecfilter,tp,LOCATION_GRAVE,0,1,1,nil,etc)
-    Duel.SetOperationInfo(0,CATEGORY_LEAVE_GRAVE,g2,s1,0,0)
+    Duel.SetOperationInfo(0,CATEGORY_LEAVE_GRAVE,g2,1,tp,0)
 end
 function s.spop(e,tp,eg,ep,ev,re,r,rp)
 	local tg=Duel.GetTargetCards(e)
     if #tg<2 then return end
-    local spg=tg:Filter(s.spfilter,nil,e,tp)
+    local spg=tg:Filter(s.spfilter,nil,e,tp):Filter(Card.IsRelateToEffect,nil,e)
 	if #spg~=1 then return end
     local spc=spg:GetFirst()
     if not spc:IsRelateToEffect(e) then return end
-    local eqg=tg:Filter(s.ecfilter,nil,spc)
+    local eqg=tg:Filter(s.ecfilter,nil,spc):Filter(Card.IsRelateToEffect,nil,e)
     if #eqg~=1 then return end
     local eqc=eqg:GetFirst()
 	if not eqc:IsRelateToEffect(e) then return end

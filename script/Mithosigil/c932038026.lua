@@ -35,11 +35,7 @@ function s.matfilter(c,sc,sumtyp,tp)
 end
 --Neither player can activate cards that negate or disable for the next two turns
 function s.limtg(e,tp,eg,ep,ev,re,r,rp,chk)
-	if chk==0 then return true end
-	Duel.SetChainLimit(s.chainlm)
-end
-function s.chainlm(e,rp,tp)
-	return tp==rp
+	if chk==0 then return Duel.GetFlagEffect(tp,id)==0 end
 end
 function s.limop(e,tp,eg,ep,ev,re,r,rp)
 	local e1=Effect.CreateEffect(e:GetHandler())
@@ -51,6 +47,8 @@ function s.limop(e,tp,eg,ep,ev,re,r,rp)
 	e1:SetValue(s.aclimit)
 	e1:SetReset(RESET_PHASE|PHASE_END,2)
 	Duel.RegisterEffect(e1,tp)
+	Duel.RegisterFlagEffect(tp,id,RESET_PHASE|PHASE_END,0,2)
+	Duel.RegisterFlagEffect(1-tp,id,RESET_PHASE|PHASE_END,0,2)
 end
 function s.aclimit(e,re,tp)
 	return re:IsHasType(EFFECT_TYPE_ACTIVATE)
@@ -60,27 +58,31 @@ end
 function s.spfilter(c,e,tp)
 	return c:IsCode(932038020) and c:IsCanBeSpecialSummoned(e,0,tp,false,false)
 end
-function s.fsfilter(c)
+function s.fsfilter(c,tp)
 	return c:IsFieldSpell() and c:GetActivateEffect():IsActivatable(tp,true,true)
 end
 function s.sptg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	local c=e:GetHandler()
 	if chkc then return false end
-	if chk==0 then return Duel.GetMZoneCount(tp,c)>0 and Duel.IsExistingTarget(s.spfilter,tp,LOCATION_GRAVE,0,1,nil,e,tp) end
+	if chk==0 then
+		return Duel.GetMZoneCount(tp,c)>0
+			and Duel.IsExistingTarget(s.spfilter,tp,LOCATION_GRAVE,0,1,nil,e,tp)
+			and Duel.IsExistingTarget(s.fsfilter,tp,LOCATION_GRAVE,0,1,nil,tp)
+	end
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_TARGET)
 	local g1=Duel.SelectTarget(tp,s.spfilter,tp,LOCATION_GRAVE,0,1,1,nil,e,tp,c)
 	Duel.SetOperationInfo(0,CATEGORY_SPECIAL_SUMMON,g1,1,tp,0)
-    local g2=Duel.SelectTarget(tp,s.fsfilter,tp,LOCATION_GRAVE,0,1,1,nil)
-    Duel.SetOperationInfo(0,CATEGORY_LEAVE_GRAVE,g2,s1,0,0)
+    local g2=Duel.SelectTarget(tp,s.fsfilter,tp,LOCATION_GRAVE,0,1,1,nil,tp)
+    Duel.SetOperationInfo(0,CATEGORY_LEAVE_GRAVE,g2,1,tp,0)
 end
 function s.spop(e,tp,eg,ep,ev,re,r,rp)
 	local tg=Duel.GetTargetCards(e)
     if #tg<2 then return end
-    local spg=tg:Filter(s.spfilter,nil,e,tp)
+    local spg=tg:Filter(s.spfilter,nil,e,tp):Filter(Card.IsRelateToEffect,nil,e)
 	if #spg~=1 then return end
     local spc=spg:GetFirst()
     if not spc:IsRelateToEffect(e) then return end
-    local tfg=tg:Filter(s.fsfilter,nil)
+    local tfg=tg:Filter(s.fsfilter,nil,tp):Filter(Card.IsRelateToEffect,nil,e)
     if #tfg~=1 then return end
     local tfc=tfg:GetFirst()
 	if not tfc:IsRelateToEffect(e) then return end

@@ -64,26 +64,29 @@ function s.discon(e,tp,eg,ep,ev,re,r,rp)
         and Duel.IsExistingMatchingCard(s.cfilter1,tp,LOCATION_ONFIELD,0,1,nil)
 end
 function s.disfilter(c)
-	return c:IsFaceup() and not c:IsDisabled() and c:IsType(TYPE_EFFECT)
+	return c:IsFaceup() and not c:IsDisabled() and c:IsType(TYPE_EFFECT) and c:IsOnField()
 end
 function s.distg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	if chkc then return false end
 	local rc=re:GetHandler()
-	if chk==0 then return s.disfilter(rc) end
+	if chk==0 then return re:IsMonsterEffect() and re:GetActivateLocation()==LOCATION_MZONE and s.disfilter(rc) end
     Duel.SetOperationInfo(0,CATEGORY_DISABLE,rc,1,0,0)
 	Duel.SetOperationInfo(0,CATEGORY_POSITION,rc,1,0,0)
 end
 function s.disop(e,tp,eg,ep,ev,re,r,rp)
 	local tc=re:GetHandler()
+	local c=e:GetHandler()
 	if s.disfilter(tc) then
-        Duel.NegateRelatedChain(tc)
+        Duel.NegateRelatedChain(tc,RESETS_STANDARD)
 		local e1=Effect.CreateEffect(c)
 		e1:SetType(EFFECT_TYPE_SINGLE)
 		e1:SetCode(EFFECT_DISABLE)
+		e1:SetReset(RESETS_STANDARD)
 		tc:RegisterEffect(e1)
 		local e2=Effect.CreateEffect(c)
 		e2:SetType(EFFECT_TYPE_SINGLE)
 		e2:SetCode(EFFECT_DISABLE_EFFECT)
+		e1:SetReset(RESETS_STANDARD)
 		tc:RegisterEffect(e2)
         Duel.BreakEffect()
 		Duel.ChangePosition(tc,POS_FACEDOWN_DEFENSE)

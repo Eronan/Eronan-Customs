@@ -59,21 +59,26 @@ end
 function s.sptg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	local c=e:GetHandler()
 	if chkc then return false end
-	if chk==0 then return Duel.GetMZoneCount(tp,c)>0 and Duel.IsExistingTarget(s.spfilter,tp,LOCATION_GRAVE,0,1,nil,e,tp) end
+	if chk==0 then
+		return Duel.GetMZoneCount(tp,c)>0
+			and Duel.IsExistingTarget(s.spfilter,tp,LOCATION_GRAVE,0,1,nil,e,tp)
+			and Duel.IsExistingTarget(s.tffilter,tp,LOCATION_GRAVE,0,1,nil,tp)
+	end
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_TARGET)
 	local g1=Duel.SelectTarget(tp,s.spfilter,tp,LOCATION_GRAVE,0,1,1,nil,e,tp,c)
 	Duel.SetOperationInfo(0,CATEGORY_SPECIAL_SUMMON,g1,1,tp,0)
+	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_TOFIELD)
     local g2=Duel.SelectTarget(tp,s.tffilter,tp,LOCATION_GRAVE,0,1,1,nil,tp)
-    Duel.SetOperationInfo(0,CATEGORY_LEAVE_GRAVE,g2,s1,0,0)
+    Duel.SetOperationInfo(0,CATEGORY_LEAVE_GRAVE,g2,1,tp,0)
 end
 function s.spop(e,tp,eg,ep,ev,re,r,rp)
 	local tg=Duel.GetTargetCards(e)
     if #tg<2 then return end
-    local spg=tg:Filter(s.spfilter,nil,e,tp)
+    local spg=tg:Filter(s.spfilter,nil,e,tp):Filter(Card.IsRelateToEffect,nil,e)
 	if #spg~=1 then return end
     local spc=spg:GetFirst()
     if not spc:IsRelateToEffect(e) then return end
-    local tfg=tg:Filter(s.tffilter,nil,tp)
+    local tfg=tg:Filter(s.tffilter,nil,tp):Filter(Card.IsRelateToEffect,nil,e)
     if #tfg~=1 then return end
     local tfc=tfg:GetFirst()
 	if not tfc:IsRelateToEffect(e) then return end
