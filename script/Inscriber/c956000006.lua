@@ -3,7 +3,7 @@ if not Rune then Duel.LoadScript("proc_rune.lua") end
 local s,id=GetID()
 function s.initial_effect(c)
 	--xyz summon
-	Xyz.AddProcedure(c,nil,7,2,s.ovfilter,aux.Stringid(id,0),99)
+	Xyz.AddProcedure(c,nil,7,2,s.ovfilter,aux.Stringid(id,0),Xyz.InfiniteMats)
 	c:EnableReviveLimit()
 	--pendulum summon
 	Pendulum.AddProcedure(c,false)

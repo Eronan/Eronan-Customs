@@ -3,7 +3,7 @@ local s,id=GetID()
 function s.initial_effect(c)
     --xyz summon
     c:EnableReviveLimit()
-	Xyz.AddProcedure(c,nil,8,2,nil,nil,99)
+	Xyz.AddProcedure(c,nil,8,2,nil,nil,Xyz.InfiniteMats)
     --pendulum attributes
     Pendulum.AddProcedure(c,false)
     --place in pendulum zone

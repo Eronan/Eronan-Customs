@@ -4,7 +4,7 @@ local s,id=GetID()
 function s.initial_effect(c)
 	--Xyz Summon
 	Pendulum.AddProcedure(c)
-	Xyz.AddProcedure(c,nil,6,2,nil,nil,99)
+	Xyz.AddProcedure(c,nil,6,2,nil,nil,Xyz.InfiniteMats)
 	c:EnableReviveLimit()
 	--gemini status
     local e1=Effect.CreateEffect(c)
