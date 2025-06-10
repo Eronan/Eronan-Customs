@@ -36,7 +36,7 @@ end
 --Return banished cards to graveyard
 function s.tgtg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
     if chkc then return chkc:IsLocation(LOCATION_REMOVED) end
-    if chk==0 then return Duel.IsExistingTarget(aux.TRUE,tp,LOCATION_REMOVED,LOCATION_REMOVED,1,nil) end
+    if chk==0 then return Duel.IsExistingTarget(aux.TRUE,tp,LOCATION_REMOVED,LOCATION_REMOVED,3,nil) end
     Duel.Hint(HINT_SELECTMSG,tp,aux.Stringid(id,0))
     local g=Duel.SelectTarget(tp,aux.TRUE,tp,LOCATION_REMOVED,LOCATION_REMOVED,3,3,nil)
     Duel.SetOperationInfo(0,CATEGORY_TOGRAVE,g,#g,0,0)

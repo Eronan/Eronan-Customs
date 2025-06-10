@@ -51,7 +51,7 @@ function s.limop(e,tp,eg,ep,ev,re,r,rp)
 	Duel.RegisterFlagEffect(1-tp,id,RESET_PHASE|PHASE_END,0,2)
 end
 function s.aclimit(e,re,tp)
-	return re:IsHasType(EFFECT_TYPE_ACTIVATE)
+	return re:IsActivated()
         and (re:IsHasCategory(CATEGORY_DISABLE) or re:IsHasCategory(CATEGORY_NEGATE))
 end
 --Special Summon 'Mithosigil, Bringer of Storm'
