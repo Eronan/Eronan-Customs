@@ -55,8 +55,8 @@ function s.sptg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 end
 function s.spop(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
-	if c:IsRelateToEffect(e) and zone~=0 and Duel.SpecialSummonStep(c,0,tp,tp,false,c:IsLocation(LOCATION_HAND),POS_FACEUP) then
-		Duel.SpecialSummonComplete()
+	if c:IsRelateToEffect(e) and Duel.GetLocationCount(tp,LOCATION_MZONE)>0 then
+		Duel.SpecialSummon(c,0,tp,tp,false,c:IsLocation(LOCATION_HAND),POS_FACEUP)
 	end
 end
 function s.spcost2(e,tp,eg,ep,ev,re,r,rp,chk)

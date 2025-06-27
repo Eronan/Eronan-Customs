@@ -39,7 +39,7 @@ function s.efilter(e,te)
 	return not g:IsContains(e:GetHandler():GetEquipTarget())
 end
 function s.eqfilter(c,ec)
-	return c:IsSetCard(0xff6) and c:IsType(TYPE_UNION) and c:CheckUnionTarget(ec) and aux.CheckUnionEquip(c,ec)
+	return c:IsSetCard(0xff6) and c:IsType(TYPE_UNION) and c:CheckUnionTarget(ec) and c:CheckUnionTarget(ec)
 end
 function s.eqtg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	local ec=e:GetHandler()
@@ -62,7 +62,7 @@ function s.eqop(e,tp,eg,ep,ev,re,r,rp)
 		if c:IsLocation(LOCATION_SZONE) then ec=c:GetEquipTarget()
 		elseif c:IsLocation(LOCATION_MZONE) then ec=c end
 		--Equip
-		if ec and aux.CheckUnionEquip(tc,ec) and Duel.Equip(tp,tc,ec) then
+		if ec and tc:CheckUnionTarget(ec) and Duel.Equip(tp,tc,ec) then
 			aux.SetUnionState(tc)
 		end
 	end

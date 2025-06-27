@@ -44,7 +44,6 @@ function s.runcon(e,tp,eg,ep,ev,re,r,rp)
 	if not g or g:GetCount()~=1 then return false end
 	local tc=g:GetFirst()
 	local c=e:GetHandler()
-	
 	local mg=Duel.GetMatchingGroup(Card.IsFaceup,tp,LOCATION_ONFIELD,0,nil)
 	mg:AddCard(tc)
 	return tc:IsFaceup() and tc:IsLocation(LOCATION_ONFIELD) and tc:IsType(TYPE_SPELL+TYPE_TRAP) and c:IsRuneSummonable(tc,mg)
@@ -54,8 +53,7 @@ function s.runop(e,tp,eg,ep,ev,re,r,rp)
 	if not c:IsRelateToEffect(e) then return end
 	--Get Target
 	local tg=Duel.GetChainInfo(ev,CHAININFO_TARGET_CARDS)
-	local tc=tg:GetFirst()
-	local mg=Rune.DefaultGroup(c,tp)
+	local mg=Duel.GetMatchingGroup(Card.IsFaceup,tp,LOCATION_ONFIELD,0,nil)
 	mg:Merge(tg)
 	--rune
 	if not c:IsRuneSummonable(tg,mg) then return end

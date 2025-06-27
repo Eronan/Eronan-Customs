@@ -78,7 +78,6 @@ function s.rmop(e,tp,eg,ep,ev,re,r,rp)
 	while tc do
 		local seq=tc:GetSequence()
 		--if tc:IsControler(1-tp) then seq=seq+16 end
-		Debug.Message(seq)
 		if Duel.Remove(tc,0,REASON_EFFECT+REASON_TEMPORARY)~=0 then
 			local e1=Effect.CreateEffect(c)
 			e1:SetType(EFFECT_TYPE_FIELD)

@@ -2,7 +2,7 @@
 if not Rune then Duel.LoadScript("proc_rune.lua") end
 local s,id=GetID()
 function s.initial_effect(c)
-	aux.AddPersistentProcedure(c,1,s.tgfilter)
+	aux.AddPersistentProcedure(c,1,s.tgfilter,nil,nil,nil,nil,nil,nil,nil,s.tgop)
 	--Special Summon Limitation
 	local e1=Effect.CreateEffect(c)
 	e1:SetCode(EFFECT_CANNOT_SPECIAL_SUMMON)
@@ -43,9 +43,41 @@ function s.initial_effect(c)
 	e4:SetCode(EFFECT_TRAP_ACT_IN_HAND)
 	e4:SetCondition(s.handcon)
 	c:RegisterEffect(e4)
+	aux.GlobalCheck(s,function()
+		s[0]=0
+		s[1]=0
+		local ge1=Effect.CreateEffect(c)
+		ge1:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
+		ge1:SetCode(EVENT_SPSUMMON_SUCCESS)
+		ge1:SetOperation(s.checkop)
+		Duel.RegisterEffect(ge1,0)
+		local ge2=Effect.CreateEffect(c)
+		ge2:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
+		ge2:SetCode(EVENT_CHAIN_END)
+		ge2:SetOperation(s.regop)
+        ge1:SetLabelObject(ge2)
+		Duel.RegisterEffect(ge2,0)
+	end)
 end
+--Summon Limit
 function s.tgfilter(c)
 	return c:IsType(TYPE_FUSION|TYPE_RITUAL|TYPE_SYNCHRO|TYPE_XYZ|TYPE_PENDULUM|TYPE_LINK|TYPE_RUNE)
+end
+function s.tgop(e,tp,eg,ep,ev,re,r,rp)
+	local c=e:GetHandler()
+	if not c:IsRelateToEffect(e) or c:IsStatus(STATUS_ACT_FROM_HAND) then return end
+	local tc=Duel.GetFirstTarget()
+	if tc and tc:IsRelateToEffect(e) then
+		local e1=Effect.CreateEffect(c)
+		e1:SetType(EFFECT_TYPE_FIELD)
+		e1:SetProperty(EFFECT_FLAG_PLAYER_TARGET)
+		e1:SetRange(LOCATION_MZONE)
+		e1:SetCode(EFFECT_MUST_BE_MATERIAL)
+		e1:SetValue(REASON_FUSION|REASON_SYNCHRO|REASON_XYZ|REASON_LINK|REASON_RUNE)
+		e1:SetTargetRange(1,0)
+		e1:SetReset(RESETS_STANDARD_PHASE_END)
+		tc:RegisterEffect(e1)
+	end
 end
 function s.sumlimit(e,c,sump,sumtype,sumpos,targetp)
 	local tc=e:GetHandler():GetFirstCardTarget()
@@ -53,6 +85,7 @@ function s.sumlimit(e,c,sump,sumtype,sumpos,targetp)
 	local tctype=tc:GetType()&(TYPE_FUSION|TYPE_RITUAL|TYPE_SYNCHRO|TYPE_XYZ|TYPE_PENDULUM|TYPE_LINK|TYPE_RUNE)
 	return not c:IsType(tctype) and c:GetType()&(TYPE_FUSION|TYPE_RITUAL|TYPE_SYNCHRO|TYPE_XYZ|TYPE_PENDULUM|TYPE_LINK|TYPE_RUNE)~=0
 end
+--Destroy when leaves the field
 function s.descon(e,tp,eg,ep,ev,re,r,rp)
     local c=e:GetHandler()
     if c:IsStatus(STATUS_DESTROY_CONFIRMED) then return false end
@@ -62,6 +95,7 @@ end
 function s.desop(e,tp,eg,ep,ev,re,r,rp)
     Duel.Destroy(e:GetHandler(), REASON_EFFECT)
 end
+--Extra Material
 function s.extracon(c,e,tp,sg,mg,rc,og,chk)
 	return (not sg or sg:FilterCount(s.flagcheck,nil)<2)
 		and rc~=c and (e:GetHandler()~=c or Duel.GetCurrentChain()~=1)
@@ -92,12 +126,21 @@ function s.extraval(chk,summon_type,e,...)
 		s.flagmap[c]={}
 	end
 end
-function s.handcfilter(c,tp)
-	return c:IsOriginalType(TYPE_MONSTER) and c:IsSummonPlayer(1-tp)
-end
+--activate card from hand
 function s.handcon(e)
-    local res,teg,tep,tev,tre,tr,trp=Duel.CheckEvent(EVENT_SPSUMMON_SUCCESS,true)
-    if res then
-        return teg:IsExists(s.handcfilter,1,nil,e:GetHandlerPlayer())
-    end
+    return Duel.GetFlagEffect(e:GetHandlerPlayer(),id)>0
+end
+function s.checkop(e,tp,eg,ep,ev,re,r,rp)
+	if not Duel.IsChainSolving() then Duel.RegisterFlagEffect(1-rp,id,RESET_CHAIN,0,0) return end
+	s[1-rp]=1
+end
+function s.regop(e,tp,eg,ep,ev,re,r,rp)
+	if s[0]>0 then
+		s[0]=0
+		Duel.RegisterFlagEffect(0,id,RESET_CHAIN,0,0)
+	end
+	if s[1]>0 then
+		s[1]=0
+		Duel.RegisterFlagEffect(1,id,RESET_CHAIN,0,0)
+	end
 end

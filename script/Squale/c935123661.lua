@@ -9,6 +9,11 @@ function s.initial_effect(c)
 	e1:SetTarget(s.target)
 	e1:SetOperation(s.activate)
 	c:RegisterEffect(e1)
+	--Activate
+    if not s.ritual_matching_function then
+        s.ritual_matching_function={}
+    end
+    s.ritual_matching_function[c]=aux.FilterEqualFunction(Card.IsRace,RACE_REPTILE)
 	--salvage
 	local e2=Effect.CreateEffect(c)
 	e2:SetDescription(aux.Stringid(id,0))

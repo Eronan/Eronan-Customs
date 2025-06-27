@@ -57,9 +57,6 @@ function s.chop1(e,tp,eg,ep,ev,re,r,rp)
 end
 function s.desop(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
-	if c:GetType()==TYPE_SPELL or c:GetType()==TYPE_TRAP then
-		c:CancelToGrave(false)
-	end
 	local sg=Duel.GetMatchingGroup(aux.TRUE,tp,LOCATION_MZONE,LOCATION_MZONE,nil)
 	Duel.Destroy(sg,REASON_EFFECT)
 end

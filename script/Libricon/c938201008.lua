@@ -64,7 +64,7 @@ function s.pcop(e,tp,eg,ep,ev,re,r,rp)
         Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_TOFIELD)
         local tg=g:Select(tp,1,ct)
         local gyg=g-tg
-        Duel.SendToGrave(gyg,REASON_RULE)
+        Duel.SendtoGrave(gyg,REASON_RULE)
         g=tg
     end
     for tc in aux.Next(g) do

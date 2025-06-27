@@ -2,7 +2,7 @@
 if not Rune then Duel.LoadScript("proc_rune.lua") end
 local s,id=GetID()
 function s.initial_effect(c)
-    Rune.AddProcedure(c,Rune.MonFunction(s.mfilter),1,1,Rune.STFunctionEx(Card.IsContinuousTrap),2,99,nil,s.exgroup,nil,nil,nil,s.customop)
+    Rune.AddProcedure(c,Rune.MonFunctionEx(Card.IsAttribute,ATTRIBUTE_EARTH),2,99,Rune.STFunctionEx(Card.IsContinuousTrap),2,99,nil,s.exgroup,nil,nil,nil,s.customop)
 	c:EnableReviveLimit()
     --Summon Limit
 	local e1=Effect.CreateEffect(c)
@@ -17,49 +17,31 @@ function s.initial_effect(c)
 	e2:SetCode(EFFECT_MATERIAL_CHECK)
 	e2:SetValue(s.matcheck)
 	c:RegisterEffect(e2)
-    --Cannot be Tributed
-    local e3=Effect.CreateEffect(c)
-	e3:SetType(EFFECT_TYPE_SINGLE)
-	e3:SetProperty(EFFECT_FLAG_SINGLE_RANGE)
+    --cannot be target
+	local e3=Effect.CreateEffect(c)
+	e3:SetType(EFFECT_TYPE_FIELD)
+	e3:SetCode(EFFECT_CANNOT_BE_EFFECT_TARGET)
+	e3:SetProperty(EFFECT_FLAG_IGNORE_IMMUNE+EFFECT_FLAG_SET_AVAILABLE)
 	e3:SetRange(LOCATION_MZONE)
-	e3:SetCode(EFFECT_UNRELEASABLE_SUM)
-    e3:SetCondition(s.tgcon)
-	e3:SetValue(1)
-    e3:SetLabelObject(e2)
+	e3:SetTargetRange(LOCATION_ONFIELD,0)
+	e3:SetTarget(s.tgtg)
+	e3:SetValue(aux.tgoval)
 	c:RegisterEffect(e3)
-	local e4=e3:Clone()
-	e4:SetCode(EFFECT_UNRELEASABLE_NONSUM)
-	c:RegisterEffect(e4)
-    --cannot be target
-	local e5=e3:Clone()
-	e5:SetCode(EFFECT_CANNOT_BE_EFFECT_TARGET)
-	e5:SetValue(aux.tgoval)
-	c:RegisterEffect(e5)
-    --cannot be target
-	local e6=Effect.CreateEffect(c)
-	e6:SetType(EFFECT_TYPE_FIELD)
-	e6:SetCode(EFFECT_CANNOT_BE_EFFECT_TARGET)
-	e6:SetProperty(EFFECT_FLAG_IGNORE_IMMUNE+EFFECT_FLAG_SET_AVAILABLE)
-	e6:SetRange(LOCATION_MZONE)
-	e6:SetTargetRange(LOCATION_ONFIELD,0)
-	e6:SetTarget(s.tgtg)
-	e6:SetValue(aux.tgoval)
-	c:RegisterEffect(e6)
     --Attach top deck card during the Standby Phase
-	local e7=Effect.CreateEffect(c)
-	e7:SetDescription(aux.Stringid(id,1))
-    e7:SetCategory(CATEGORY_TOHAND)
-	e7:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_TRIGGER_O)
-	e7:SetCode(EVENT_PHASE+PHASE_STANDBY)
-	e7:SetRange(LOCATION_MZONE)
-	e7:SetCountLimit(1)
-	e7:SetTarget(s.thtg)
-	e7:SetOperation(s.thop)
-	c:RegisterEffect(e7)
+	local e4=Effect.CreateEffect(c)
+	e4:SetDescription(aux.Stringid(id,1))
+    e4:SetCategory(CATEGORY_TOHAND)
+	e4:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_TRIGGER_O)
+	e4:SetCode(EVENT_PHASE+PHASE_STANDBY)
+	e4:SetRange(LOCATION_MZONE)
+	e4:SetCountLimit(1,id,EFFECT_COUNT_CODE_OATH)
+	e4:SetTarget(s.thtg)
+	e4:SetOperation(s.thop)
+	c:RegisterEffect(e4)
 end
 --Rune Summon
-function s.mfilter(c,rc,sumtyp,tp)
-    return c:IsType(TYPE_RUNE,rc,sumtyp,tp) and c:IsAttribute(ATTRIBUTE_EARTH)
+function s.rune_custom_check(g,rc,sumtype,tp)
+	return g:IsExists(Card.IsType,1,nil,TYPE_RUNE)
 end
 function s.exgroup(tp,ex,c)
 	return Duel.GetMatchingGroup(Card.IsAbleToRemove,tp,LOCATION_GRAVE,0,ex)
@@ -70,25 +52,37 @@ function s.customop(g,e,tp,eg,ep,ev,re,r,rp,pc)
     Duel.SendtoGrave(mg,REASON_MATERIAL+REASON_RUNE)
     Duel.Remove(gy,POS_FACEUP,REASON_MATERIAL+REASON_RUNE)
 end
---material check
+--material check, cannot be tribute or targeted
 function s.mchkfilter(c)
     return c:IsRace(RACE_WYRM) and c:IsSetCard(0xfe3)
 end
 function s.matcheck(e,c)
-    s.divine_magus_table={}
 	local g=c:GetMaterial()
 	e:SetLabel(0)
 	if g:IsExists(s.mchkfilter,1,nil) then
-		e:SetLabel(1)
-		e:GetHandler():RegisterFlagEffect(id,RESET_EVENT+RESETS_STANDARD-RESET_TOFIELD,EFFECT_FLAG_CLIENT_HINT,1,0,aux.Stringid(id,0))
+		--Cannot be Tributed
+		local e1=Effect.CreateEffect(c)
+		e1:SetDescription(aux.Stringid(id,0))
+		e1:SetType(EFFECT_TYPE_SINGLE)
+		e1:SetProperty(EFFECT_FLAG_SINGLE_RANGE|EFFECT_FLAG_CLIENT_HINT)
+		e1:SetRange(LOCATION_MZONE)
+		e1:SetCode(EFFECT_UNRELEASABLE_SUM)
+		e1:SetValue(1)
+		e1:SetReset(RESET_EVENT+RESETS_STANDARD-RESET_TOFIELD)
+		c:RegisterEffect(e1)
+		local e2=e1:Clone()
+		e2:SetCode(EFFECT_UNRELEASABLE_NONSUM)
+		c:RegisterEffect(e2)
+		--cannot be target
+		local e3=e1:Clone()
+		e3:SetCode(EFFECT_CANNOT_BE_EFFECT_TARGET)
+		e3:SetValue(aux.tgoval)
+		c:RegisterEffect(e3)
 	end
 end
---cannot be tribute or targeted
-function s.tgcon(e)
-	return e:GetLabelObject():GetLabel()~=0
-end
+--Cannot target other cards
 function s.tgtg(e,c)
-	return c~=e:GetHandler() 
+	return c~=e:GetHandler()
 end
 --Add to hand
 function s.thfilter(c)

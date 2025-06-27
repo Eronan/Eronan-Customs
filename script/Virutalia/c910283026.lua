@@ -26,14 +26,14 @@ end
 --Equip Filter
 function s.eqfilter(c,rc)
 	return c:IsCode(910283020) and c:IsType(TYPE_UNION)
-		and c:CheckUnionTarget(rc) and aux.CheckUnionEquip(c,rc)
+		and c:CheckUnionTarget(rc) and c:CheckUnionTarget(rc)
 end
 function s.ritop(mat,e,tp,eg,ep,ev,re,r,rp,tc)
 	--Equip "Virutalia"
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_EQUIP)
 	local g=Duel.SelectMatchingCard(tp,aux.NecroValleyFilter(s.eqfilter),tp,LOCATION_GRAVE,0,1,1,nil,tc)
 	local ec=g:GetFirst()
-	if ec and aux.CheckUnionEquip(ec,tc) and Duel.Equip(tp,ec,tc) then
+	if ec and ec:CheckUnionTarget(tc) and Duel.Equip(tp,ec,tc) then
 		aux.SetUnionState(ec)
 		local e1=Effect.CreateEffect(e:GetHandler())
 		e1:SetType(EFFECT_TYPE_SINGLE)

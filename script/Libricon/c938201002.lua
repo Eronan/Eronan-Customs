@@ -3,7 +3,7 @@ local s,id=GetID()
 function s.initial_effect(c)
     --xyz summon
     c:EnableReviveLimit()
-	Xyz.AddProcedure(c,nil,8,2,nil,nil,99)
+	Xyz.AddProcedure(c,nil,8,2,nil,nil,Xyz.InfiniteMats)
     --pendulum attributes
     Pendulum.AddProcedure(c,false)
     --place in pendulum zone
@@ -24,14 +24,21 @@ function s.initial_effect(c)
 	e2:SetOperation(s.aclimit)
 	c:RegisterEffect(e2)
 	local e3=Effect.CreateEffect(c)
-	e3:SetDescription(aux.Stringid(id,1))
-	e3:SetType(EFFECT_TYPE_FIELD)
-	e3:SetCode(EFFECT_CANNOT_ACTIVATE)
-	e3:SetProperty(EFFECT_FLAG_PLAYER_TARGET)
-	e3:SetRange(LOCATION_PZONE)
-	e3:SetTargetRange(1,1)
-	e3:SetValue(s.elimit)
+	e3:SetType(EFFECT_TYPE_CONTINUOUS+EFFECT_TYPE_FIELD)
+	e3:SetCode(EVENT_CHAIN_NEGATED)
+	e3:SetRange(LOCATION_MZONE)
+	e3:SetOperation(s.aclimit2)
 	c:RegisterEffect(e3)
+	local e4=Effect.CreateEffect(c)
+	e4:SetDescription(aux.Stringid(id,1))
+	e4:SetType(EFFECT_TYPE_FIELD)
+	e4:SetCode(EFFECT_CANNOT_ACTIVATE)
+	e4:SetProperty(EFFECT_FLAG_PLAYER_TARGET)
+	e4:SetRange(LOCATION_PZONE)
+	e4:SetTargetRange(1,1)
+	e4:SetCondition(s.econ)
+	e4:SetValue(s.elimit)
+	c:RegisterEffect(e4)
 end
 --place in pendulum zone
 function s.pcfilter(c,e,tp)
@@ -55,9 +62,16 @@ function s.pcop(e,tp,eg,ep,ev,re,r,rp)
 end
 --activate limit
 function s.aclimit(e,tp,eg,ep,ev,re,r,rp)
-	if not re:IsActiveType(TYPE_MONSTER) then return end
-	Duel.RegisterFlagEffect(re:GetHandlerPlayer(),id,RESET_PHASE+PHASE_END,0,1)
+	if not re:IsActiveType(TYPE_MONSTER) or re:GetActivateLocation()&LOCATION_MZONE==0 then return end
+	e:GetHandler():RegisterFlagEffect(id,RESET_EVENT|RESETS_STANDARD_DISABLE|RESET_CONTROL|RESET_PHASE|PHASE_END,0,1)
+end
+function s.aclimit2(e,tp,eg,ep,ev,re,r,rp)
+	if not re:IsActiveType(TYPE_MONSTER) or re:GetActivateLocation()&LOCATION_MZONE==0 then return end
+	e:GetHandler():ResetFlagEffect(id)
+end
+function s.econ(e)
+	return e:GetHandler():GetFlagEffect(id)~=0
 end
 function s.elimit(e,te,tp)
-	return te:IsActiveType(TYPE_MONSTER) and Duel.GetFlagEffect(te:GetHandlerPlayer(),id)~=0
+	return te:IsActiveType(TYPE_MONSTER) and te:GetActivateLocation()&LOCATION_MZONE==LOCATION_MZONE
 end

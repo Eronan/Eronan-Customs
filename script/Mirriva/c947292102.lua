@@ -39,7 +39,7 @@ function s.extraop(mat,e,tp,eg,ep,ev,re,r,rp,tc)
 	local mat2=mat:Filter(Card.IsLocation,nil,LOCATION_EXTRA)
 	mat:Sub(mat2)
 	Duel.ReleaseRitualMaterial(mat)
-	Duel.SendToGrave(mat2,REASON_EFFECT+REASON_MATERIAL+REASON_RITUAL)
+	Duel.SendtoGrave(mat2,REASON_EFFECT+REASON_MATERIAL+REASON_RITUAL)
 end
 function s.extratg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return true end

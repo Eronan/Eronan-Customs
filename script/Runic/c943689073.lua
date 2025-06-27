@@ -89,7 +89,7 @@ function s.tcfilter(c,tp)
 end
 function s.eqfilter(c,tc,tp)
 	return (c:IsType(TYPE_EQUIP) and c:CheckEquipTarget(tc) and c:CheckUniqueOnField(tp) and not c:IsForbidden())
-		or (c:IsType(TYPE_UNION) and c:CheckUnionTarget(tc) and aux.CheckUnionEquip(c,tc,ign_ct))
+		or (c:IsType(TYPE_UNION) and c:CheckUnionTarget(tc) and c:CheckUnionTarget(tc))
 end
 function s.eqtg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	if chkc then return chkc:IsLocation(LOCATION_MZONE) and chkc:IsControler(tp) and s.tcfilter(chkc,tp) end
@@ -108,7 +108,7 @@ function s.eqop(e,tp,eg,ep,ev,re,r,rp)
 		if g:GetCount()>0 then
 			local c=e:GetHandler()
 			local ec=g:GetFirst()
-			if ec:IsType(TYPE_UNION) and aux.CheckUnionEquip(ec,tc) and Duel.Equip(tp,ec,tc) then
+			if ec:IsType(TYPE_UNION) and ec:CheckUnionTarget(tc) and Duel.Equip(tp,ec,tc) then
 				aux.SetUnionState(ec)
 			elseif ec:IsType(TYPE_EQUIP) then
 				Duel.Equip(tp,ec,tc)
@@ -123,7 +123,7 @@ function s.rthtg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	if chkc then return chkc:IsLocation(LOCATION_ONFIELD) and s.rthfilter(chkc) end
 	if chk==0 then return Duel.IsExistingTarget(s.rthfilter,tp,LOCATION_ONFIELD,LOCATION_ONFIELD,1,nil) end
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_RTOHAND)
-	local g=Duel.SelectTarget(tp,Card.IsAbleToHand,tp,LOCATION_ONFIELD,LOCATION_ONFIELD,1,1,nil)
+	local g=Duel.SelectTarget(tp,s.rthfilter,tp,LOCATION_ONFIELD,LOCATION_ONFIELD,1,1,nil)
 	Duel.SetOperationInfo(0,CATEGORY_TOHAND,g,1,0,0)
 end
 function s.rthop(e,tp,eg,ep,ev,re,r,rp)
