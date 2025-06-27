@@ -54,7 +54,6 @@ function s.activate(e,tp,eg,ep,ev,re,r,rp)
 			if not mg:IsContains(mt) then mg:AddCard(mt)
 			else mg:RemoveCard(mt) end
 			mt=nil
-			--Debug.Message("Count: " .. tostring(mg:GetCount()) .. " | " .. tostring(mg:GetSum(Card.GetLevel)))
 		end
 		mg:AddCard(e:GetHandler())
 		tc:SetMaterial(mg)

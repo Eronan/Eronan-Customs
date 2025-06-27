@@ -106,7 +106,7 @@ function s.runop(e,tp,eg,ep,ev,re,r,rp)
 	local mg=Duel.GetMatchingGroup(Card.IsFaceup,tp,LOCATION_ONFIELD,0,nil):Merge(exg)
 	if #mg>=0 then
 		Duel.Hint(HINT_SELECTMSG,tp,1175)
-		local g=Duel.GetMatchingGroup(tp,s.runfilter,tp,LOCATION_HAND,0,1,1,nil,mg)
+		local g=Duel.GetMatchingGroup(s.runfilter,tp,LOCATION_HAND,0,1,1,nil,mg)
         if #g>0 then
             local sc=g:Select(tp,1,1,nil):GetFirst()
             if sc then

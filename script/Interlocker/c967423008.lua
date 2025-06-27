@@ -29,7 +29,8 @@ function s.tgfilter(c,tp)
 	return c:IsFaceup() and Duel.IsExistingMatchingCard(s.eqfilter,tp,LOCATION_DECK,0,1,nil,c)
 end
 function s.eqfilter(c,tc)
-	return c:IsType(TYPE_UNION) and c:CheckUnionTarget(tc) and aux.CheckUnionEquip(c,tc)
+	return c:IsType(TYPE_UNION) and c:CheckUnionTarget(tc) and c:CheckUnionTarget(tc)
+		and c:IsSetCard(0xfe6)
 end
 function s.target(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
     if chkc then return chkc:IsLocation(LOCATION_MZONE) and s.tgfilter(chkc,tp) end
@@ -45,7 +46,7 @@ function s.activate(e,tp,eg,ep,ev,re,r,rp)
         Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_FACEUP)
         local g=Duel.SelectMatchingCard(tp,s.eqfilter,tp,LOCATION_DECK,0,1,1,nil,tc)
         local ec=g:GetFirst()
-        if ec and aux.CheckUnionEquip(ec,tc) and Duel.Equip(tp,ec,tc) then
+        if ec and ec:CheckUnionTarget(tc) and Duel.Equip(tp,ec,tc) then
             aux.SetUnionState(ec)
 			--Return it to hand
 			if ec:IsAbleToHand() and Duel.SelectYesNo(tp,aux.Stringid(id,1)) then

@@ -23,7 +23,6 @@ function s.initial_effect(c)
 	e2:SetProperty(EFFECT_FLAG_IGNORE_IMMUNE+EFFECT_FLAG_SET_AVAILABLE)
 	e2:SetRange(LOCATION_MZONE)
 	e2:SetTargetRange(LOCATION_GRAVE,0)
-	e2:SetCondition(s.tgcon)
 	e2:SetTarget(s.tgtg)
 	e2:SetValue(aux.tgoval)
 	c:RegisterEffect(e2)
@@ -61,9 +60,6 @@ function s.spop(e,tp,eg,ep,ev,re,r,rp)
 		tc:RegisterEffect(e1)
 	end
 	Duel.SpecialSummonComplete()
-end
-function s.tgcon(e,tp,eg,ep,ev,re,r,rp)
-	return Duel.IsExistingMatchingCard(Card.IsType,e:GetHandlerPlayer(),LOCATION_MZONE,0,1,nil,TYPE_RUNE)
 end
 function s.tgtg(e,c)
 	return c==e:GetHandler() or e:GetHandler():GetLinkedGroup():IsContains(c)

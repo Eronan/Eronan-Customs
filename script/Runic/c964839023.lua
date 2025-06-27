@@ -57,7 +57,7 @@ function s.MNMatFilter(c,rc,sumtype,tp)
 	return c:IsRace(RACE_FAIRY,rc,sumtype,tp) and not c:IsSummonableCard()
 end
 function s.STMatFilter(c,rc,sumtyp,tp)
-	return (c:GetType(rc,sumtyp,tp)&TYPE_TRAP+TYPE_CONTINUOUS)==TYPE_TRAP+TYPE_CONTINUOUS
+	return (c:GetType(rc,sumtyp,tp)&TYPE_SPELL+TYPE_CONTINUOUS)==TYPE_SPELL+TYPE_CONTINUOUS
 end
 function s.exgroup(tp,ex,c)
 	return Duel.GetMatchingGroup(aux.NOT(Card.IsType),tp,LOCATION_EXTRA,0,ex,TYPE_EFFECT)

@@ -29,7 +29,7 @@ function s.tgfilter(c,tp)
 		and Duel.IsExistingMatchingCard(s.cfilter,tp,LOCATION_DECK,0,1,nil,c,tp)
 end
 function s.cfilter(c,ec,tp)
-	return c:IsType(TYPE_UNION) and c:CheckUnionTarget(ec) and aux.CheckUnionEquip(c,ec)
+	return c:IsType(TYPE_UNION) and c:CheckUnionTarget(ec) and c:CheckUnionTarget(ec)
 end
 function s.target(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	if chkc then return chkc:IsLocation(LOCATION_MZONE) and chkc:IsControler(tp) and s.tgfilter(chkc) end
@@ -46,7 +46,7 @@ function s.activate(e,tp,eg,ep,ev,re,r,rp)
 		Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_EQUIP)
 		local sg=Duel.SelectMatchingCard(tp,s.cfilter,tp,LOCATION_DECK,0,1,1,nil,tc,tp)
 		local ec=sg:GetFirst()
-		if ec and aux.CheckUnionEquip(ec,tc) and Duel.Equip(tp,ec,tc) then
+		if ec and ec:CheckUnionTarget(tc) and Duel.Equip(tp,ec,tc) then
 			aux.SetUnionState(ec)
 			local e1=Effect.CreateEffect(e:GetHandler())
 			e1:SetType(EFFECT_TYPE_SINGLE)

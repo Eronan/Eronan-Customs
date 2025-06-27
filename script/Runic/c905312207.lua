@@ -25,8 +25,16 @@ function s.initial_effect(c)
 end
 s.listed_names={905312206}
 --rune 
+function s.mustbematerialsallowed(tp,mg)
+	local pg=aux.GetMustBeMaterialGroup(tp,mg,tp,nil,nil,REASON_RUNE)
+	if #pg>#mg then return false
+	elseif #pg==#mg then return pg:Equal(mg)
+	elseif #pg==0 then return true
+	elseif #pg==1 then return mg:IsContains(pg:GetFirst())
+	else return not mg:IsExists(function (c) return not pg:IsContains(c) end,1,nil) end
+end
 function s.filter1(c,e,tp)
-	return c:IsFaceup() and c:IsType(TYPE_RUNE)
+	return s.mustbematerialsallowed(tp,Group.FromCards(c,e:GetHandler())) and c:IsFaceup() and c:IsType(TYPE_RUNE)
 		and Duel.IsExistingMatchingCard(s.filter2,tp,LOCATION_DECK,0,1,nil,e,tp,c)
 end
 function s.filter2(c,e,tp,mc)
@@ -41,24 +49,28 @@ function s.target(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	local g=Duel.SelectTarget(tp,s.filter1,tp,LOCATION_MZONE,0,1,1,nil,e,tp)
 	Duel.SetOperationInfo(0,CATEGORY_SPECIAL_SUMMON,nil,1,tp,LOCATION_DECK)
 end
+function s.relatefilter(c,e,tp)
+	return c:IsFaceup() and c:IsRelateToEffect(e) and c:IsControler(tp) and not c:IsImmuneToEffect(e)
+end
 function s.activate(e,tp,eg,ep,ev,re,r,rp)
-	if Duel.GetLocationCount(tp,LOCATION_MZONE)<0 then return end
+	local c=e:GetHandler()
 	local tc=Duel.GetFirstTarget()
-	if tc:IsFacedown() or not tc:IsRelateToEffect(e) or tc:IsImmuneToEffect(e) then return end
+	local mg=Group.FromCards(tc,c):Filter(s.relatefilter,nil,e,tp)
+	if not mg:IsContains(tc) or not s.mustbematerialsallowed(tp,mg) then
+		mg:DeleteGroup()
+		return
+	end
+
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_SPSUMMON)
 	local g=Duel.SelectMatchingCard(tp,s.filter2,tp,LOCATION_DECK,0,1,1,nil,e,tp,tc)
 	local sc=g:GetFirst()
 	if sc then
-		local mg=Group.FromCards(tc,e:GetHandler())
-		Duel.BreakEffect()
-		if sc:IsRuneCustomCheck(mg,tp) then
-			sc:SetMaterial(mg)
-			Duel.SendtoGrave(mg,REASON_EFFECT+REASON_MATERIAL+REASON_RUNE)
-			Duel.SpecialSummon(sc,SUMMON_TYPE_RUNE,tp,tp,false,true,POS_FACEUP)
-		end
+		sc:SetMaterial(mg)
+		Duel.SendtoGrave(mg,REASON_EFFECT+REASON_MATERIAL+REASON_RUNE)
+		Duel.SpecialSummon(sc,SUMMON_TYPE_RUNE,tp,tp,false,true,POS_FACEUP)
 		sc:CompleteProcedure()
-		mg:DeleteGroup()
 	end
+	mg:DeleteGroup()
 end
 --to hand
 function s.thfilter(c)

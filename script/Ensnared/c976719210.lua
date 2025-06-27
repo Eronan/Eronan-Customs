@@ -128,6 +128,6 @@ function s.runop(e,tp,eg,ep,ev,re,r,rp)
     if tc:IsRelateToEffect(e) and c:IsRelateToEffect(e) and c:IsRuneSummonable(tc) then
         Duel.RuneSummon(tp,c,tc)
     else
-        Duel.SendToGrave(c,REASON_RULE)
+        Duel.SendtoGrave(c,REASON_RULE)
     end
 end

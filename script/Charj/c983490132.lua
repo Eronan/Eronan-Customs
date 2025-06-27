@@ -39,7 +39,6 @@ function s.regop(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()	
 	if c:IsSummonType(SUMMON_TYPE_SYNCHRO) then
 		local atk=c:GetMaterial():Filter(s.mtfilter,nil):GetSum(Card.GetBaseAttack)
-		Debug.Message(atk)
 		local e1=Effect.CreateEffect(c)
 		e1:SetType(EFFECT_TYPE_SINGLE)
 		e1:SetCode(EFFECT_UPDATE_ATTACK)

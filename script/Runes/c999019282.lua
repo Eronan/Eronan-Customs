@@ -30,7 +30,6 @@ function s.disop(e,tp)
 	local c=e:GetHandler()
 	local flag1=bit.band(c:GetLinkedZone(tp),0xff00ffff)
 	local flag2=bit.band(c:GetLinkedZone(1-tp),0xff00ffff)<<16
-	Debug.Message(flag2)
 	return flag1+flag2
 end
 function s.costfilter(c)

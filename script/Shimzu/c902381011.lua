@@ -4,7 +4,7 @@ local s,id=GetID()
 function s.initial_effect(c)
     --Rune Summon
     c:EnableReviveLimit()
-    Rune.AddProcedure(c,Rune.MonFunction(s.monfilter),2,2,Rune.STFunction(s.STMatFilter),1,1)
+    Rune.AddProcedure(c,Rune.MonFunction(s.monfilter),1,1,Rune.STFunction(nil),2,99)
     --cannot special summon
     local e1=Effect.CreateEffect(c)
     e1:SetProperty(EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_UNCOPYABLE)
@@ -73,17 +73,13 @@ function s.immcon(e,tp,eg,ep,ev,re,r,rp)
 end
 --change effect
 function s.chcon(e,tp,eg,ep,ev,re,r,rp)
-	local rc=re:GetHandler()
-	return ep~=tp and re:IsHasType(EFFECT_TYPE_ACTIVATE)
+	return ep~=tp
 end
 function s.rmfilter(c)
 	return c:IsAttackPos() and c:IsAbleToRemove()
 end
 function s.rmop(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
-	if c:GetType()==TYPE_SPELL or c:GetType()==TYPE_TRAP then
-		c:CancelToGrave(false)
-	end
 	local g=Duel.GetMatchingGroup(s.rmfilter,tp,LOCATION_MZONE,LOCATION_MZONE,nil)
 	if g:GetCount()>0 then
 		Duel.Remove(g,POS_FACEUP,REASON_EFFECT)

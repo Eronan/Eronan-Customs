@@ -2,7 +2,7 @@
 if not Rune then Duel.LoadScript("proc_rune.lua") end
 local s,id=GetID()
 function s.initial_effect(c)
-	Rune.AddProcedure(c,Rune.MonFunction(s.mfilter),1,1,s.stfilter,2,99,nil,s.exgroup,nil,nil,nil,s.customop)
+	Rune.AddProcedure(c,Rune.MonFunctionEx(Card.IsAttribute,ATTRIBUTE_DARK),2,99,s.stfilter,2,99,nil,s.exgroup,nil,nil,nil,s.customop)
 	c:EnableReviveLimit()
 	--Summon Limit
 	local e1=Effect.CreateEffect(c)
@@ -17,24 +17,6 @@ function s.initial_effect(c)
 	e2:SetCode(EFFECT_MATERIAL_CHECK)
 	e2:SetValue(s.matcheck)
 	c:RegisterEffect(e2)
-    --Cannot be Tributed
-    local e3=Effect.CreateEffect(c)
-	e3:SetType(EFFECT_TYPE_SINGLE)
-	e3:SetProperty(EFFECT_FLAG_SINGLE_RANGE)
-	e3:SetRange(LOCATION_MZONE)
-	e3:SetCode(EFFECT_UNRELEASABLE_SUM)
-    e3:SetCondition(s.tgcon)
-	e3:SetValue(1)
-    e3:SetLabelObject(e2)
-	c:RegisterEffect(e3)
-	local e4=e3:Clone()
-	e4:SetCode(EFFECT_UNRELEASABLE_NONSUM)
-	c:RegisterEffect(e4)
-    --cannot be target
-	local e5=e3:Clone()
-	e5:SetCode(EFFECT_CANNOT_BE_EFFECT_TARGET)
-	e5:SetValue(aux.tgoval)
-	c:RegisterEffect(e5)
     --All your monsters gain 100 ATK/DEF for each "Magician" pendulum monster in your face-up extra deck
 	local e6=Effect.CreateEffect(c)
 	e6:SetType(EFFECT_TYPE_FIELD)
@@ -57,14 +39,11 @@ function s.initial_effect(c)
     e8:SetTarget(s.sptg)
     e8:SetOperation(s.spop)
     c:RegisterEffect(e8)
-    -- local e9=e8:Clone()
-    -- e9:SetCode(EVENT_REMOVE)
-    -- c:RegisterEffect(e9)
 end
 s.listed_series={0xfe3}
 --Rune Summon
-function s.mfilter(c,rc,sumtyp,tp)
-    return c:IsType(TYPE_RUNE,rc,sumtyp,tp) and c:IsAttribute(ATTRIBUTE_DARK)
+function s.rune_custom_check(g,rc,sumtype,tp)
+	return g:IsExists(Card.IsType,1,nil,TYPE_RUNE)
 end
 function s.stfilter(c,rc,sumtyp,tp)
     return c:IsType(TYPE_PENDULUM,rc,sumtyp,tp) and (c:IsSpellTrap() or c:IsLocation(LOCATION_GRAVE))
@@ -83,7 +62,7 @@ end
 function s.sumlimit(e,se,sp,st)
 	return aux.runlimit(e,se,sp,st) or se:GetHandler()==e:GetHandler()
 end
---material check
+--material check, cannot be tribute or targeted
 function s.mchkfilter(c)
     return c:IsRace(RACE_ZOMBIE) and c:IsSetCard(0xfe3)
 end
@@ -91,13 +70,25 @@ function s.matcheck(e,c)
 	local g=c:GetMaterial()
 	e:SetLabel(0)
 	if g:IsExists(s.mchkfilter,1,nil) then
-		e:SetLabel(1)
-		e:GetHandler():RegisterFlagEffect(id,RESET_EVENT+RESETS_STANDARD-RESET_TOFIELD,EFFECT_FLAG_CLIENT_HINT,1,0,aux.Stringid(id,0))
+		--Cannot be Tributed
+		local e1=Effect.CreateEffect(c)
+		e1:SetDescription(aux.Stringid(id,0))
+		e1:SetType(EFFECT_TYPE_SINGLE)
+		e1:SetProperty(EFFECT_FLAG_SINGLE_RANGE|EFFECT_FLAG_CLIENT_HINT)
+		e1:SetRange(LOCATION_MZONE)
+		e1:SetCode(EFFECT_UNRELEASABLE_SUM)
+		e1:SetValue(1)
+		e1:SetReset(RESET_EVENT+RESETS_STANDARD-RESET_TOFIELD)
+		c:RegisterEffect(e1)
+		local e2=e1:Clone()
+		e2:SetCode(EFFECT_UNRELEASABLE_NONSUM)
+		c:RegisterEffect(e2)
+		--cannot be target
+		local e3=e1:Clone()
+		e3:SetCode(EFFECT_CANNOT_BE_EFFECT_TARGET)
+		e3:SetValue(aux.tgoval)
+		c:RegisterEffect(e3)
 	end
-end
---cannot be tribute or targeted
-function s.tgcon(e)
-	return e:GetLabelObject():GetLabel()~=0
 end
 --attack filter
 function s.atkval(e,c)

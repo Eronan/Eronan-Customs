@@ -3,7 +3,7 @@ if not Rune then Duel.LoadScript("proc_rune.lua") end
 local s,id=GetID()
 function s.initial_effect(c)
     --Rune Summon
-    Rune.AddProcedure(c,Rune.MonFunctionEx(aux.NOT(Card.IsSummonableCard)),1,1,Rune.STFunction(Card.IsOnField),1,1,LOCATION_DECK,nil,nil,s.runchk)
+    Rune.AddProcedure(c,Rune.MonFunctionEx(aux.NOT(Card.IsSummonableCard)),1,1,Rune.STFunction(Card.IsOnField),1,1)
     c:EnableReviveLimit()
     local sme,soe=Spirit.AddProcedure(c,EVENT_SPSUMMON_SUCCESS)
 	--Mandatory return
@@ -70,12 +70,6 @@ function s.retop(e,tp,eg,ep,ev,re,r,rp)
 		local tc=g:Select(tp,1,1,nil)
 		Duel.Remove(tc,POS_FACEUP,REASON_EFFECT)
 	end
-end
---Lake of the Radiant One
-function s.runchk(e,tp,chk,mg)
-	if chk==0 then return Duel.IsPlayerAffectedByEffect(tp,902810203) and Duel.GetFlagEffect(tp,902810203)==0 end
-	Duel.RegisterFlagEffect(tp,902810203,RESET_PHASE+PHASE_END,0,1)
-	return true
 end
 --Banish Spell/Trap card
 function s.rmcost(e,tp,eg,ep,ev,re,r,rp,chk)
