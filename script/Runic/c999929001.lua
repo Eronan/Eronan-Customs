@@ -104,7 +104,7 @@ function s.extraval(chk,summon_type,e,...)
 			e2:SetTarget(s.distg)
 			e2:SetLabel(c:GetOriginalCodeRule())
 			e2:SetReset(RESET_PHASE|PHASE_END)
-			DUel.RegisterEffect(e2,tp)
+			Duel.RegisterEffect(e2,tp)
 			local e3=Effect.CreateEffect(c)
 			e3:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
 			e3:SetCode(EVENT_CHAIN_SOLVING)
@@ -130,7 +130,7 @@ end
 function s.discon(e,tp,eg,ep,ev,re,r,rp)
 	local code=e:GetLabel()
 	local code1,code2=re:GetHandler():GetOriginalCodeRule()
-	return re:IsMonsterEffect() and (code1==code or code2==code)
+	return code1==code or code2==code
 end
 function s.disop(e,tp,eg,ep,ev,re,r,rp)
 	Duel.Hint(HINT_CARD,0,id)

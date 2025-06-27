@@ -64,7 +64,7 @@ end
 s.listed_series={0xfc6}
 --Rune Summon
 function s.rune_custom_check(g,rc,sumtype,tp)
-	return g:CheckDifferentProperty(Card.GetCode,lc,sumtype,tp)
+	return g:CheckDifferentProperty(Card.GetCode,rc,sumtype,tp)
 end
 function s.excfilter(c)
 	return c:IsEquipSpell() or c:GetEquipCount()>0

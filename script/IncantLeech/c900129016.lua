@@ -35,7 +35,6 @@ function s.operation(e,tp,eg,ep,ev,re,r,rp)
 	--Negate Effect
 	if not Duel.NegateEffect(ev) then return end
 	--Rune Summmon
-	Debug.Message(tc:IsCanBeRuneMaterial())
 	local mg=Duel.GetMatchingGroup(Card.IsCanBeRuneGroup,tp,LOCATION_ONFIELD,0,nil)
 	mg:AddCard(tc)
 	if tc:IsCanBeRuneMaterial() and tc:IsLocation(LOCATION_ONFIELD) and Duel.IsExistingMatchingCard(s.runfilter,tp,LOCATION_HAND,0,1,nil,tc,mg)

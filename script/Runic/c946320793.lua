@@ -98,7 +98,6 @@ function s.aclimit(e,tp,eg,ep,ev,re,r,rp)
 	c:RegisterEffect(e1)
 end
 function s.elimit(e,te,tp)
-	Debug.Message(e:GetLabel())
     return te:IsHasType(EFFECT_TYPE_ACTIVATE) and te:GetHandler():IsCode(e:GetLabel())
 end
 --set to field
