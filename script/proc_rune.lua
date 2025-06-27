@@ -65,7 +65,9 @@ function Rune.CreatePortalProcedure(c,monf,mmin,mmax,stf,smin,smax,group,conditi
 		for _,te in ipairs(portaleffs) do
 			if PortalEffectActive(te,tp,e,c) then
 				local runechk=Rune.CombineRuneChecks(specialchk,PortalRuneCheck(te))
-				return Rune.Condition(monf,mmin,mmax,stf,smin,smax,group,condition,nil,runechk)(e,sc,must,og,min,max)
+				if Rune.Condition(monf,mmin,mmax,stf,smin,smax,group,condition,nil,runechk)(e,sc,must,og,min,max) then
+					return true
+				end
 			end
 		end
 		return false

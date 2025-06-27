@@ -121,7 +121,7 @@ function s.activate(e,tp,eg,ep,ev,re,r,rp)
         e1:SetCondition(s.descon)
         e1:SetOperation(s.desop)
         e1:SetLabel(0)
-        e1:SetLabelObject(tc)
+        e1:SetLabelObject(c)
         c:RegisterEffect(e1)
 	end
 end
