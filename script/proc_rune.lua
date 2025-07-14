@@ -366,7 +366,7 @@ function Rune.CheckRecursive2(c,mg,sg,csg,mct,sct,bct,monf,mmin,mmax,stf,smin,sm
 	end
 	
 	--Start extra material filter checking
-	g:AddCard(c)
+	sg:AddCard(c)
 	for _,filt in ipairs(filt) do
 		if not filt[2](c,filt[3],tp,sg,mg,rc,filt[1],1) then
 			sg:RemoveCard(c)

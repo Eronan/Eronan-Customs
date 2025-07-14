@@ -36,7 +36,6 @@ function s.initial_effect(c)
 	e4:SetProperty(EFFECT_FLAG_PLAYER_TARGET)
 	e4:SetRange(LOCATION_MZONE)
 	e4:SetCode(EVENT_TO_GRAVE)
-	e4:SetCondition(s.damcon)
 	e4:SetTarget(s.damtg)
 	e4:SetOperation(s.damop)
 	c:RegisterEffect(e4)
@@ -53,21 +52,18 @@ end
 function s.distarget(e,c)
 	return c:IsType(TYPE_SPELL+TYPE_TRAP)
 end
-function s.damfilter(c,r,rp,tp)
-	return c:IsPreviousLocation(LOCATION_ONFIELD) and bit.band(r,0x41)==0x41 and rp~=tp
-		and c:IsPreviousPosition(POS_FACEDOWN)
-end
-function s.damcon(e,tp,eg,ep,ev,re,r,rp)
-	local c=e:GetHandler()
-	return eg:IsExists(s.damfilter,1,nil,r,rp,c:GetControler())
+function s.damfilter(c,rp,tp)
+	return c:IsPreviousLocation(LOCATION_ONFIELD) and c:IsSpellTrap() and rp~=tp
+		and c:IsPreviousPosition(POS_FACEUP)
 end
 function s.damtg(e,tp,eg,ep,ev,re,r,rp,chk)
-	if chk==0 then return Duel.GetFieldGroupCount(tp,0,LOCATION_HAND)>0 end
+	local ct=eg:FilterCount(s.damfilter,nil,rp,tp)
+	if chk==0 then return ct>0 end
 	Duel.SetTargetPlayer(1-tp)
-	Duel.SetOperationInfo(0,CATEGORY_DAMAGE,nil,0,1-tp,0)
+	Duel.SetOperationInfo(0,CATEGORY_DAMAGE,nil,0,1-tp,ct*500)
 end
 function s.damop(e,tp,eg,ep,ev,re,r,rp)
-	local rt=eg:FilterCount(s.damfilter,nil,r,rp,e:GetHandler():GetControler())*500
+	local rt=eg:FilterCount(s.damfilter,nil,rp,tp)*500
 	local p=Duel.GetChainInfo(0,CHAININFO_TARGET_PLAYER)
 	Duel.Damage(p,rt,REASON_EFFECT)
 end
