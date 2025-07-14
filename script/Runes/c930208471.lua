@@ -3,7 +3,7 @@ if not Rune then Duel.LoadScript("proc_rune.lua") end
 local s,id=GetID()
 function s.initial_effect(c)
     --Rune Summon
-	Rune.AddProcedure(c,Rune.MonFunctionEx(Card.IsSetCard,0xc9),2,2,Rune.STFunction(s.stfilter),1,1)
+	Rune.AddProcedure(c,Rune.MonFunctionEx(Card.IsSetCard,SET_AROMA),2,2,Rune.STFunction(s.stfilter),1,1)
 	c:EnableReviveLimit()
     --cannot special summon
     local e1=Effect.CreateEffect(c)
@@ -56,7 +56,7 @@ function s.initial_effect(c)
 	e5:SetOperation(s.recop)
 	c:RegisterEffect(e5)
 end
-s.listed_series={0xc9}
+s.listed_series={SET_AROMA}
 s.listed_names={28265983,92266279,15177750,930208470}
 function s.stfilter(c)
     return c:IsCode(28265983,92266279,15177750)
