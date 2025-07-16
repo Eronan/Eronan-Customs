@@ -72,19 +72,19 @@ function s.efilter(e,te)
 	return not g:IsContains(e:GetHandler())
 end
 --(2) Replace destruction with sending FIRE Pendulum to Extra Deck
-function s.repfilter(c)
+function s.repcfilter(c)
     return c:IsAttribute(ATTRIBUTE_FIRE) and c:IsType(TYPE_PENDULUM) and not c:IsForbidden()
 end
 function s.reptg(e,tp,eg,ep,ev,re,r,rp,chk)
-    if chk==0 then return Duel.IsExistingMatchingCard(s.repfilter,tp,LOCATION_HAND,0,1,nil) end
+    if chk==0 then return eg:IsExists(Card.IsControler,1,nil,tp) and Duel.IsExistingMatchingCard(s.repcfilter,tp,LOCATION_HAND,0,1,nil) end
     return Duel.SelectEffectYesNo(tp,e:GetHandler(),96)
 end
 function s.repval(e,c)
-    return true
+    return c:IsControler(e:GetHandlerPlayer())
 end
 function s.repop(e,tp,eg,ep,ev,re,r,rp)
     Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_CONFIRM)
-    local g=Duel.SelectMatchingCard(tp,s.repfilter,tp,LOCATION_HAND,0,1,1,nil)
+    local g=Duel.SelectMatchingCard(tp,s.repcfilter,tp,LOCATION_HAND,0,1,1,nil)
     if #g>0 then
         Duel.SendtoExtraP(g,tp,REASON_EFFECT)
     end
