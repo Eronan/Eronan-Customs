@@ -44,6 +44,9 @@ function s.spcost(e,tp,eg,ep,ev,re,r,rp,chk)
     local g=Duel.SelectMatchingCard(tp,s.costfilter,tp,LOCATION_HAND,0,1,1,nil)
     Duel.ConfirmCards(1-tp,g)
     Duel.ShuffleHand(tp)
+
+	local tc=g:GetFirst()
+	e:SetLabel(tc:GetLevel())
 end
 function s.sptg(e,tp,eg,ep,ev,re,r,rp,chk)
     if chk==0 then return Duel.GetLocationCount(tp,LOCATION_MZONE)>0
@@ -52,8 +55,13 @@ function s.sptg(e,tp,eg,ep,ev,re,r,rp,chk)
 end
 function s.spop(e,tp,eg,ep,ev,re,r,rp)
     local c=e:GetHandler()
-    if c:IsRelateToEffect(e) then
-        Duel.SpecialSummon(c,0,tp,tp,false,false,POS_FACEUP)
+    if c:IsRelateToEffect(e) and Duel.SpecialSummon(c,0,tp,tp,false,false,POS_FACEUP) then
+        local e1=Effect.CreateEffect(c)
+        e1:SetType(EFFECT_TYPE_SINGLE)
+        e1:SetCode(EFFECT_CHANGE_LEVEL)
+        e1:SetValue(e:GetLabel())
+        e1:SetReset(RESETS_STANDARD_DISABLE_PHASE_END)
+        c:RegisterEffect(e1)
     end
 end
 --Extra Rune Material

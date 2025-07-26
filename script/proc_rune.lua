@@ -414,8 +414,8 @@ function Rune.CheckRecursive2(c,mg,sg,csg,mct,sct,bct,monf,mmin,mmax,stf,smin,sm
 	return res
 end
 function Rune.CheckGoal(monf,stf,mmin,smin,tmin,tmax,tp,sg,rc,specialchk,filt)
-	local stct=sg:FilterCount(aux.NOT(monf),nil,c,SUMMON_TYPE_RUNE,tp)
-	local mnct=sg:FilterCount(aux.NOT(stf),nil,c,SUMMON_TYPE_RUNE,tp)
+	local stct=sg:FilterCount(aux.NOT(monf),nil,rc,SUMMON_TYPE_RUNE,tp)
+	local mnct=sg:FilterCount(aux.NOT(stf),nil,rc,SUMMON_TYPE_RUNE,tp)
 	local bothct=#sg-mnct-stct
 	local ctchk=(mnct+stct+bothct)>=tmin and mnct+bothct>=mmin
 		and stct+bothct>=smin
@@ -530,7 +530,7 @@ function Rune.Target(monf,mmin,mmax,stf,smin,smax,group,excondition,specialchk)
 					if #cg==0 then break end
 					
 					--Cancellable
-					finish=Rune.CheckGoal(monf,stf,mmin,smin,min,max,tp,sg,rc,matchk,filters)
+					finish=Rune.CheckGoal(monf,stf,mmin,smin,min,max,tp,sg,c,matchk,filters)
 					cancel=not og and Duel.IsSummonCancelable()
 					
 					--Select a Card
@@ -546,7 +546,7 @@ function Rune.Target(monf,mmin,mmax,stf,smin,smax,group,excondition,specialchk)
 						end
 					end
 				end
-				if Rune.CheckGoal(monf,stf,mmin,smin,min,max,tp,sg,rc,matchk,filters) then
+				if Rune.CheckGoal(monf,stf,mmin,smin,min,max,tp,sg,c,matchk,filters) then
 					sg:KeepAlive()
 					e:SetLabelObject({sg,filters,emt})
 					if excondition then excondition(e,tp,1,sg) end
