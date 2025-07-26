@@ -1,38 +1,45 @@
 --Mirrivound Binate Pact
 local s,id=GetID()
 function s.initial_effect(c)
-	--(1) Prevent opponent's monster effects that banish
+	--Activate
 	local e1=Effect.CreateEffect(c)
-	e1:SetType(EFFECT_TYPE_FIELD)
-	e1:SetCode(EFFECT_CANNOT_ACTIVATE)
-	e1:SetRange(LOCATION_SZONE)
-	e1:SetProperty(EFFECT_FLAG_PLAYER_TARGET)
-	e1:SetTargetRange(0,1)
-	e1:SetCondition(s.banicon)
-	e1:SetValue(s.banival)
+	e1:SetType(EFFECT_TYPE_ACTIVATE)
+	e1:SetCode(EVENT_FREE_CHAIN)
 	c:RegisterEffect(e1)
 
-	--(2) Ritual Summon if opponent activated monster effect in hand or GY
+	--(1) Prevent opponent's monster effects that banish
 	local e2=Effect.CreateEffect(c)
-	e2:SetDescription(aux.Stringid(id,0))
-	e2:SetCategory(CATEGORY_SPECIAL_SUMMON+CATEGORY_RITUAL)
-	e2:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_TRIGGER_O)
-	e2:SetCode(EVENT_CHAIN_SOLVED)
+	e2:SetType(EFFECT_TYPE_FIELD)
+	e2:SetCode(EFFECT_CANNOT_ACTIVATE)
 	e2:SetRange(LOCATION_SZONE)
-	e2:SetCountLimit(1,id)
-	e2:SetCondition(s.ritcon)
-	e2:SetTarget(s.rittg)
-	e2:SetOperation(s.ritop)
+	e2:SetProperty(EFFECT_FLAG_PLAYER_TARGET)
+	e2:SetTargetRange(0,1)
+	e2:SetCondition(s.banicon)
+	e2:SetValue(s.banival)
 	c:RegisterEffect(e2)
 
-	--(3) Place this card face-up if sent from field/deck to GY
+	--(2) Ritual Summon if opponent activated monster effect in hand or GY
 	local e3=Effect.CreateEffect(c)
-	e3:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_TRIGGER_O)
-	e3:SetCode(EVENT_TO_GRAVE)
-	e3:SetCountLimit(1,{id,1})
-	e3:SetCondition(s.setcon)
-	e3:SetOperation(s.setop)
+	e3:SetDescription(aux.Stringid(id,0))
+	e3:SetCategory(CATEGORY_SPECIAL_SUMMON)
+	e3:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_TRIGGER_O)
+	e3:SetCode(EVENT_CHAIN_SOLVED)
+	e3:SetProperty(EFFECT_FLAG_DELAY)
+	e3:SetRange(LOCATION_SZONE)
+	e3:SetCountLimit(1,id,EFFECT_COUNT_CODE_OATH)
+	e3:SetCondition(s.ritcon)
+	e3:SetTarget(s.rittg)
+	e3:SetOperation(s.ritop)
 	c:RegisterEffect(e3)
+
+	--(3) Place this card face-up if sent from field/deck to GY
+	local e4=Effect.CreateEffect(c)
+	e4:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_TRIGGER_O)
+	e4:SetCode(EVENT_TO_GRAVE)
+	e4:SetCountLimit(1,{id,1})
+	e4:SetCondition(s.setcon)
+	e4:SetOperation(s.setop)
+	c:RegisterEffect(e4)
 end
 s.listed_names={947292100}
 s.listed_series={0xfff}
