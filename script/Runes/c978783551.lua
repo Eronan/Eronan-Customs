@@ -1,9 +1,10 @@
 --Celsitial Cassiopeia of the Ashened City
+if not Rune then Duel.LoadScript("proc_rune.lua") end
 local s,id=GetID()
 function s.initial_effect(c)
     c:EnableReviveLimit()
     --Rune Summon Procedure
-    Rune.AddProcedure(c,Rune.MonFunctionEx(Card.IsRace,RACE_PYRO),3,3,Rune.STFunctionEx(Card.IsCode,CARD_OBSIDIM_ASHENED_CITY),1,1,nil,s.exgroup,nil,nil,nil,s.customop)
+    Rune.AddProcedure(c,Rune.MonFunctionEx(Card.IsRace,RACE_PYRO),4,99,Rune.STFunctionEx(Card.IsRuneCode,CARD_OBSIDIM_ASHENED_CITY),1,1,nil,s.exgroup,nil,nil,nil,s.customop)
     --(1) Unaffected by non-targeting effects
     local e1=Effect.CreateEffect(c)
     e1:SetType(EFFECT_TYPE_FIELD)
@@ -44,7 +45,7 @@ function s.initial_effect(c)
     e3:SetOperation(s.revive_operation)
     c:RegisterEffect(e3)
 end
-s.listed_names={CARD_OBSIDIM_ASHENED_CITY,978783550} -- Replace with actual "Queen of the Ashened City" code
+s.listed_names={CARD_OBSIDIM_ASHENED_CITY,CARD_VEIDOS_ERUPTION_DRAGON,978783550} -- Replace with actual "Queen of the Ashened City" code
 --GY usage group
 function s.exgroup(tp,ex,c)
     return Duel.GetMatchingGroup(Card.IsAbleToRemove,tp,LOCATION_GRAVE,0,ex)
@@ -57,9 +58,13 @@ function s.customop(g,e,tp,eg,ep,ev,re,r,rp,pc)
 end
 --(1) Unaffected by non-targeting effects
 function s.immune_val(e,re)
-    if not re:IsHasProperty(EFFECT_FLAG_CARD_TARGET) then return true end
-	local g=Duel.GetChainInfo(0,CHAININFO_TARGET_CARDS)
-	return #g==0
+    if re:GetHandlerPlayer()==e:GetHandlerPlayer() then
+        return re:GetHandler():IsCode(CARD_VEIDOS_ERUPTION_DRAGON)
+    else
+        if not re:IsHasProperty(EFFECT_FLAG_CARD_TARGET) then return true end
+        local g=Duel.GetChainInfo(0,CHAININFO_TARGET_CARDS)
+        return #g==0
+    end
 end
 --(2) Disable and Convert opponent’s Special Summoned monsters
 function s.disable_target(e,c)

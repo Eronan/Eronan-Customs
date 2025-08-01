@@ -1,4 +1,5 @@
 --Knight of the Ashened City
+if not Rune then Duel.LoadScript("proc_rune.lua") end
 local s,id=GetID()
 function s.initial_effect(c)
     c:EnableReviveLimit()
@@ -22,8 +23,7 @@ function s.initial_effect(c)
     local e2=Effect.CreateEffect(c)
     e2:SetDescription(aux.Stringid(id,1))
     e2:SetCategory(CATEGORY_DRAW)
-    e2:SetType(EFFECT_TYPE_QUICK_O)
-    e2:SetCode(EVENT_FREE_CHAIN)
+    e2:SetType(EFFECT_TYPE_IGNITION)
     e2:SetRange(LOCATION_HAND)
     e2:SetCountLimit(1,{id,1},EFFECT_COUNT_CODE_OATH)
     e2:SetCost(s.register_cost)
@@ -77,35 +77,31 @@ function s.register_cost(e,tp,eg,ep,ev,re,r,rp,chk)
     Duel.SendtoGrave(e:GetHandler(),REASON_COST+REASON_DISCARD)
 end
 function s.register_operation(e,tp,eg,ep,ev,re,r,rp)
+    if Duel.HasFlagEffect(tp,id) then return end
+    Duel.RegisterFlagEffect(tp,id,RESET_PHASE|PHASE_END,0,1)
     local c=e:GetHandler()
-
-    -- Register chaining monitor
+    --Draw 1 card immediately after it resolves
     local e1=Effect.CreateEffect(c)
-    e1:SetDescription(aux.Stringid(id,2))
     e1:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
-    e1:SetProperty(EFFECT_FLAG_CLIENT_HINT)
-    e1:SetCode(EVENT_CHAINING)
-    e1:SetCondition(s.regcon)
-    e1:SetOperation(s.regop)
-    e1:SetReset(RESET_PHASE+PHASE_END)
+    e1:SetCode(EVENT_CHAIN_SOLVED)
+    e1:SetCondition(s.draw_condition)
+    e1:SetOperation(s.draw_operation)
+    e1:SetReset(RESET_PHASE|PHASE_END)
     Duel.RegisterEffect(e1,tp)
-    -- e2: Draw once after chain ends if flagged
-    local e2=Effect.CreateEffect(c)
-    e2:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
-    e2:SetCode(EVENT_CHAIN_END)
-    e2:SetCondition(function(e,tp) return Duel.GetFlagEffect(tp,id)>0 end)
-    e2:SetOperation(function(e,tp) Duel.Draw(tp,1,REASON_EFFECT) end)
-    Duel.RegisterEffect(e2,tp)
+    aux.RegisterClientHint(c,0,tp,1,0,aux.Stringid(id,2))
 end
-function s.regcon(e,tp,eg,ep,ev,re,r,rp)
+function s.draw_condition(e,tp,eg,ep,ev,re,r,rp)
     local chainlink=Duel.GetCurrentChain(true)-1
     if not (chainlink>0 and ep==1-tp) then return false end
-    local trig_p,setcodes=Duel.GetChainInfo(chainlink,CHAININFO_TRIGGERING_PLAYER,CHAININFO_TRIGGERING_SETCODES)
-    if not trig_p==tp then return false end
+    local trig_p,trig_typ,setcodes=Duel.GetChainInfo(chainlink,CHAININFO_TRIGGERING_PLAYER,CHAININFO_TRIGGERING_TYPE,CHAININFO_TRIGGERING_SETCODES)
+    if not (trig_p==tp and (trig_typ&TYPE_MONSTER)>0) then return false end
     for _,set in ipairs(setcodes) do
-        if (SET_ASHENED&0xfff)==(set&0xfff) and (SET_ASHENED&set)==SET_ASHENED then return true end
+        if ((SET_ASHENED&0xfff)==(set&0xfff) and (SET_ASHENED&set)==SET_ASHENED) then
+            return true
+        end
     end
 end
-function s.regop(e,tp,eg,ep,ev,re,r,rp)
-    Duel.RegisterFlagEffect(tp,id,RESET_CHAIN,0,1)
+function s.draw_operation(e,tp,eg,ep,ev,re,r,rp)
+    Duel.Hint(HINT_CARD,1-tp,id)
+    Duel.Draw(tp,1,REASON_EFFECT)
 end

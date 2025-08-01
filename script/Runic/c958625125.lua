@@ -103,7 +103,11 @@ function s.actop(e,tp,eg,ep,ev,re,r,rp)
     local tc=Duel.GetFirstTarget()
     if Duel.ActivateFieldSpell(tc,e,tp,eg,ep,ev,re,r,rp) then
 		local te=tc:GetActivateEffect()
+		local tg=te:GetTarget()
 		local op=te:GetOperation()
-		op(e,tp,eg,ep,ev,re,r,rp)
+		if not tg or tg(e,tp,eg,ep,ev,re,r,rp,0) then
+			if tg then tg(e,tp,eg,ep,ev,re,r,rp) end
+			if op then op(e,tp,eg,ep,ev,re,r,rp) end
+		end
 	end
 end
