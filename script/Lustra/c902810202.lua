@@ -95,7 +95,7 @@ function s.runfilter(c)
 end
 function s.eqtg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	if chkc then return eg:IsContains(chkc) and s.eqfilter(ckhc,e,tp) end
-	if chk==0 then return eg:IsExists(s.eqfilter,1,nil,e,tp) end
+	if chk==0 then return Duel.GetLocationCount(tp,LOCATION_SZONE)>0 and eg:IsExists(s.eqfilter,1,nil,e,tp) end
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_EQUIP)
 	local g=eg:FilterSelect(tp,s.eqfilter,1,1,nil,e,tp)
     Duel.SetTargetCard(g)
