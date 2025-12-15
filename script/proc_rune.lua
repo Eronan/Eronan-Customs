@@ -102,7 +102,7 @@ function Rune.CreatePortalProcedure(c,monf,mmin,mmax,stf,smin,smax,group,conditi
 	--Only supporting Rune Summon from Deck, other locations will be supported later.
 	local e1=Effect.CreateEffect(c)
 	e1:SetType(EFFECT_TYPE_FIELD)
-	e1:SetDescription(1175)
+	e1:SetDescription(1176)
 	e1:SetCode(EFFECT_SPSUMMON_PROC)
 	e1:SetProperty(EFFECT_FLAG_UNCOPYABLE+EFFECT_FLAG_IGNORE_IMMUNE+EFFECT_FLAG_CANNOT_DISABLE)
 	e1:SetRange(LOCATION_ALL-LOCATION_MZONE)
