@@ -111,7 +111,7 @@ function s.cstg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
     Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_TOFIELD)
     local ft=math.min(2,Duel.GetLocationCount(tp,LOCATION_SZONE))
     local g=Duel.SelectTarget(tp,s.csfilter,tp,LOCATION_GRAVE,0,1,ft,nil)
-    Duel.SetOperationInfo(0,CATEGORY_TOFIELD,g,#g,0,0)
+    Duel.SetOperationInfo(0,CATEGORY_LEAVE_GRAVE,g,#g,tp,0)
 end
 function s.csop(e,tp,eg,ep,ev,re,r,rp)
     local g=Duel.GetTargetCards(e)
