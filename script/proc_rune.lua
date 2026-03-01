@@ -53,6 +53,7 @@ function Rune.CreatePortalProcedure(c,monf,mmin,mmax,stf,smin,smax,group,conditi
 	end
 	function PortalRuneCheck(te)
 		local val=te:GetValue()
+		-- If nil, it will be treated as always returning true by the Rune Summon Procedure.
 		if type(val)~="function" then return nil end
 
 		return function (g,rc,sumtype,tp)
@@ -62,36 +63,59 @@ function Rune.CreatePortalProcedure(c,monf,mmin,mmax,stf,smin,smax,group,conditi
 	function PortalCondition(e,sc,must,og,min,max)
 		local tp=e:GetHandlerPlayer()
 		local portaleffs={e:GetHandler():GetCardEffect(EFFECT_RUNE_LOCATION)}
-		for _,te in ipairs(portaleffs) do
-			if PortalEffectActive(te,tp,e,c) then
-				local runechk=Rune.CombineRuneChecks(specialchk,PortalRuneCheck(te))
-				if Rune.Condition(monf,mmin,mmax,stf,smin,smax,group,condition,nil,runechk)(e,sc,must,og,min,max) then
-					return true
-				end
+		local portalchks = {}
+		for _, te in ipairs(portaleffs) do
+			if PortalEffectActive(te, tp, e, c) then
+				table.insert(portalchks, PortalRuneCheck(te))
 			end
 		end
-		return false
+		-- If no active portal effects exist, the Portal Condition fails and the monster cannot be summoned via the Portal Procedure.
+		if #portalchks==0 then return false end
+		local portalchk = aux.OR(table.unpack(portalchks))
+		local runechk=Rune.CombineRuneChecks(specialchk, portalchk)
+		return Rune.Condition(monf,mmin,mmax,stf,smin,smax,group,condition,nil,runechk)(e,sc,must,og,min,max)
 	end
 	function PortalTarget(e,tp,eg,ep,ev,re,r,rp,chk,sc,must,og,min,max)
 		local effs={e:GetHandler():GetCardEffect(EFFECT_RUNE_LOCATION)}
-		local descriptions={}
+		local portalchks = {}
+		local portalmap = {}
 		for _,te in ipairs(effs) do
-			local tg=te:GetTarget()
-			table.insert(descriptions,{PortalEffectActive(te,tp,e,c),te:GetDescription()})
+			if PortalEffectActive(te, tp, e, c) then
+				local portalchk = PortalRuneCheck(te)
+				table.insert(portalchks, portalchk)
+				table.insert(portalmap, {chk=portalchk,te=te})
+			end
 		end
-		local te=effs[1]
-		if #descriptions>1 then
-			local op=Duel.SelectEffect(tp,table.unpack(descriptions))
-			te=effs[op]
-		elseif #descriptions==0 then return false end
-		local runechk=Rune.CombineRuneChecks(specialchk,PortalRuneCheck(te))
+		-- If no active portal effects exist, the Portal Condition fails and the monster cannot be summoned via the Portal Procedure.
+		if #portalchks==0 or #portalmap==0 then return false end
+		local portalchk = aux.OR(table.unpack(portalchks))
+		local runechk=Rune.CombineRuneChecks(specialchk, portalchk)
 		if Rune.Target(monf,mmin,mmax,stf,smin,smax,group,nil,runechk)(e,tp,eg,ep,ev,re,r,rp,chk,sc,must,og,min,max) then
+			-- Let the player choose which valid Portal Effect to apply.
+			local sg,_,_=table.unpack(e:GetLabelObject())
+			local descriptions={}
+			for _,entry in ipairs(portalmap) do
+				table.insert(descriptions,{entry.chk(sg,sc,SUMMON_TYPE_RUNE,tp),entry.te:GetDescription()})
+			end
+			local te=nil
+			if #descriptions>=1 then
+				local op=Duel.SelectEffect(tp,table.unpack(descriptions))
+				te=portalmap[op].te
+			end
+
+			-- Safeguard to make sure we have a portal effect to be applying.
+			if not te then return false end
+
 			Duel.Hint(HINT_CARD,tp,te:GetHandler():GetCode())
 			te:UseCountLimit(tp,1)
 			local op=te:GetOperation()
 			if op then
-				local afteroperation=op(customoperation,stage2)
-				e:SetOperation(Rune.Operation(monf,mmin,mmax,stf,smin,smax,group,afteroperation))
+				--The operation of the Rune Location Effect is always executed after Stage 2 has completed.
+				local newStage2=function (stsg,ste,sttp,steg,step,stev,stre,str,strp,stpc)
+					if stage2 then stage2(stsg,ste,sttp,steg,step,stev,stre,str,strp,stpc) end
+					op(stsg,ste,sttp,steg,step,stev,stre,str,strp,stpc)
+				end
+				e:SetOperation(Rune.Operation(monf,mmin,mmax,stf,smin,smax,group,customoperation,newStage2))
 			else
 				e:SetOperation(Rune.Operation(monf,mmin,mmax,stf,smin,smax,group,customoperation,stage2))
 			end
