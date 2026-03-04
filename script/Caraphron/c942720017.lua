@@ -15,7 +15,7 @@ function s.initial_effect(c)
 	e1:SetValue(s.aclimit)
 	e1:SetCondition(s.actcon)
 	c:RegisterEffect(e1)
-       --chain limit
+    --chain limit
     local e4=Effect.CreateEffect(c)
     e4:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
     e4:SetRange(LOCATION_SZONE)

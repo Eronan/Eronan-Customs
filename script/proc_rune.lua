@@ -54,7 +54,7 @@ function Rune.CreatePortalProcedure(c,monf,mmin,mmax,stf,smin,smax,group,conditi
 	function PortalRuneCheck(te)
 		local val=te:GetValue()
 		-- If nil, it will be treated as always returning true by the Rune Summon Procedure.
-		if type(val)~="function" then return nil end
+		if type(val)~="function" then return function (_,_,_,_) return true end end
 
 		return function (g,rc,sumtype,tp)
 			return val(te,tp,g,rc)
@@ -95,7 +95,7 @@ function Rune.CreatePortalProcedure(c,monf,mmin,mmax,stf,smin,smax,group,conditi
 			local sg,_,_=table.unpack(e:GetLabelObject())
 			local descriptions={}
 			for _,entry in ipairs(portalmap) do
-				table.insert(descriptions,{entry.chk(sg,sc,SUMMON_TYPE_RUNE,tp),entry.te:GetDescription()})
+				table.insert(descriptions,{(not entry.chk or entry.chk(sg,sc,SUMMON_TYPE_RUNE,tp)),entry.te:GetDescription()})
 			end
 			local te=nil
 			if #descriptions>=1 then
