@@ -43,7 +43,12 @@ function s.initial_effect(c)
     e1:SetCode(EFFECT_MATERIAL_CHECK)
     e1:SetValue(s.matcheck)
     c:RegisterEffect(e1)
-
+    if s.flagmap==nil then
+		s.flagmap={}
+	end
+	if s.flagmap[c]==nil then
+		s.flagmap[c] = {}
+	end
     --------------------------------------------------
     -- (2) If opponent Special Summons a monster(s):
     --     Change all to DEF; if not banished this turn, banish those not changed.
