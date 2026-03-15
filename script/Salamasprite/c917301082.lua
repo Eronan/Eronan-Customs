@@ -30,7 +30,7 @@ function s.initial_effect(c)
 	e3:SetCode(EVENT_CHAINING)
 	e3:SetRange(LOCATION_MZONE)
 	e3:SetProperty(EFFECT_FLAG_CANNOT_DISABLE)
-	e3:SetOperation(s.regop)
+	e3:SetOperation(aux.chainreg)
 	c:RegisterEffect(e3)
 	local e4=Effect.CreateEffect(c)
 	e4:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
@@ -83,7 +83,7 @@ function s.regop(e,tp,eg,ep,ev,re,r,rp)
 end
 function s.damcon(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
-	return ep~=tp and c:GetFlagEffect(id)~=0
+	return ep~=tp and c:GetFlagEffect(1) > 0
 end
 function s.damop(e,tp,eg,ep,ev,re,r,rp)
 	Duel.Hint(HINT_CARD,0,id)

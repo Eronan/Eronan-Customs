@@ -13,7 +13,6 @@ function s.initial_effect(c)
 	local e2=Effect.CreateEffect(c)
 	e2:SetType(EFFECT_TYPE_CONTINUOUS+EFFECT_TYPE_SINGLE)
 	e2:SetCode(EVENT_LEAVE_FIELD)
-	e2:SetCondition(s.descon)
 	e2:SetOperation(s.desop)
 	c:RegisterEffect(e2)
 end
@@ -84,12 +83,9 @@ function s.spop(e,tp,eg,ep,ev,re,r,rp)
 		c:CancelToGrave(false)
 	end
 end
-function s.descon(e,tp,eg,ep,ev,re,r,rp)
-	return bit.band(e:GetHandler():GetReason(),0x41)==0x41
-end
 function s.desop(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
-	local tc=c:GetFirstCardTarget()
+	local tc=c:GetEquipTarget()
 	if tc and tc:IsLocation(LOCATION_MZONE) then
 		Duel.Destroy(tc,REASON_EFFECT)
 	end

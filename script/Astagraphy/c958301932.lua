@@ -26,14 +26,14 @@ end
 s.listed_series={0xfef}
 function s.target(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return true end
-	Duel.SetOperationInfo(0,CATEGORY_SPECIAL_SUMMON,e:GetHandler(),1,0,0)
+	Duel.SetPossibleOperationInfo(0,CATEGORY_SPECIAL_SUMMON,e:GetHandler(),1,0,0)
 end
 function s.activate(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
 	if not c:IsRelateToEffect(e) then return end
 	if Duel.GetLocationCount(tp,LOCATION_MZONE)<=0
 		or not Duel.IsPlayerCanSpecialSummonMonster(tp,id,0xfef,0x11,1000,2500,5,RACE_FIEND,ATTRIBUTE_DARK) then return end
-	if Duel.SelectYesNo(tp, aux.Stringid(30241314,0)) then
+	if Duel.SelectYesNo(tp, aux.Stringid(id,0)) then
 		c:AddMonsterAttribute(TYPE_NORMAL+TYPE_TRAP)
 		Duel.SpecialSummonStep(c,0,tp,tp,true,false,POS_FACEUP)
 		c:AddMonsterAttributeComplete()

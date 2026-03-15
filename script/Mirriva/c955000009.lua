@@ -19,6 +19,13 @@ function s.initial_effect(c)
 	c:RegisterEffect(e2)
 
 	--(2) Ritual Summon if opponent activated monster effect in hand or GY
+	local e3a=Effect.CreateEffect(c)
+	e3a:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
+	e3a:SetCode(EVENT_CHAINING)
+	e3a:SetRange(LOCATION_SZONE)
+	e3a:SetProperty(EFFECT_FLAG_CANNOT_DISABLE)
+	e3a:SetOperation(aux.chainreg)
+	c:RegisterEffect(e3a)
 	local e3=Effect.CreateEffect(c)
 	e3:SetDescription(aux.Stringid(id,0))
 	e3:SetCategory(CATEGORY_SPECIAL_SUMMON)
@@ -60,7 +67,7 @@ end
 
 --(2) Ritual Summon trigger condition
 function s.ritcon(e,tp,eg,ep,ev,re,r,rp)
-	return re:IsActiveType(TYPE_MONSTER) and rp==1-tp
+	return e:GetHandler():GetFlagEffect(1)>0 and re:IsActiveType(TYPE_MONSTER) and rp==1-tp
 		and (re:GetActivateLocation()==LOCATION_HAND or re:GetActivateLocation()==LOCATION_GRAVE)
 end
 

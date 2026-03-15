@@ -44,6 +44,11 @@ function s.thop2(e,tp,eg,ep,ev,re,r,rp)
 			e1:SetCondition(function (_,_) return Duel.GetFieldGroupCount(tp,0,LOCATION_MZONE)==0 end)
 			e1:SetReset(RESET_EVENT+RESETS_STANDARD-RESET_TOFIELD)
 			rc:RegisterEffect(e1)
+
+			local e2=e1:Clone()
+			e2:SetCode(EFFECT_CANNOT_ATTACK)
+			e2:SetProperty(EFFECT_FLAG_CANNOT_DISABLE)
+			rc:RegisterEffect(e2)
 		end
 	end
 end

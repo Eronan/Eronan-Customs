@@ -73,6 +73,7 @@ function s.spop(e,tp,eg,ep,ev,re,r,rp)
 	end
 end
 function s.ctcon(e,tp,eg,ep,ev,re,r,rp)
+	if e:GetHandler():GetFlagEffect(1)==0 then return false end
 	return re:GetHandler()~=e:GetHandler() and re:GetHandler():IsOnField() and (re:IsActiveType(TYPE_MONSTER)
 		or (re:IsActiveType(TYPE_SPELL+TYPE_TRAP) and not re:IsHasType(EFFECT_TYPE_ACTIVATE)))
 end

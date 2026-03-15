@@ -38,8 +38,6 @@ function s.target(e,tp,eg,ep,ev,re,r,rp,chk)
 		e:SetCategory(CATEGORY_TOHAND+CATEGORY_SEARCH)
 		e:SetOperation(s.thop)
 	else
-		--Cost
-		Duel.DiscardHand(tp,Card.IsDiscardable,1,1,REASON_COST+REASON_DISCARD)
 		--Target
 		Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_SET)
 		local g=aux.SelectUnselectGroup(tg,e,tp,2,2,s.rescon,1,tp,HINTMSG_TODECK)

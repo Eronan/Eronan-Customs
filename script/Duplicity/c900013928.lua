@@ -26,7 +26,7 @@ function s.target(e,tp,eg,ep,ev,re,r,rp,chk)
 	elseif b1 then
 		op=Duel.SelectOption(tp,aux.Stringid(id,0))
 	else 
-		op=Duel.SelectOption(tp,aux.Stringid(id,1))+1 
+		op=Duel.SelectOption(tp,aux.Stringid(id,1))+1
 	end
 	if op==0 then
 		e:SetOperation(s.plyroperation)
@@ -46,8 +46,8 @@ function s.plyroperation(e,tp,eg,ep,ev,re,r,rp)
 		Duel.RuneSummon(tp,sc,c)
 	end
 end
-function s.exfilter(c)
-	return c:IsType(TYPE_SPELL+TYPE_TRAP) and c:IsCanBeRuneGroup()
+function s.exfilter(c,chain)
+	return c:IsType(TYPE_SPELL+TYPE_TRAP) and c:IsCanBeRuneGroup(chain)
 end
 function s.oppfilter(c,ec,mg)
 	return c:IsRuneSummonable(ec,mg)
@@ -55,13 +55,15 @@ end
 function s.oppoperation(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
 	c:CancelToGrave()
-	local mg=Duel.GetMatchingGroup(Card.IsCanBeRuneGroup,tp,0,LOCATION_ONFIELD,nil,Duel.GetCurrentChain())
-	mg:Merge(Duel.GetMatchingGroup(s.exfilter,tp,LOCATION_ONFIELD,0,nil))
+	local chain=Duel.GetCurrentChain()
+	local mg=Duel.GetMatchingGroup(Card.IsCanBeRuneGroup,tp,0,LOCATION_ONFIELD,nil,chain)
+	mg:Merge(Duel.GetMatchingGroup(s.exfilter,tp,LOCATION_ONFIELD,0,nil,chain))
+	mg:AddCard(c)
 	if Duel.IsExistingMatchingCard(s.oppfilter,tp,0,0x3ff~LOCATION_MZONE,1,nil,e:GetHandler(),mg)
-			and Duel.SelectYesNo(1-tp,aux.Stringid(id,3)) then
+			and Duel.SelectYesNo(1-tp,aux.Stringid(id,2)) then
 		--Summon
 		Duel.Hint(HINT_SELECTMSG,1-tp,HINTMSG_SPSUMMON)
-		local g=Duel.SelectMatchingCard(1-tp,s.oppfilter,tp,0,0x3ff~LOCATION_MZONE,1,1,nil,e:GetHandler(),tp,mg)
+		local g=Duel.SelectMatchingCard(1-tp,s.oppfilter,tp,0,0x3ff~LOCATION_MZONE,1,1,nil,e:GetHandler(),c,mg)
 		if #g>0 then
 			local rc=g:GetFirst()
 			Duel.RuneSummon(1-tp,rc,e:GetHandler(),mg)

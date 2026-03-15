@@ -55,7 +55,7 @@ function s.rune_custom_check(g,rc,sumtype,tp)
 		if s.rccheck(mc,tp) then rccheck=rccheck+1 end
 		--if rccheck>1 then return false end
 	end
-	return rccheck>1
+	return rccheck>=1
 end
 function s.gycon(e,tp,eg,ep,ev,re,r,rp)
 	return e:GetHandler():IsSummonType(SUMMON_TYPE_RUNE)
