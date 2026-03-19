@@ -8,7 +8,7 @@ function s.initial_effect(c)
 	e1:SetCode(EVENT_FREE_CHAIN)
     e1:SetProperty(EFFECT_FLAG_CARD_TARGET)
 	e1:SetTarget(s.target)
-    e1:SetCountLimit(1,id,EFFECT_COUNT_CODE_OATH)
+    e1:SetCountLimit(1,id)
 	c:RegisterEffect(e1)
 	local e2=Effect.CreateEffect(c)
 	e2:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
@@ -67,6 +67,9 @@ function s.initial_effect(c)
 	e7:SetOperation(s.posop)
 	c:RegisterEffect(e7)
     --act in hand
+	local e8b=Effect.CreateEffect(c)
+
+	c:RegisterEffect(e8b)
 	local e8=Effect.CreateEffect(c)
 	e8:SetType(EFFECT_TYPE_SINGLE)
 	e8:SetCode(EFFECT_TRAP_ACT_IN_HAND)
@@ -113,8 +116,9 @@ function s.extraval(chk,summon_type,e,...)
 		end
 	elseif chk==1 then
 		local sg,sc,tp=...
-		if summon_type&SUMMON_TYPE_RUNE == SUMMON_TYPE_RUNE and #sg>0 and sc:IsSetCard(0xfc7) and c:IsControler(tp) then
+		if summon_type&SUMMON_TYPE_RUNE == SUMMON_TYPE_RUNE and #sg>0 and sc:IsSetCard(0xfc7) and c:IsControler(tp) and c:GetFlagEffect(id)==0 then
 			Duel.Hint(HINT_CARD,tp,id)
+			c:RegisterFlagEffect(id,RESET_EVENT+RESET_CHAIN,0,1)
 		end
 	end
 end

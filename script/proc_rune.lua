@@ -129,7 +129,7 @@ function Rune.CreatePortalProcedure(c,monf,mmin,mmax,stf,smin,smax,group,conditi
 	e1:SetDescription(1176)
 	e1:SetCode(EFFECT_SPSUMMON_PROC)
 	e1:SetProperty(EFFECT_FLAG_UNCOPYABLE+EFFECT_FLAG_IGNORE_IMMUNE+EFFECT_FLAG_CANNOT_DISABLE)
-	e1:SetRange(LOCATION_ALL-LOCATION_MZONE)
+	e1:SetRange(LOCATION_ALL-LOCATION_MZONE-LOCATION_HAND)
 	e1:SetCondition(PortalCondition)
 	e1:SetTarget(PortalTarget)
 	e1:SetValue(SUMMON_TYPE_RUNE)

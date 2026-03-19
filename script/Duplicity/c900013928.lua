@@ -59,13 +59,12 @@ function s.oppoperation(e,tp,eg,ep,ev,re,r,rp)
 	local mg=Duel.GetMatchingGroup(Card.IsCanBeRuneGroup,tp,0,LOCATION_ONFIELD,nil,chain)
 	mg:Merge(Duel.GetMatchingGroup(s.exfilter,tp,LOCATION_ONFIELD,0,nil,chain))
 	mg:AddCard(c)
-	if Duel.IsExistingMatchingCard(s.oppfilter,tp,0,0x3ff~LOCATION_MZONE,1,nil,e:GetHandler(),mg)
-			and Duel.SelectYesNo(1-tp,aux.Stringid(id,2)) then
+	local g=Duel.GetMatchingGroup(s.oppfilter,tp,0,0x3ff~LOCATION_MZONE,nil,e:GetHandler(),mg)
+	if #g>0 and Duel.SelectYesNo(1-tp,aux.Stringid(id,2)) then
 		--Summon
 		Duel.Hint(HINT_SELECTMSG,1-tp,HINTMSG_SPSUMMON)
-		local g=Duel.SelectMatchingCard(1-tp,s.oppfilter,tp,0,0x3ff~LOCATION_MZONE,1,1,nil,e:GetHandler(),c,mg)
-		if #g>0 then
-			local rc=g:GetFirst()
+		local rc=g:Select(tp,1,1,nil):GetFirst()
+		if rc then
 			Duel.RuneSummon(1-tp,rc,e:GetHandler(),mg)
 		else
 			c:CancelToGrave(false)

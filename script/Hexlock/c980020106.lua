@@ -58,6 +58,7 @@ function s.initial_effect(c)
 	e6:SetType(EFFECT_TYPE_SINGLE)
 	e6:SetCode(EFFECT_TRAP_ACT_IN_HAND)
 	e6:SetCondition(s.handcon)
+	e6:SetValue(s.handval)
 	c:RegisterEffect(e6)
 end
 s.listed_series={0xfc7}
@@ -108,7 +109,7 @@ function s.negcfilter(c)
 	return c:IsFaceup() and c:IsSetCard(0xfc7)
 end
 function s.negcon(e,tp,eg,ep,ev,re,r,rp)
-	return Duel.IsExistingMatchingCard(s.negcfilter,tp,LOCATION_MZONE,0,1,nil)
+	return aux.exccon(e,tp,eg,ep,ev,re,r,rp) and Duel.IsExistingMatchingCard(s.negcfilter,tp,LOCATION_MZONE,0,1,nil)
 end
 function s.negtg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	if chkc then return chkc:IsControler(1-tp) and chkc:IsOnField() and chkc:IsNegatable() end
@@ -151,6 +152,10 @@ function s.handcfilter(c)
 end
 function s.handcon(e)
 	local tp=e:GetHandlerPlayer()
+	if Duel.GetFlagEffect(tp,id)>0 then return false end
     return Duel.GetFieldGroupCount(tp,LOCATION_MZONE,0)==0 or
 		Duel.IsExistingMatchingCard(s.handcfilter,tp,LOCATION_MZONE,0,1,nil)
+end
+function s.handval(e,c)
+	Duel.RegisterFlagEffect(e:GetHandlerPlayer(),id,RESET_PHASE+PHASE_END,0,1)
 end
