@@ -58,6 +58,9 @@ end
 function s.desop(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
 	local sg=Duel.GetMatchingGroup(aux.TRUE,tp,LOCATION_MZONE,LOCATION_MZONE,nil)
+	if c:IsRelateToEffect(e) then
+		sg:AddCard(c)
+	end
 	Duel.Destroy(sg,REASON_EFFECT)
 end
 function s.chcon2(e,tp,eg,ep,ev,re,r,rp)
@@ -77,11 +80,11 @@ function s.chop2(e,tp,eg,ep,ev,re,r,rp)
 end
 function s.rmop(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
-	if c:GetType()==TYPE_SPELL or c:GetType()==TYPE_TRAP then
-		c:CancelToGrave(false)
-	end
 	local g=Duel.GetMatchingGroup(s.rmfilter,tp,LOCATION_MZONE,LOCATION_MZONE,nil)
 	if g:GetCount()>0 then
 		Duel.Remove(g,POS_FACEUP,REASON_EFFECT)
+	end
+	if c:IsRelateToEffect(e) then
+		Duel.Destroy(c,REASON_EFFECT)
 	end
 end
