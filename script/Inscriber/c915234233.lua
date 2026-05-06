@@ -114,7 +114,7 @@ function s.matcheck(e,c)
         e1:SetCondition(function(te) return Pendulum.PlayerCanGainAdditionalPendulumSummon(te:GetHandlerPlayer(),id) end)
         e1:SetTarget(function(te,tc) return tc:IsLocation(LOCATION_PZONE) end)
         e1:SetLabelObject(extra_pendulum_effect)
-        e1:SetReset(RESET_EVENT+RESETS_STANDARD-RESET_TOFIELD)
+        e1:SetReset(RESET_EVENT+RESETS_STANDARD-RESET_TOFIELD-RESET_MSCHANGE)
         c:RegisterEffect(e1)
         --Create an equivalent effect for "Harmonic Oscillation"
         local harmonic_effect=Pendulum.CreateHarmonicOscillationEffect(c,aux.TRUE,aux.Stringid(id,2),id)
