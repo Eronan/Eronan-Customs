@@ -46,7 +46,7 @@ function s.activate(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
 	local tc=Duel.GetFirstTarget()
 	local mg=Group.FromCards(tc,c):Filter(s.relatefilter,nil,e,tp)
-	if not mg:IsContains(tc) or not s.mustbematerialsallowed(tp,mg) then
+	if #mg~=2 or not s.mustbematerialsallowed(tp,mg) then
 		mg:DeleteGroup()
 		return
 	end

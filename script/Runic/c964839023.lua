@@ -39,13 +39,20 @@ function s.initial_effect(c)
 	e4:SetTarget(s.tftg)
 	e4:SetOperation(s.tfop)
 	c:RegisterEffect(e4)
-	--Send 1 monster from your extra deck to GY
+	--Prevent activation from hand
+	local e5b=Effect.CreateEffect(c)
+	e5b:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
+	e5b:SetCode(EVENT_CHAINING)
+	e5b:SetRange(LOCATION_MZONE)
+	e5b:SetProperty(EFFECT_FLAG_CANNOT_DISABLE)
+	e5b:SetOperation(aux.chainreg)
+	c:RegisterEffect(e5b)
 	local e5=Effect.CreateEffect(c)
 	e5:SetDescription(aux.Stringid(id,0))
 	e5:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_TRIGGER_O)
 	e5:SetCategory(CATEGORY_TOGRAVE+CATEGORY_ATKCHANGE)
 	e5:SetProperty(EFFECT_FLAG_DELAY)
-	e5:SetCode(EVENT_CHAINING)
+	e5:SetCode(EVENT_CHAIN_SOLVED)
 	e5:SetRange(LOCATION_MZONE)
 	e5:SetCountLimit(1)
 	e5:SetCondition(s.actcon)
@@ -100,11 +107,11 @@ function s.tfop(e,tp,eg,ep,ev,re,r,rp)
 		Duel.MoveToField(tc,tp,tp,LOCATION_SZONE,POS_FACEUP,true)
 	end
 end
-function s.actcon(e,tp,eg,ep,ev,re,r,rp)
-	return rp==1-tp and re:GetActivateLocation()==LOCATION_HAND
-		and Duel.IsTurnPlayer(tp)
-end
 --Prevent activation from hand
+function s.actcon(e,tp,eg,ep,ev,re,r,rp)
+	return Duel.IsTurnPlayer(tp) and e:GetHandler():GetFlagEffect(1)>0
+		and rp==1-tp and re:GetActivateLocation()==LOCATION_HAND
+end
 function s.actop(e,tp,eg,ep,ev,re,r,rp)
 	aux.RegisterClientHint(c,nil,tp,0,1,aux.Stringid(id,1),nil)
 	local e3=Effect.CreateEffect(e:GetHandler())
