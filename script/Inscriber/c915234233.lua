@@ -102,27 +102,29 @@ end
 function s.matcheck(e,c)
     local g=c:GetMaterial()
     if g:IsExists(function(tc) return tc:IsCode(CARD_MIZUMOJI) end,1,nil) then
-        --Create additional Pendulum Summon effect
-        local extra_pendulum_effect=Pendulum.CreateAdditionalPendulumSummonEffect(c,aux.TRUE,LOCATION_HAND|LOCATION_EXTRA,aux.Stringid(id,2),id,RESETS_STANDARD_PHASE_END)
-        --Grant the above effect to cards in your Pendulum Zones
-        local e1=Effect.CreateEffect(c)
-        e1:SetDescription(aux.Stringid(id,1))
-        e1:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_GRANT)
-        e1:SetProperty(EFFECT_FLAG_CLIENT_HINT)
-        e1:SetRange(LOCATION_MZONE)
-        e1:SetTargetRange(LOCATION_SZONE,0)
-        e1:SetCondition(function(te) return Pendulum.PlayerCanGainAdditionalPendulumSummon(te:GetHandlerPlayer(),id) end)
-        e1:SetTarget(function(te,tc) return tc:IsLocation(LOCATION_PZONE) end)
-        e1:SetLabelObject(extra_pendulum_effect)
-        e1:SetReset(RESET_EVENT+RESETS_STANDARD-RESET_TOFIELD-RESET_MSCHANGE)
-        c:RegisterEffect(e1)
-        --Create an equivalent effect for "Harmonic Oscillation"
-        local harmonic_effect=Pendulum.CreateHarmonicOscillationEffect(c,aux.TRUE,aux.Stringid(id,2),id)
-        --Grant the above effect to cards in your opponent's Pendulum Zones
-        local e2=e1:Clone()
-        e2:SetTargetRange(0,LOCATION_SZONE)
-        e2:SetLabelObject(harmonic_effect)
-        c:RegisterEffect(e2)
+        c:RegisterFlagEffect(id,RESET_EVENT+RESETS_STANDARD-RESET_TOFIELD+RESET_PHASE+PHASE_END,EFFECT_FLAG_CLIENT_HINT,1,0,aux.Stringid(id,1))
+        Pendulum.GrantAdditionalPendulumSummon(e:GetHandler(),aux.TRUE,c:GetControler(),LOCATION_HAND|LOCATION_EXTRA,aux.Stringid(id,2),aux.Stringid(id,3),id)
+        -- --Create additional Pendulum Summon effect
+        -- local extra_pendulum_effect=Pendulum.CreateAdditionalPendulumSummonEffect(c,aux.TRUE,LOCATION_HAND|LOCATION_EXTRA,aux.Stringid(id,2),id,RESETS_STANDARD-RESET_TOFIELD)
+        -- --Grant the above effect to cards in your Pendulum Zones
+        -- local e1=Effect.CreateEffect(c)
+        -- e1:SetDescription(aux.Stringid(id,1))
+        -- e1:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_GRANT)
+        -- e1:SetProperty(EFFECT_FLAG_CLIENT_HINT)
+        -- e1:SetRange(LOCATION_MZONE)
+        -- e1:SetTargetRange(LOCATION_SZONE,0)
+        -- e1:SetCondition(function(te) return Pendulum.PlayerCanGainAdditionalPendulumSummon(te:GetHandlerPlayer(),id) end)
+        -- e1:SetTarget(function(te,tc) return tc:IsLocation(LOCATION_PZONE) end)
+        -- e1:SetLabelObject(extra_pendulum_effect)
+        -- e1:SetReset(RESET_EVENT+RESETS_STANDARD-RESET_TOFIELD-RESET_MSCHANGE)
+        -- c:RegisterEffect(e1)
+        -- --Create an equivalent effect for "Harmonic Oscillation"
+        -- local harmonic_effect=Pendulum.CreateHarmonicOscillationEffect(c,aux.TRUE,aux.Stringid(id,2),id)
+        -- --Grant the above effect to cards in your opponent's Pendulum Zones
+        -- local e2=e1:Clone()
+        -- e2:SetTargetRange(0,LOCATION_SZONE)
+        -- e2:SetLabelObject(harmonic_effect)
+        -- c:RegisterEffect(e2)
     end
 end
 

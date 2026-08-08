@@ -10,6 +10,7 @@ function s.initial_effect(c)
     e0:SetCode(EVENT_FREE_CHAIN)
     e0:SetTarget(s.acttg)
     e0:SetOperation(s.actop)
+    e0:SetHintTiming(0,TIMINGS_CHECK_MONSTER)
     c:RegisterEffect(e0)
 
     --------------------------------------------------
@@ -119,7 +120,8 @@ end
 -- (2) Targeting protection: all your cards EXCEPT the summoned monster
 --------------------------------------------------
 function s.notgtfilter(e,tc)
-    return tc~=e:GetHandler():GetFirstCardTarget()
+    local sc=e:GetHandler():GetFirstCardTarget()
+    return tc~=sc
 end
 
 --------------------------------------------------

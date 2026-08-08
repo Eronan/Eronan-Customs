@@ -1,13 +1,13 @@
 --Medusozoa Mereas - Saqa of Aglaope
+if not Rune then Duel.LoadScript("proc_rune.lua") end
 local s,id=GetID()
 
 local SET_MEREAS=0xff5
 local CARD_MEDUSA_MEREAS=900115040
 function s.initial_effect(c)
-
 	--Rune Summon
 	c:EnableReviveLimit()
-	Rune.AddProcedure(c,Rune.MonFunction(s.monmatfilter),1,1,Rune.STFunction(nil),2,99,nil,s.exgroup)
+	Rune.AddProcedure(c,Rune.MonFunction(s.monmatfilter),1,1,Rune.STFunction(nil),2,99,nil,s.exgroup,nil,nil,nil,s.customop)
 
 	--Must be Rune Summoned
 	local e0=Effect.CreateEffect(c)
@@ -28,7 +28,7 @@ function s.initial_effect(c)
 
 	--(2) Rune Summoned / leaves field
 	local e2=Effect.CreateEffect(c)
-	e2:SetDescription(aux.Stringid(id,0))
+	e2:SetDescription(aux.Stringid(id,1))
 	e2:SetCategory(CATEGORY_SPECIAL_SUMMON)
 	e2:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_TRIGGER_O)
 	e2:SetCode(EVENT_SPSUMMON_SUCCESS)
@@ -46,7 +46,7 @@ function s.initial_effect(c)
 
 	--(3) Mereas sent to GY
 	local e4=Effect.CreateEffect(c)
-	e4:SetDescription(aux.Stringid(id,1))
+	e4:SetDescription(aux.Stringid(id,2))
 	e4:SetCategory(CATEGORY_POSITION)
 	e4:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_TRIGGER_O)
 	e4:SetCode(EVENT_TO_GRAVE)
@@ -62,15 +62,20 @@ end
 s.listed_series={SET_MEREAS}
 s.listed_names={CARD_MEDUSA_MEREAS}
 
+---------------------------------------------------
+-- Rune Summon
+---------------------------------------------------
 function s.monmatfilter(c,rc,sumtyp,tp)
     return c:IsRace(RACE_FISH,rc,sumtyp,tp) and c:IsType(TYPE_RUNE,rc,sumtyp,tp)
 end
-
----------------------------------------------------
--- Extra Rune Materials
----------------------------------------------------
 function s.exgroup(tp,ex,c)
 	return Duel.GetMatchingGroup(Card.IsAbleToRemove,tp,LOCATION_GRAVE,0,ex)
+end
+function s.customop(g,e,tp,eg,ep,ev,re,r,rp,pc)
+    local gy=g:Filter(Card.IsLocation,nil,LOCATION_GRAVE)
+    local mg=g-gy
+    Duel.SendtoGrave(mg,REASON_MATERIAL+REASON_RUNE)
+    Duel.Remove(gy,POS_FACEUP,REASON_MATERIAL+REASON_RUNE)
 end
 
 ---------------------------------------------------
@@ -126,18 +131,16 @@ function s.xyzfilter(c,e,tp)
 end
 
 function s.xyztg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
-	if chk==0 then
-		return Duel.IsExistingMatchingCard(s.medusafilter,tp,LOCATION_GRAVE,0,1,nil)
-			and Duel.IsExistingMatchingCard(s.xyzfilter,tp,LOCATION_EXTRA,0,1,nil,e,tp)
-	end
+	if chk==0 then return Duel.IsExistingMatchingCard(s.medusafilter,tp,LOCATION_GRAVE,0,1,nil) 
+        and Duel.IsExistingMatchingCard(s.xyzfilter,tp,LOCATION_EXTRA,0,1,nil,e,tp) end
 
+    local mg=Duel.SelectTarget(tp,s.medusafilter,tp,LOCATION_GRAVE,0,1,1,nil)
 	Duel.SetOperationInfo(0,CATEGORY_SPECIAL_SUMMON,nil,1,tp,LOCATION_EXTRA)
 end
 
 function s.xyzop(e,tp,eg,ep,ev,re,r,rp)
-	local mg=Duel.SelectMatchingCard(tp,s.medusafilter,tp,LOCATION_GRAVE,0,1,1,nil)
-	local mat=mg:GetFirst()
-	if not mat then return end
+	local tc=Duel.GetFirstTarget()
+	if not tc or not tc:IsRelateToEffect(e) then return end
 
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_SPSUMMON)
 	local sg=Duel.SelectMatchingCard(tp,s.xyzfilter,tp,LOCATION_EXTRA,0,1,1,nil,e,tp)
@@ -145,20 +148,24 @@ function s.xyzop(e,tp,eg,ep,ev,re,r,rp)
 	if not sc then return end
 
 	if Duel.SpecialSummon(sc,0,tp,tp,false,false,POS_FACEUP)>0 then
+		Duel.Overlay(sc,Group.FromCards(tc))
 
-		Duel.Overlay(sc,Group.FromCards(mat))
-
+        -- Destroy at end of turn
 		local e1=Effect.CreateEffect(e:GetHandler())
 		e1:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
 		e1:SetCode(EVENT_PHASE+PHASE_END)
 		e1:SetCountLimit(1)
 		e1:SetLabelObject(sc)
+        e1:SetLabel(sc:GetFieldID())
 		e1:SetReset(RESET_PHASE+PHASE_END,2)
+        e1:SetCondition(s.descon)
 		e1:SetOperation(s.desop)
 		Duel.RegisterEffect(e1,tp)
 	end
 end
-
+function s.descon(e,tp,eg,ep,ev,re,r,rp)
+    return Duel.GetTurnPlayer()==tp
+end
 function s.desop(e,tp,eg,ep,ev,re,r,rp)
 	local sc=e:GetLabelObject()
 	if not sc or not sc:IsFaceup() then return end
@@ -177,24 +184,16 @@ end
 function s.posfilter(c)
 	return c:IsSetCard(SET_MEREAS)
 end
-
 function s.poscon(e,tp,eg,ep,ev,re,r,rp)
 	return eg:IsExists(s.posfilter,1,nil)
 end
-
 function s.postg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
-	if chkc then
-		return chkc:IsOnField()
-	end
-
-	if chk==0 then
-		return Duel.IsExistingTarget(aux.TRUE,tp,LOCATION_MZONE,LOCATION_MZONE,1,nil)
-	end
-
+	if chkc then return chkc:IsOnField() end
+	if chk==0 then return Duel.IsExistingTarget(Card.IsCanTurnSet,tp,LOCATION_MZONE,LOCATION_MZONE,1,nil) end
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_POSCHANGE)
-	Duel.SelectTarget(tp,aux.TRUE,tp,LOCATION_MZONE,LOCATION_MZONE,1,1,nil)
+	local g=Duel.SelectTarget(tp,Card.IsCanTurnSet,tp,LOCATION_MZONE,LOCATION_MZONE,1,1,nil)
+    Duel.SetOperationInfo(0,CATEGORY_POSITION,g,1,0,0)
 end
-
 function s.posop(e,tp,eg,ep,ev,re,r,rp)
 	local tc=Duel.GetFirstTarget()
 	if not tc or not tc:IsRelateToEffect(e) then return end
