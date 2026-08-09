@@ -732,3 +732,17 @@ function Card.IsCanBeRuneGroup(c,chain)
 	if not chain then chain=Duel.GetCurrentChain() end
 	return c:IsFaceup() and (chain~=1 or not c:IsStatus(STATUS_LEAVE_CONFIRMED))
 end
+
+--Create Portal Effect
+function Rune.CreatePortalEffect(c,monf,desc,tploc,oploc,matchk,extraop)
+	--(1) Continuous: Allow Rune Summon from GY or Banished using this card + equipped monster
+    local e1=Effect.CreateEffect(c)
+	e1:SetDescription(desc)
+    e1:SetType(EFFECT_TYPE_FIELD)
+    e1:SetCode(EFFECT_RUNE_LOCATION)
+	e1:SetTarget(monf)
+    e1:SetTargetRange(tploc,oploc)
+    e1:SetValue(matchk)
+    e1:SetOperation(extraop)
+    return e1
+end
